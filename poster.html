@@ -1049,34 +1049,42 @@ const suggestBox = document.getElementById("suggestBox");
 function renderMovies(list){
 
   postersRow.innerHTML = list.map(m => `
+    
     <div class="card">
-      <img src="${m.poster}" alt="${m.title}">
-<div class="meta">
-  <h3>${m.title}</h3>
 
-  <div class="year">
-    ${m.date || ""}
-  </div>
+      <a href="trailer.html?id=${m.id}" class="poster-link">
+        <img src="${m.poster}" alt="${m.title}">
+      </a>
 
-  <div class="stars">
-    ${"★".repeat(Math.round(m.rating || 0))}
-  </div>
+      <div class="meta">
 
-  <div class="genre-tag">
-    ${m.genre ? m.genre[0] : ""}
-  </div>
+        <h3>${m.title}</h3>
 
-</div>
+        <div class="year">
+          ${m.date || ""}
+        </div>
 
-</div>
+        <div class="stars">
+          ${"★".repeat(Math.round(m.rating || 0))}
+        </div>
+
+        <div class="genre-tag">
+          ${m.genre ? m.genre[0] : ""}
+        </div>
+
+      </div>
+
 
       <div class="hover-buttons">
-        <button class="btn" onclick="goTrailer(${m.id})">
+        <a class="btn" href="trailer.html?id=${m.id}">
           ▶ Read more...
-        </button>
+        </a>
       </div>
+
     </div>
+
   `).join("");
+
 }
 
 /////////////////////////////
