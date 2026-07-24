@@ -1,0 +1,628 @@
+<!-- about.html - updated with logo left, nav right, logo links to home, hover animation -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us - MoviePulse247</title>
+ <link rel="icon" type="image/png" href="moviepulse (2).png">
+ <meta name="description" content="Watch latest movie trailers, reviews, cast details and updates on MoviePulse.">
+<meta name="keywords" content="movies, trailers, film reviews, MoviePulse, cinema updates">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        background: black;
+        color: white;
+    }
+
+    .video-bg {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+        opacity: 0.25;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0,0,0,0.85);
+        border-bottom: 1px solid red;
+    }
+
+
+    .navbar ul {
+        list-style: none;
+        display: flex;
+        gap: 25px;
+        margin: 0;
+        padding: 0;
+    }
+    .navbar ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+    }
+    .navbar ul li a:hover,
+    .navbar ul li a.active {
+        color: red;
+        border-bottom: 2px solid red;
+        padding-bottom: 2px;
+    }
+
+    .content-box {
+        max-width: 900px;
+        margin: 120px auto;
+        padding: 40px;
+        background: rgba(0,0,0,0.85);
+        border-radius: 12px;
+        box-shadow: 0 0 20px red;
+    }
+
+    h1, h2 {
+        color: red;
+        text-align: center;
+    }
+
+    p {
+        line-height: 1.7;
+        font-size: 17px;
+    }
+
+    .terms-link {
+        color: #ff4444;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+  .site-footer{
+  margin-top:60px;
+  background:#0f0f0f;
+  color:#fff;
+  padding:40px 20px;
+  text-align:center;
+  border-top:1px solid #222;
+}
+
+.footer-container{
+  max-width:1000px;
+  margin:auto;
+}
+
+.footer-logo{
+  font-size:24px;
+  margin-bottom:10px;
+}
+
+.footer-text{
+  color:#bbb;
+  margin-bottom:20px;
+  line-height:1.6;
+}
+
+.footer-links{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.footer-links a{
+  color:#fff;
+  text-decoration:none;
+  font-size:14px;
+  opacity:0.8;
+  transition:0.3s;
+}
+
+.footer-links a:hover{
+  opacity:1;
+  color:red;
+}
+
+.footer-copy{
+  font-size:13px;
+  color:#777;
+}
+
+
+.movie-name {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ff1f1f;
+}
+
+.logo img {
+    width: 160px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    max-height: 60px;
+  cursor: pointer;
+  border-radius: 14px;
+
+    animation: logoFloat 3s ease-in-out infinite;
+
+    transition: 
+        transform 0.4s ease,
+        filter 0.4s ease;
+}
+  .logo img:hover {
+    border-radius:10px;
+
+    transform: scale(1.12) rotate(-3deg);
+
+    filter:
+        drop-shadow(0 0 8px #ff1e1e)
+        drop-shadow(0 0 20px #ff1e1e);
+
+}
+    .popup {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+    }
+
+    .popup-content {
+        background: #fff;
+        margin: 10% auto;
+        padding: 20px;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 10px;
+        text-align: left;
+        color: #000;
+    }
+
+    .close-btn {
+        float: right;
+        font-size: 25px;
+        cursor: pointer;
+    }
+        #loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+#loader h2 {
+  color: red;
+  margin-top: 20px;
+  font-family: Arial;
+  letter-spacing: 3px;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* MAIN PAGE */
+.about-page{
+    max-width:1100px;
+    margin:auto;
+    padding:40px 20px;
+    color:white;
+    line-height:1.8;
+}
+
+/* HEADINGS */
+.about-page h1{
+    color:#ff0000;
+    text-align:center;
+    font-size:3rem;
+    margin-bottom:20px;
+}
+
+.about-page h2{
+    color:#ff0000;
+    margin-top:40px;
+    margin-bottom:15px;
+    border-left:4px solid #ff0000;
+    padding-left:12px;
+}
+
+.about-page h3{
+    color:white;
+}
+
+/* PARAGRAPHS */
+.about-page p{
+    color:#ddd;
+    font-size:1.05rem;
+}
+
+/* LISTS */
+.about-page ul{
+    padding-left:25px;
+}
+
+.about-page li{
+    color:white;
+    margin-bottom:10px;
+}
+
+/* RED BULLETS */
+.about-page li::marker{
+    color:#ff0000;
+}
+
+/* PROFILE CARDS */
+.member-card{
+    background:#111;
+    border:1px solid #222;
+    border-radius:15px;
+    padding:25px;
+    transition:.3s;
+}
+
+.member-card:hover{
+    border-color:#ff0000;
+    transform:translateY(-5px);
+}
+
+/* PROFILE IMAGE */
+.profile-img{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #ff0000;
+}
+
+/* ROLE */
+.role{
+    color:#ff0000;
+    font-weight:bold;
+}
+
+/* SOCIAL ICONS */
+.socials{
+    margin-top:15px;
+}
+
+.socials a{
+    color:white;
+    text-decoration:none;
+    margin:0 8px;
+    font-size:20px;
+    transition:.3s;
+}
+
+.socials a:hover{
+    color:#ff0000;
+}
+
+/* WEBSITE SOCIALS */
+.website-socials{
+    margin-top:15px;
+}
+
+.website-socials a{
+    color:white;
+    font-size:22px;
+    margin-right:15px;
+    transition:.3s;
+}
+
+.website-socials a:hover{
+    color:#ff0000;
+}
+        .about-extra{
+    margin-top:40px;
+    padding:20px;
+    max-width:900px;
+}
+
+.about-extra h2{
+    color:#ff1f1f;
+    margin-top:20px;
+    font-size:22px;
+}
+
+.about-extra p{
+    color:#ccc;
+    line-height:1.8;
+    margin-top:10px;
+    font-size:15px;
+}
+ .about-highlight{
+    margin-top:40px;
+    padding:20px;
+}
+
+.about-highlight h2{
+    color:#ff1f1f;
+    font-size:22px;
+    margin-top:20px;
+}
+
+.about-highlight p{
+    color:#ccc;
+    line-height:1.8;
+    font-size:15px;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">
+    <a href="index.html">
+        <img src="ChatGPT Image Jul 7, 2026, 09_00_03 AM.png" alt="MoviePulse Logo">
+    </a>
+</div>
+        
+ 
+    <nav class="navbar">
+        <ul id ="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="poster.html">movies</a></li>
+            <li><a href="about.html" class="active">About</a></li>
+           <li><a href="privacy.html">privacy policy</a></li>
+                <li><a href="contact.html">contact</a></li>
+        </ul>
+    </nav>
+</header>
+       
+
+<div class="content-box">
+
+    <h1>About MoviePulse247</h1>
+
+    <p>
+
+<strong>MoviePulse247</strong> is an independent movie review website created for movie lovers who want honest reviews, trailer breakdowns, recommendations, and entertainment news. We focus on helping viewers decide what to watch by publishing original reviews rather than simply repeating movie summaries.
+
+    </p>
+
+    <p>
+        We are passionate about cinema, storytelling, and helping movie lovers stay informed 24/7.
+    </p>
+
+    <p>
+        To read our Terms & Conditions, click here:
+        <a href="#terms" class="terms-link" id="openTerms">Go to Terms & Conditions</a>
+    </p>
+
+        <section class="about-page">
+
+  <h2>Our Mission</h2>
+
+  <p>
+    Our mission is to create a reliable and easy-to-use movie platform where visitors
+    can explore films, learn about upcoming releases, read detailed reviews, and find
+    recommendations based on their interests. We aim to make discovering movies simple,
+    enjoyable, and accessible to everyone.
+  </p>
+
+  <h2>What We Offer</h2>
+
+  <ul>
+    <li>Movie Reviews</li>
+    <li>Detailed Movie Articles</li>
+    <li>Movie Summaries</li>
+    <li>Official Trailers</li>
+    <li>Movie Recommendations</li>
+    <li>Upcoming Movie Updates</li>
+    <li>Entertainment Content</li>
+  </ul>
+         <div class="about-extra">
+
+  <h2>Our Vision</h2>
+  <p>
+    At MoviePulse, we believe movies are more than entertainment — they are stories that shape emotions, inspire creativity, and connect people across the world. Our vision is to build a platform where every movie lover can discover films in a simple, fast, and enjoyable way without confusion or unnecessary clutter.
+  </p>
+
+  <h2>What Makes Us Different</h2>
+  <p>
+    Unlike many platforms that overload users with ads or unnecessary information, MoviePulse focuses on clarity and experience. We carefully organize movie details, trailers, and updates so users can find exactly what they are looking for in seconds.
+  </p>
+
+  <h2>Our Commitment</h2>
+  <p>
+    We are committed to keeping MoviePulse updated with the latest movies, trending releases, and accurate information. Our goal is to continuously improve the platform and deliver a smooth experience for every visitor, whether on mobile or desktop.
+  </p>
+
+  <h2>Built For Movie Lovers</h2>
+  <p>
+    MoviePulse is built for people who love cinema — from casual viewers to passionate fans. Every feature, design choice, and update is made with the audience in mind to ensure a clean and enjoyable movie discovery experience.
+  </p>
+          <div class="about-highlight">
+
+  <h2>Why MoviePulse Exists</h2>
+  <p>
+    The internet is full of movie websites, but most of them feel cluttered, slow, or confusing. MoviePulse was created to fix that — to give movie lovers a clean, fast, and focused place where discovering films feels simple again.
+  </p>
+
+  <h2>Our Promise</h2>
+  <p>
+    We don’t just list movies. We carefully organize them so you can explore trailers, stories, cast details, and updates without wasting time. Everything here is designed to feel smooth, modern, and enjoyable.
+  </p>
+
+  <h2>The MoviePulse Experience</h2>
+  <p>
+    When you visit MoviePulse, you’re not just browsing — you’re stepping into a curated movie space built for real fans. Every click is meant to bring you closer to the world of cinema.
+  </p>
+
+</div>
+
+  <h2>Meet The Team</h2>
+
+  <div class="team-container">
+
+    <div class="member-card">
+      <img src="porfile2.jpeg" alt="Shyaka Patrick" class="profile-img">
+      <h3>Patrick</h3>
+      <p class="role">co-Founder & Lead Developer</p>
+
+      <p>
+        Patrick is the creator and lead developer of MoviePulse. With a background
+        in Software Development and a strong passion for technology and cinema,
+        he built MoviePulse to provide movie fans with high-quality reviews,
+        summaries, and entertainment content and alongside to author.
+      </p>
+
+      <div class="socials">
+        <a href="https://web.facebook.com/shyaka.augustin.9"><i class="fa-brands fa-facebook-f"></i> Facebook</a>
+       <a href="https://www.instagram.com/_p_a_tt_i/"><i class="fa-brands fa-instagram"></i> Instagram</a>
+      <a href="https://github.com/Last-design"> <i class="fa-brands fa-github"></i>Github</a>
+      </div>
+    </div>
+
+    <div class="member-card">
+      <img src="profile3.jpeg" alt="Faradji" class="profile-img">
+      <h3>Faradji</h3>
+      <p class="role">Founder & Content Contributor</p>
+
+      <p>
+        Faradji works alongside the MoviePulse team by contributing ideas,
+        content development, and helping improve the overall experience for
+        movie enthusiasts. His passion for entertainment helps shape the
+        platform's vision and growth and include to be the author of every story.
+      </p>
+
+      <div class="socials">
+      <a href=""><i class="fa-brands fa-facebook-f"></i> Facebook</a>
+     <a href="https://www.instagram.com/__f.a.r.a.d.j.i__/"><i class="fa-brands fa-instagram"></i> Instagram</a>
+      </div>
+    </div>
+
+  </div>
+
+  <h2>Why Trust MoviePulse?</h2>
+
+  <p>
+    We are committed to publishing original, informative, and reader-friendly
+    content. Every article is carefully prepared to provide useful information,
+    honest opinions, and engaging insights about movies and entertainment.
+  </p>
+
+  <h2>Follow MoviePulse</h2>
+
+  <div class="website-socials">
+ <div class="socials">
+  <a href="#"><i class="fa-brands fa-facebook-f"></i> Facebook</a>
+  <a href="https://www.instagram.com/moviepulse_247/"><i class="fa-brands fa-instagram"></i> Instagram</a>
+  <a href="#"><i class="fa-brands fa-tiktok"></i> YouTube</a>
+</div>
+  </div>
+
+  <h2>Contact Us</h2>
+
+  <p>
+    Email: moviepulse247@gmail.com
+  </p>
+
+  <p>
+    We welcome feedback, suggestions, and collaboration opportunities.
+  </p>
+
+</section>
+
+
+<div id="termsPopup" class="popup">
+  <div class="popup-content">
+    <span class="close-btn" id="closeTerms">&times;</span>
+    <h2>Terms & Conditions</h2>
+    <p>
+     <bold>Terms and Conditions</bold> 
+
+Welcome to MoviePulse. By accessing this website, you agree to comply with these terms.
+<strong> Use of Content</strong>
+All content on this site is for informational purposes only. You may not copy, reproduce, or distribute content without permission.
+<bold>Intellectual Property</bold> 
+
+All logos, text, and design elements are owned by MoviePulse unless otherwise stated. Third-party content belongs to its respective owners.
+
+<strong> No Hosting of Content</strong>
+
+MoviePulse does not host or upload any movies or copyrighted content. We only provide reviews, trailers, and informational content.
+
+<strong> User Responsibilities</strong>
+
+Users agree not to misuse the website or engage in harmful activities.
+
+<bold>Contact</bold>
+
+For any questions, please contact us via the Contact page.
+
+    </p>
+  </div>
+</div>
+        </div>
+        
+
+
+</div>
+   <footer class="site-footer">
+  <div class="footer-container">
+
+    <h3 class="footer-logo">MoviePulse</h3>
+    <p class="footer-text">
+      Discover movies, watch trailers, and read reviews curated for you.
+    </p>
+
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="poster.html">Movies</a>
+      <a href="about.html">about</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+
+    <p class="footer-copy">
+      © MoviePulse. All rights reserved.
+    </p>
+
+  </div>
+</footer>
+<script>
+document.getElementById("openTerms").onclick = function() {
+  document.getElementById("termsPopup").style.display = "block";
+};
+
+document.getElementById("closeTerms").onclick = function() {
+  document.getElementById("termsPopup").style.display = "none";
+};
+
+window.onclick = function(event) {
+  if (event.target == document.getElementById("termsPopup")) {
+    document.getElementById("termsPopup").style.display = "none";
+  }
+};
+</script>
+        <script>
+        window.addEventListener("load", function () {
+  setTimeout(() => {
+    document.getElementById("loader").style.display = "none";
+  }, 2500);
+});
+        </script>
+
+</body>
+</html>
+

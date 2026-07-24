@@ -1,0 +1,1156 @@
+<!-- posters.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+      <meta name="description" content="Watch official movie trailers for upcoming and blockbuster films. Find the latest trailers and teasers on MoviePulse.">
+<title>MoviePulse — Posters</title>
+      <link rel="icon" type="image/png" href="moviepulse (2).png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="style.css">
+<style>
+      
+      *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+      html{
+    scroll-behavior:smooth;
+}
+
+     body{
+    margin:0;
+    color:black;
+    font-family:'Poppins',sans-serif;
+
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+
+    background:
+    radial-gradient(circle at top, rgba(255,0,0,0.08), transparent 40%),
+    radial-gradient(circle at bottom, rgba(255,0,0,0.05), transparent 50%),
+    #0b0b0b;
+}
+ header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    z-index:1000;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:20px 7%;
+    background:rgba(0,0,0,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.logo img{
+    width:160px;
+    height:auto;
+    object-fit:contain;
+    display:block;
+    transition:.3s ease;
+}
+
+.logo img:hover{
+    transform:scale(1.05);
+}
+
+.movie-name{
+    color:#ff1f1f;
+    font-size:28px;
+    font-weight:700;
+}
+
+
+.search-wrap{
+    flex:1;
+      width:60%;
+    max-width:500px;
+    margin:0 30px;
+      position:relative;
+}
+
+#searchInput{
+    width:100%;
+    padding:10px 14px;
+    border-radius:8px;
+    border:1px solid #222;
+    background:#121212;
+    color:#fff;
+    outline:none;
+}
+
+nav{
+    display:flex;
+    gap:35px;
+}
+
+nav a{
+    color:#ddd;
+    text-decoration:none;
+    font-size:15px;
+    position:relative;
+    transition:0.3s ease;
+    background:transparent;
+    padding:0;
+}
+
+nav a:hover,
+nav a.active{
+    color:#ff1f1f;
+}
+
+nav a::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-8px;
+    width:0;
+    height:2px;
+    background:#ff1f1f;
+    transition:0.3s ease;
+}
+
+nav a:hover::after,
+nav a.active::after{
+    width:100%;
+}
+      .links{
+            background: transparent;
+      }
+  /* posters row */
+  .posters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 40px;
+  justify-content: center;
+  overflow-x: hidden;
+}
+      .poster-box{
+  position:relative;
+}
+
+.view-btn{
+  position:absolute;
+  bottom:60px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#E50914;
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  opacity:0;
+  transition:0.3s;
+}
+
+/* show button on hover */
+.poster-box:hover .view-btn{
+  opacity:1;
+}
+
+.poster-box img{
+  width:100%;
+  height:240px;
+  object-fit:cover;
+  border-radius:10px;
+}
+  .card{position:relative;width:160px;flex:0 0 160px;border-radius:10px;overflow:hidden;border:2px solid rgba(255,255,255,0.04);transition:transform .22s ease,box-shadow .22s}
+  .card img{display:block;width:100%;height:240px;object-fit:cover}
+  .card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,0.6)}
+  .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%, rgba(0,0,0,0.7));pointer-events:none}
+  .meta{position:absolute;left:8px;bottom:8px;color:#fff;font-size:13px;pointer-events:none}
+  .hover-buttons{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;transition:opacity .18s;pointer-events:none}
+  .card:hover .hover-buttons{opacity:1;pointer-events:auto;background:rgba(0,0,0,0.45)}
+  .btn{padding:8px 12px;border-radius:6px;border:none;background:var(--accent);color:#fff;cursor:pointer;font-weight:700}
+  .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.08)}
+  .rating{color:#FFD700;margin-top:6px}
+
+  /* footer */
+  footer{background:var(--panel);text-align:center;padding:12px;color:var(--muted);font-size:14px}
+  @media(max-width:600px){
+    .card img{height:200px}
+    .logo{font-size:18px}
+  }
+  .site-footer{
+  margin-top:60px;
+  background:#0f0f0f;
+  color:#fff;
+  padding:40px 20px;
+  text-align:center;
+  border-top:1px solid #222;
+}
+
+.footer-container{
+  max-width:1000px;
+  margin:auto;
+}
+
+.footer-logo{
+  font-size:24px;
+  margin-bottom:10px;
+}
+
+.footer-text{
+  color:#bbb;
+  margin-bottom:20px;
+  line-height:1.6;
+}
+
+.footer-links{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.footer-links a{
+  color:#fff;
+  text-decoration:none;
+  font-size:14px;
+  opacity:0.8;
+  transition:0.3s;
+}
+
+.footer-links a:hover{
+  opacity:1;
+  color:red;
+}
+
+.footer-copy{
+  font-size:13px;
+  color:#777;
+}
+      main{
+    padding-top:78px;
+}
+      /* suggestion box */
+      .suggest-box{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    margin-top: 6px;
+    z-index: 1000;
+    display: none;
+    max-height: 220px;
+    overflow-y: auto;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.suggest-item{
+    padding: 8px 12px;
+    cursor: pointer;
+    color: #e5e5e5;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    border-bottom: 1px solid #222;
+    transition: background 0.2s ease;
+}
+
+.suggest-item:hover{
+    background: #e50914;
+    color: white;
+}
+
+
+.suggest-item:hover{
+    background:#ff1f1f;
+}
+
+</style>
+</head>
+<body>
+
+<header class="nav">
+<div class="logo">
+    <a href="index.html">
+        <img src="ChatGPT Image Jul 7, 2026, 09_00_03 AM.png" alt="MoviePulse Logo">
+    </a>
+</div>
+
+  <div class="search-wrap">
+    <input id="searchInput" placeholder="Search movies..." />
+          <div id="suggestBox" class="suggest-box"></div>
+  </div>
+    
+
+  
+  <nav class="links">
+    <a href="index.html">Home</a>
+    <a href="poster.html" class="active">Movies</a>
+        <a href="about.html">About</a>
+    <a href="privacy.html">privacy policy</a>
+      <a href="contact.html">Contact</a>
+  </nav>
+</header>
+      <!-- ✅ FILTER BUTTONS (PUT HERE) -->
+<div class="filter-bar">
+<button onclick="showAll()">All</button>
+<button onclick="showGenre('Action')">Action</button>
+<button onclick="showGenre('Horror')">Horror</button>
+<button onclick="showGenre('Animation')">Animation</button>
+<button onclick="showGenre('Sci-Fi')">Sci-Fi</button>
+<button onclick="showGenre('Superhero')">Superhero</button>
+</div>
+
+</section>
+
+<main>
+  <section class="posters-row" id="postersRow" aria-live="polite">
+    <!-- JS will inject poster cards -->
+  </section>
+</main>
+
+ <footer class="site-footer">
+  <div class="footer-container">
+
+    <h3 class="footer-logo">MoviePulse</h3>
+
+    <p class="footer-text">
+      Discover movies, watch trailers, and read reviews curated for you.
+    </p>
+
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="poster.html">Movies</a>
+      <a href="about.html">about</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+
+    <p class="footer-copy">
+      © MoviePulse. All rights reserved.
+    </p>
+  </div>
+ </footer>
+<script>
+  // MOVIES ARRAY (now embedded here, no movie.js needed)
+const movies = [
+     {
+           id:80,
+    title: "Evil Dead Burn(2026)",
+    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/ztadKzIIR0ERYqpHteaPFtk7inP.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["horror"]
+  },
+                      {
+           id:79,
+    title: "The UpRising(2026)",
+    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/7TUl15TOsIvndKlgMWTtLgtEzZP.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Action"]
+  },
+
+                 {
+           id:78,
+    title: "MayDay(2026)",
+    poster:"https://i.pinimg.com/736x/57/c2/63/57c263dd7f39f08b7d088ba17ec42b46.jpg",
+    date: 2026,
+    rating:6.7,
+    genre: ["Action"]
+  },
+
+             {
+           id:77,
+    title: "Lucky(2026)",
+    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/xsrkiXg8EuNNtbPtbmvCxg95gK7.jpg",
+    date: 2026,
+    rating:6.7,
+    genre: ["drama","crime"]
+  },
+      
+           {
+           id:76,
+    title: "Digger(2026)",
+    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/1ATXKrIPJyKNwnJ6lcG088Sa6zi.jpg",
+    date: 2026,
+    rating:6.0,
+    genre: ["comedy"]
+  },
+       
+                       {
+           id:75,
+    title: "Godzilla minus one(2026)",
+    poster:"https://m.media-amazon.com/images/M/MV5BZTU0OGFhYmItMDkzMy00NzA5LThiMzItMjBhZDIzYWFhYjBhXkEyXkFqcGc@._V1_QL75_UX388_.jpg",
+    date: 2026,
+    rating:5.9,
+    genre: ["monsterHorror"]
+  },
+                  {
+           id:74,
+    title: "Not Alone(2027)",
+    poster:"https://image.tmdb.org/t/p/original/9p3PA8fAXeqRgnoFBrVleIIt310.jpg",
+    date: 2027,
+    rating:5,
+    genre: ["animation"]
+  },
+            {
+           id:73,
+    title: "The Last House(2026)",
+    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/ivmUB2djVH6HQrQfV0qEekdJWWf.jpg",
+    date: 2026,
+    rating:5.9,
+    genre: ["horror"]
+  },
+          {
+           id:72,
+    title: "Pompeii: out of time(2026)",
+    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/qnOYQ6uqxj5HEuXtVf1vSZicok.jpg",
+    date: 2026,
+    rating:5.7,
+    genre: ["Documentary"]
+  },
+                   {
+           id:71,
+    title: "Deavil's Mouth(2026)",
+    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/lH8k9uCWYn2b2gsYleqYBDPbWa8.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Horror", "Thriller"]
+  },
+             {
+           id:70,
+    title: "Onslaught(2026)",
+    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/3k69IPJEoLBMB3J5FCYehL8NMs2.jpg",
+    date: 2026,
+    rating:4,
+    genre: ["Horror", "Action"]
+  },
+                     {
+           id:69,
+    title: "WERWULF(2026)",
+    poster:"https://image.tmdb.org/t/p/w600_and_h900_face/eq4XjWBuvNkoNeXcrQ0N42mlTnL.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Horror", "Supernatural"]
+  },
+               {
+           id:68,
+    title: "INSIDIOUS: Out of the Further(2026)",
+    poster:"https://image.tmdb.org/t/p/w600_and_h900_face/4tTrW9dXCByS5wt2pXVWb58zNjz.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Horror", "Supernatural"]
+  },
+      
+            {
+           id:67,
+    title: "By Any Means(2026)",
+    poster:"https://m.media-amazon.com/images/M/MV5BZTUwODQ5N2QtMGM3Ny00YTk1LWJlZTctMTE5ZTAzNTMwOGQxXkEyXkFqcGc@._V1_QL75_UX147_.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Action", "Thriller", "Crime"]
+  },
+      {
+           id:66,
+    title: "WhaleFall(2026)",
+    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/wse4S4EuVHSNk9yzsjhdRLmipXk.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Survival", "Thriller", "Drama"]
+  },
+                {
+                  
+       id:65,
+    title: " Enola Holmes 3(2026)",
+    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/7kRYHH9H9PjBFwz1FprbHB2AAjI.jpg",
+    date: 2026,
+    rating:4,
+    genre: ["Adventure", "Crime", "action"]
+  },
+          {
+       id:64,
+    title: " One night Only(2026)",
+    poster:"https://image.tmdb.org/t/p/w600_and_h900_face/gzy1L7wqkFRznQPv4WrdPQ9bCJ8.jpg",
+    date: 2026,
+    rating:4,
+    genre: ["Drama", "Romanticr", "Comedy"]
+  },
+      {
+       id:63,
+    title: " CLAYFACE(2026)",
+    poster:"https://image.tmdb.org/t/p/w600_and_h900_face/5jCpQnWPikggmQZoDp1eAi6BI6w.jpg",
+    date: 2026,
+    rating:4.5,
+    genre: ["Horror", "Thriller", "scienceFinction"]
+  },
+                     {
+    id:62,
+    title: " KLARA AND THE SUN (2026)",
+    poster:"https://image.tmdb.org/t/p/w600_and_h900_face/xqovj2p6HRsgHxN81qYAYF4StgM.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Drama", "Sci-Fi", "Adventure"]
+  },
+                {
+    id:61,
+    title: " Fall 2 (2026)",
+    poster:"https://i.pinimg.com/736x/87/bc/74/87bc746ac49cbebfe5e453c329a9acad.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Drama", "Thriller", "Adventure"]
+  },
+             {
+    id:60,
+    title: "heart of The beast (2026)",
+    poster:"https://m.media-amazon.com/images/M/MV5BMDVlMTRhMjgtMjdmZi00NjJhLWExMmYtODExNWJkZGZjNjdhXkEyXkFqcGc@._V1_QL75_UX147_.jpg",
+    date: 2026,
+    rating:4.9,
+    genre: ["Action", "Thriller", "Adventure"]
+  },
+       {
+  id: 59,
+  title: "Michael (2026)",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/zm0KAbOjlt9eR5y7vDiL2dEOwMl.jpg",
+  rating: 5.6,
+ genre: ["Drama", "Music", "Biography"]
+       },
+             
+            {
+    id:58,
+    title: "The End of Oak Street (2026)",
+    poster:"https://i.pinimg.com/736x/76/b1/44/76b144acd5089eaad98421f8092ff84e.jpg",
+    date: 2026,
+    rating:4.9,
+    genre: ["Sci-Fi", "Thriller", "Adventure"]
+  },
+  {
+    id:57,
+    title: "Hope(2026)",
+    poster:"https://i.pinimg.com/1200x/ea/db/d8/eadbd87eac989e7246f4ee77b952d4fd.jpg",
+    date: 2026,
+    rating:4.5,
+    genre: ["Sci-Fi", "Drama", "Mystery"]
+  },
+  {
+    id:56,
+    title: "Resident Evil",
+    poster:"https://i.pinimg.com/736x/cc/51/e4/cc51e44b99c15d4ad40e580a6d0c74e9.jpg",
+    date: 2026,
+    rating:4.9,
+    genre: ["Horror", "Thriller", "Action"]
+  },
+  {
+    id:55,
+    title: "Lanterns(2026)",
+    poster:"https://i.pinimg.com/1200x/41/dd/eb/41ddebaa41c4966dd8924634ff61d6a2.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Crime", "Drama", "Sci-Fi"]
+  },
+  {
+    id:54,
+    title: "Street Fighter (2026)",
+    poster:"https://i.pinimg.com/736x/87/2c/b8/872cb8fda05d95a86966f57cc12e5fd9.jpg",
+    date: 2026,
+    rating:4.9,
+    genre: ["Action", "Martial Arts", "Adventure"]
+  },
+  {
+    id:53,
+    title: "The Odyssey (2026)",
+    poster:"https://i.pinimg.com/736x/0e/20/39/0e2039f0720e8ca031d222c2b21ed4e8.jpg",
+    date: 2026,
+    rating:4.8,
+    genre: ["Adventure", "Fantasy", "Epic"]
+  },
+  {
+    id:52,
+    title: "Avengers: Doomsday",
+    poster:"https://i.pinimg.com/1200x/68/0d/e9/680de9fe446da14ca66ecfada1a38858.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Action", "Sci-Fi", "Superhero"]
+  },
+         {
+    id: 51,
+    title: "forgotten island",
+    poster:"https://i.pinimg.com/736x/f6/64/7e/f6647e0c5c5fa3502d3ecbb1b6c38d31.jpg",
+    date:2026,
+    rating: 4,
+    genre:["animation","Action","Comedy"]
+         },   
+  {
+    id:50,
+    title: "DUNE: part 3",
+    poster:"https://i.pinimg.com/736x/c5/41/25/c54125168fcdcff6e773f8ec6b1fc59a.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Sci-Fi", "Adventure", "Drama"]
+  },
+  {
+    id:49,
+    title: "Avatar: The last Airbender",
+    poster:"https://i.pinimg.com/736x/cb/93/e5/cb93e539496f361cf1996889f097d880.jpg",
+    date: 2026,
+    rating:4.9,
+    genre: ["Fantasy", "Adventure", "Action"]
+  },
+  {
+    id:48,
+    title: "Runner",
+    poster:"https://i.pinimg.com/736x/2c/ab/c8/2cabc8c9277a5d7e74d18526eaca70f1.jpg",
+    date: 2026,
+    rating:4.9,
+    genre: ["Action", "Thriller", "Sci-Fi"]
+  },
+  {
+    id:47,
+    title: "Passenger",
+    poster:"https://i.pinimg.com/736x/39/6c/37/396c37f6ec9820a4e9266f0516df218d.jpg",
+    date: 2026,
+    rating:4.8,
+    genre: ["Drama", "Sci-Fi", "Mystery"]
+  },
+  {
+    id:46,
+    title: "The Dog Star",
+    poster:"https://i.pinimg.com/736x/14/c9/27/14c9271422e27f5d08de98f639c73b1b.jpg",
+    date: 2026,
+    rating:4.6,
+    genre: ["Sci-Fi", "Adventure"]
+  },
+  {
+    id:45,
+    title: "Supergirl",
+    poster:"https://i.pinimg.com/736x/aa/cc/19/aacc194e9d29333d8cddd5d3661b5498.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Superhero", "Action", "Fantasy"]
+  },
+  {
+    id:44,
+    title: "ALPHA",
+    poster:"https://i.pinimg.com/736x/d4/8b/52/d48b521b6a3a40f320db8c72a42659ac.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Action", "Thriller"]
+  },
+  {
+    id:43,
+    title: "BERLIN season 2",
+    poster:"https://i.pinimg.com/736x/0a/c8/74/0ac874b3c7f8120ba1f241d3f233e500.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Crime", "Drama", "Thriller"]
+  },
+  {
+    id:42,
+    title: "SPIDER-NOIR",
+    poster:"https://i.pinimg.com/736x/5f/6d/a4/5f6da4a4ae9e3251d5b005e27b200890.jpg",
+    date: 2026,
+    rating:5,
+    genre: ["Superhero", "Crime", "Action"]
+  },
+  {
+    id:41,
+    title: "THE Punisher One Last Kill",
+    poster:"https://i.pinimg.com/736x/cd/ed/6b/cded6b72af5a9612228c2ef4a060539d.jpg",
+    date: 2026,
+    rating:4,
+    genre: ["Action", "Crime", "Thriller"]
+  },
+  {
+    id:40,
+    title: "APEX",
+    poster:"https://i.pinimg.com/736x/8e/ba/82/8eba824f089754d25e9f22f0f5494adc.jpg",
+    date: 2026,
+    rating:4.9,
+    genre: ["Action", "Sci-Fi", "Thriller"]
+  },
+  {
+    id:39,
+    title: "CRIME 101",
+    poster:"https://i.pinimg.com/736x/b3/48/ef/b348ef761252b78c6b2dc007e286fca9.jpg",
+    date: 2026,
+    rating:4.9,
+    genre: ["Crime", "Drama", "Thriller"]
+  },
+  {
+    id:38,
+    title: "HAIL MARY",
+    poster:"https://i.pinimg.com/736x/d9/ee/0e/d9ee0e2e6875a9e9205f6dc47f34ff58.jpg",
+    date: 2026,
+    rating:4,
+    genre: ["Sci-Fi", "Adventure"]
+  },
+  {
+    id:37,
+    title: "OFF CAMPUS",
+    poster:"https://i.pinimg.com/736x/93/1b/f5/931bf52a4b8d4c417c0914ab280a077d.jpg",
+    trailer:"https://www.youtube.com/embed/4Vin2GSA4V0",
+    date: 2026,
+    rating:5,
+    genre: ["Drama", "Romance"]
+  },
+       {
+    id: 36,
+    title: "WAR MACHINE 2026",
+    poster:"https://i.pinimg.com/736x/49/60/b6/4960b6a8ee37a04e01a45c97d7836134.jpg",
+    date: 2026,
+    rating: 5,
+    genre: ["Action", "Sci-Fi", "War"]
+  },
+  {
+    id: 35,
+    title: "SPIDER-MAN Brand New Day",
+    poster:"https://i.pinimg.com/736x/c2/65/1f/c2651f93f4fec4dbfaa6488bd379365b.jpg",
+    date: 2026,
+    rating: 5,
+    genre: ["Superhero", "Action", "Adventure"]
+  },
+  {
+    id: 30,
+    title: "Captain America: Brave New World",
+    poster:"https://i.pinimg.com/736x/15/3e/aa/153eaa19c88070b8169f9b97f855b5f4.jpg",
+    date: 2026,
+    rating: 5,
+    genre: ["Superhero", "Action", "Sci-Fi"]
+  },
+  {
+    id: 31,
+    title: "Thunderbolts*",
+    poster:"https://image.tmdb.org/t/p/w500/m9EtP1Yrzv6v7dMaC9mRaGhd1um.jpg",
+    date: 2026,
+    rating: 5,
+    genre: ["Superhero", "Action", "Adventure"]
+  },
+  {
+    id: 32,
+    title: "Blade 4 (2026)",
+    poster:"https://i.pinimg.com/1200x/4e/47/11/4e47114c06758a2b9dfd9f1afba17251.jpg",
+    date: 2026,
+    rating: 4,
+    genre: ["Horror", "Action", "Supernatural"]
+  },
+  {
+    id: 33,
+    title: "Mission: Impossible – The Final Reckoning",
+    poster:"https://i.pinimg.com/736x/8c/34/53/8c3453960d34d7d083266cabd2123758.jpg",
+    date: 2025,
+    rating: 4,
+    genre: ["Action", "Thriller", "Spy"]
+  },
+  {
+    id: 34,
+    title: "Superman (2026)",
+    poster:"https://i.pinimg.com/736x/e1/5f/c9/e15fc912b33a0c9aa2819130a20625b5.jpg",
+    date: 2026,
+    rating: 4,
+    genre: ["Superhero", "Action", "Drama"]
+  },
+  {
+    id: 29,
+    title: "Friday the 13th (2025)",
+    poster:"https://i.pinimg.com/736x/30/08/06/300806b96dc77f67988d87aa043e6b6d.jpg",
+    date: 2025,
+    rating: 4,
+    genre: ["Horror", "Slasher"]
+  },
+  {
+    id: 28,
+    title: "The Matrix 5",
+    poster:"https://i.pinimg.com/1200x/bd/30/b1/bd30b101d3e348872ceb62f95654e691.jpg",
+    date: 2026,
+    rating: 4,
+    genre: ["Sci-Fi", "Action", "Cyberpunk"]
+  },
+  {
+    id: 27,
+    title: "Transformers One",
+    poster:"https://i.pinimg.com/736x/2c/0f/1d/2c0f1d0ea64457c0b95fa7b510ebf145.jpg",
+    date: 2025,
+    rating: 5,
+    genre: ["Animation", "Sci-Fi", "Action"]
+  },
+  {
+    id: 24,
+    title: "The Legend of Zelda",
+    poster:"https://i.pinimg.com/736x/1c/05/42/1c05428c3ab99b0203e2ae8d6f4f97c1.jpg",
+    date: 2026,
+    rating: 4,
+    genre: ["Fantasy", "Adventure", "Action"]
+  },
+  {
+    id: 26,
+    title: "Monster High (2025)",
+    poster:"https://i.pinimg.com/1200x/b6/cd/0d/b6cd0d27d8cb39829f2e68d3462381da.jpg",
+    date: 2025,
+    rating: 3,
+    genre: ["Animation", "Fantasy", "Comedy"]
+  },
+  {
+    id: 25,
+    title: "Moana 2026",
+    poster:"https://i.pinimg.com/1200x/7f/00/f0/7f00f0e58932cf7db60aaa441ea5b0c4.jpg",
+    date: 2026,
+    rating: 4,
+    genre: ["Animation", "Adventure", "Fantasy"]
+  },
+  {
+    id: 0.1,
+    title: "Minecraft: The Movie",
+    poster:"https://i.pinimg.com/736x/7a/68/41/7a6841f448d1bab10b5c566b8e8d5ae1.jpg",
+    date: 2025,
+    rating: 4,
+    genre: ["Adventure", "Fantasy", "Family"]
+  },
+  {
+    id: 23,
+    title: "Venom 3: The Last Dance",
+    poster:"https://i.pinimg.com/736x/a2/dc/61/a2dc613da24ff1b8bc47b25e7582d5b2.jpg",
+    date: 2024,
+    rating: 5,
+    genre: ["Superhero", "Action", "Sci-Fi"]
+  },
+  {
+    id: 22,
+    title: "Kung Fu Panda 5",
+    poster:"https://i.pinimg.com/736x/8e/9e/96/8e9e9686668fb05b78d82e6fee2e7d6e.jpg",
+    date: 2026,
+    rating: 5,
+    genre: ["Animation", "Action", "Comedy"]
+  },
+  {
+    id: 21,
+    title: "Toy Story 5",
+    poster:"https://i.pinimg.com/736x/86/e6/00/86e600892eb35721e829a983610567c0.jpg",
+    date: 2026,
+    rating: 4,
+    genre: ["Animation", "Family", "Adventure"]
+  },
+      {
+    id: 20,
+    title: "Shrek 5",
+    poster: "https://i.pinimg.com/736x/5e/2a/3d/5e2a3debf547654a67b91c8e67074117.jpg",
+    rating: 0,
+    date: 2026,
+    genre: ["Animation", "Comedy", "Fantasy"]
+  },
+  {
+    id: 19,
+    title: "Sonic the Hedgehog 3",
+    poster: "https://i.pinimg.com/736x/74/c7/17/74c717969a36f7d78c99f23702f46976.jpg",
+    rating: 0,
+    date: 2024,
+    genre: ["Animation", "Action", "Adventure"]
+  },
+  {
+    id: 0,
+    title: "Tron: Ares",
+    poster: "https://i.pinimg.com/736x/1d/1a/16/1d1a16818999270da276e76fad3f05dc.jpg",
+    rating: 5,
+    date: 2025,
+    genre: ["Sci-Fi", "Action", "Cyberpunk"]
+  },
+  {
+    id: 1,
+    title: "Lilo & Stitch",
+    poster: "https://i.pinimg.com/736x/92/19/fa/9219fac4c1fbfad8469112490b3f8ffe.jpg",
+    rating: 3,
+    date: 2025,
+    genre: ["Animation", "Family", "Adventure"]
+  },
+  {
+    id: 2,
+    title: "Spider-Man",
+    poster: "https://i.pinimg.com/1200x/48/54/99/4854994674c2da4bc8ca3878c62a1546.jpg",
+    rating: 2,
+    date: 2002,
+    genre: ["Superhero", "Action"]
+  },
+  {
+    id: 3,
+    title: "Avengers: Endgame",
+    poster: "https://i.pinimg.com/1200x/a9/f3/07/a9f3078f5c1ca60047276ecb2e979d29.jpg",
+    rating: 3,
+    date: 2019,
+    genre: ["Superhero", "Action", "Drama"]
+  },
+  {
+    id: 4,
+    title: "Deadpool & Wolverine",
+    poster: "https://i.pinimg.com/736x/b9/9b/a1/b99ba13464b3b5415f1780d77b026d6f.jpg",
+    rating: 4,
+    date: 2024,
+    genre: ["Superhero", "Action", "Comedy"]
+  },
+  {
+    id: 5,
+    title: "Avatar 2",
+    poster: "https://i.pinimg.com/1200x/b2/f8/43/b2f843111df8347133dca44dc2c5f57b.jpg",
+    rating: 4,
+    date: 2022,
+    genre: ["Sci-Fi", "Adventure", "Fantasy"]
+  },
+  {
+    id: 6,
+    title: "Spider-Man: No Way Home",
+    poster: "https://i.pinimg.com/1200x/f7/93/cf/f793cf13f485432251c4a2e6bfc5e4a3.jpg",
+    rating: 4.5,
+    date: 2021,
+    genre: ["Superhero", "Action", "Sci-Fi"]
+  },
+  {
+    id: 7,
+    title: "Venom: Let There Be Carnage",
+    poster: "https://i.pinimg.com/736x/1b/cb/a4/1bcba4e2e9ae10c77c4db532b7e33db0.jpg",
+    rating: 2,
+    date: 2021,
+    genre: ["Superhero", "Action", "Horror"]
+  },
+  {
+    id: 8,
+    title: "Transformers: Rise of the Beasts",
+    poster: "https://i.pinimg.com/1200x/f0/be/96/f0be9683db7514cac7b53968dd17ecde.jpg",
+    rating: 4,
+    date: 2023,
+    genre: ["Action", "Sci-Fi"]
+  },
+  {
+    id: 9,
+    title: "Black Panther: Wakanda Forever",
+    poster: "https://i.pinimg.com/736x/1c/a9/ce/1ca9ce3cb268540fb5ccb13c5ebe58df.jpg",
+    rating: 4,
+    date: 2022,
+    genre: ["Superhero", "Action", "Drama"]
+  },
+  {
+    id: 10,
+    title: "Fast & Furious X",
+    poster: "https://i.pinimg.com/1200x/6f/97/41/6f9741d12b79288a0f632a358d21fc41.jpg",
+    rating: 4,
+    date: 2023,
+    genre: ["Action", "Thriller"]
+  },
+  {
+    id: 11,
+    title: "Aquaman 2",
+    poster: "https://i.pinimg.com/736x/50/bb/6e/50bb6e7a00c849f37c17d3a2704baaed.jpg",
+    rating: 3,
+    date: 2023,
+    genre: ["Superhero", "Action", "Fantasy"]
+  },
+  {
+    id: 12,
+    title: "John Wick 4",
+    poster: "https://i.pinimg.com/1200x/6e/50/a0/6e50a0bb3202e05cb9de75978b50e4a7.jpg",
+    rating: 4,
+    date: 2023,
+    genre: ["Action", "Thriller", "Crime"]
+  },
+  {
+    id: 13,
+    title: "The Batman",
+    poster: "https://i.pinimg.com/736x/ab/3d/63/ab3d6358c7ee93923de8caec086aa259.jpg",
+    rating: 4,
+    date: 2022,
+    genre: ["Superhero", "Crime", "Drama"]
+  },
+  {
+    id: 14,
+    title: "Mission Impossible 7",
+    poster: "https://i.pinimg.com/736x/b0/c4/e3/b0c4e3b5781f904b1b3615311aa273d6.jpg",
+    rating: 4,
+    date: 2023,
+    genre: ["Action", "Spy", "Thriller"]
+  },
+  {
+    id: 15,
+    title: "Godzilla x Kong",
+    poster: "https://i.pinimg.com/1200x/d2/db/29/d2db2917b4ff0959ae56fa74dbf9854d.jpg",
+    rating: 4,
+    date: 2024,
+    genre: ["Monster", "Action", "Sci-Fi"]
+  },
+  {
+    id: 16,
+    title: "The Flash",
+    poster: "https://i.pinimg.com/1200x/a1/f9/51/a1f951660c4ed9a58e1946fafc741a89.jpg",
+    rating: 4,
+    date: 2023,
+    genre: ["Superhero", "Action", "Sci-Fi"]
+  },
+  {
+    id: 17,
+    title: "The Marvels",
+    poster: "https://i.pinimg.com/736x/7c/8f/e5/7c8fe5b2dace150805e7da2f97f990c8.jpg",
+    rating: 3,
+    date: 2023,
+    genre: ["Superhero", "Action", "Sci-Fi"]
+  },
+  {
+    id: 18,
+    title: "The Lion King (Remake)",
+    poster: "https://i.pinimg.com/1200x/80/e0/8c/80e08cf494d3149c2ca02a5bfc8216ee.jpg",
+    rating: 4.4,
+    date: 2019,
+    genre: ["Animation", "Adventure", "Drama"]
+  }
+];
+
+
+/////////////////////////////
+// ELEMENTS
+/////////////////////////////
+
+const postersRow = document.getElementById("postersRow");
+const searchInput = document.getElementById("searchInput");
+const suggestBox = document.getElementById("suggestBox");
+
+/////////////////////////////
+// RENDER MOVIES
+/////////////////////////////
+
+function renderMovies(list){
+
+  postersRow.innerHTML = list.map(m => `
+    <div class="card">
+      <img src="${m.poster}" alt="${m.title}">
+
+      <div class="meta">
+        <h3>${m.title}</h3>
+        <div>${m.date || ""}</div>
+        <div>${"★".repeat(Math.round(m.rating || 0))}</div>
+      </div>
+
+      <div class="hover-buttons">
+        <button class="btn" onclick="goTrailer(${m.id})">
+          ▶ Read more...
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+/////////////////////////////
+// INITIAL LOAD
+/////////////////////////////
+
+renderMovies(movies);
+
+/////////////////////////////
+// SHOW ALL
+/////////////////////////////
+
+function showAll(){
+  renderMovies(movies);
+}
+
+/////////////////////////////
+// FILTER BY GENRE (NEW 🔥)
+/////////////////////////////
+
+function showGenre(genre){
+
+  const filtered = movies.filter(m =>
+    m.genre && m.genre.includes(genre)
+  );
+
+  renderMovies(filtered);
+}
+
+/////////////////////////////
+// SEARCH + SUGGESTIONS
+/////////////////////////////
+
+searchInput.addEventListener("input", () => {
+
+  const q = searchInput.value.toLowerCase();
+
+  if(!q){
+    suggestBox.style.display = "none";
+    renderMovies(movies);
+    return;
+  }
+
+  const filtered = movies.filter(m =>
+    m.title.toLowerCase().includes(q)
+  );
+
+  renderMovies(filtered);
+
+  const top = filtered.slice(0, 5);
+
+  suggestBox.innerHTML = top.map(m => `
+    <div class="suggest-item" onclick="selectMovie(${m.id})">
+      ${m.title}
+    </div>
+  `).join("");
+
+  suggestBox.style.display = top.length ? "block" : "none";
+});
+
+/////////////////////////////
+// SELECT MOVIE
+/////////////////////////////
+
+function selectMovie(id){
+  location.href = `trailer.html?id=${id}`;
+}
+
+/////////////////////////////
+// CLOSE SUGGESTIONS
+/////////////////////////////
+
+document.addEventListener("click", e => {
+  if(!e.target.closest(".search-wrap")){
+    suggestBox.style.display = "none";
+  }
+});
+
+/////////////////////////////
+// ENTER SEARCH
+/////////////////////////////
+
+searchInput.addEventListener("keydown", e => {
+  if(e.key === "Enter"){
+    location.href = `poster.html?q=${encodeURIComponent(searchInput.value)}`;
+  }
+});
+
+/////////////////////////////
+// NAV TO TRAILER
+/////////////////////////////
+
+function goTrailer(id){
+  location.href = `trailer.html?id=${id}`;
+}
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="moviepulse (2).png">
+<title>Contact Us – MoviePulse</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#0c0c0c;
+    color:white;
+}
+
+/* HEADER */
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 50px;
+    background:rgba(0,0,0,0.95);
+    border-bottom:2px solid #ff1f1f;
+}
+
+.logo img {
+    width: 160px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    max-height: 60px;
+  cursor: pointer;
+  border-radius: 14px;
+
+    animation: logoFloat 3s ease-in-out infinite;
+
+    transition: 
+        transform 0.4s ease,
+        filter 0.4s ease;
+}
+  .logo img:hover {
+    border-radius:10px;
+
+    transform: scale(1.12) rotate(-3deg);
+
+    filter:
+        drop-shadow(0 0 8px #ff1e1e)
+        drop-shadow(0 0 20px #ff1e1e);
+
+}
+  /* Floating Animation */
+@keyframes logoFloat {
+
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+
+}
+
+}
+
+.movie-name{
+    display:block;
+    font-size:26px;
+    font-weight:700;
+    color:#ff1f1f;
+}
+
+.slogan{
+    display:block;
+    font-size:12px;
+    color:#aaa;
+}
+
+nav{
+    display:flex;
+    gap:30px;
+}
+
+nav a{
+    text-decoration:none;
+    color:#ddd;
+    font-size:16px;
+    font-weight:500;
+}
+
+nav a:hover,
+nav a.active{
+    color:#ff1f1f;
+}
+
+/* CONTACT SECTION */
+.contact{
+    padding:60px 20px;
+    text-align:center;
+}
+
+.contact h1{
+    font-size:40px;
+    margin-bottom:15px;
+}
+
+.contact p{
+    color:#bbb;
+    margin-bottom:40px;
+}
+
+/* FORM */
+.contact-form{
+    max-width:500px;
+    margin:auto;
+    background:#151515;
+    padding:30px;
+    border-radius:10px;
+}
+
+.contact-form input,
+.contact-form textarea{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border:none;
+    border-radius:6px;
+    background:#222;
+    color:white;
+    font-size:14px;
+}
+
+.contact-form button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:6px;
+    background:#ff1f1f;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.contact-form button:hover{
+    background:#e60000;
+}
+
+/* FOOTER */
+         .site-footer{
+  margin-top:60px;
+  background:#0f0f0f;
+  color:#fff;
+  padding:40px 20px;
+  text-align:center;
+  border-top:1px solid #222;
+}
+
+.footer-container{
+  max-width:1000px;
+  margin:auto;
+}
+
+.footer-logo{
+  font-size:24px;
+  margin-bottom:10px;
+}
+
+.footer-text{
+  color:#bbb;
+  margin-bottom:20px;
+  line-height:1.6;
+}
+
+.footer-links{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.footer-links a{
+  color:#fff;
+  text-decoration:none;
+  font-size:14px;
+  opacity:0.8;
+  transition:0.3s;
+}
+
+.footer-links a:hover{
+  opacity:1;
+  color:red;
+}
+
+.footer-copy{
+  font-size:13px;
+  color:#777;
+}
+
+        textarea{
+    resize: none;
+}
+.social-icons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.social-icons a {
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: white;
+  background: #222;
+  border-radius: 50%;
+  transition: 0.3s;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+.social-icons a:hover {
+  background: #ff1f1f;
+  transform: translateY(-3px);
+}
+
+.social-icons i {
+  font-size: 20px;
+}
+        .social-text{
+    margin-top:20px;
+    text-align:center;
+    color:#bbb;
+    font-size:14px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+ <div class="logo">
+    <a href="index.html">
+        <img src="ChatGPT Image Jul 7, 2026, 09_00_03 AM.png" alt="MoviePulse Logo">
+    </a>
+</div>
+
+
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="poster.html">Movies</a>
+    <a href="about.html">About</a>
+  <a href="privacy.html">privacy policy</a>
+        <a href="contact.html" class="active">Contact</a>
+</nav>
+
+</header>
+
+<section class="contact">
+    <h1>Contact Us</h1>
+    <p>Have questions, suggestions, or feedback? Reach out to the MoviePulse team.</p>
+
+<div class="contact-form">
+<form id = "contact-form" name="contact" method="POST" action="https://formspree.io/f/xzdlbjgj" class="contact-form"> 
+        
+  <input type="hidden" name="form-name" value="contact">
+  <input type="hidden" name="bot-field">
+
+  <input type="text" name="name" placeholder="Your Name" required autocomplete="name">
+  
+  <input type="email" name="email" placeholder="Your Email" required autocomplete="email">
+  
+  <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+  
+  <button type="submit">Send Message</button>
+</form>
+       <p class="social-text">
+  Follow MoviePulse on social media to stay updated with new movies, trailers, and honest reviews from the world of cinema.
+</p>
+<div class="social-icons">
+
+  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+    <i class="fa-brands fa-facebook-f"></i>
+  </a>
+
+  <a href="https://instagram.com/moviepulse_247/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+    <i class="fa-brands fa-instagram"></i>
+  </a>
+
+  <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+  <i class="fa-brands fa-tiktok"></i>
+</a>
+
+</div>
+
+
+</section>
+
+  <footer class="site-footer">
+  <div class="footer-container">
+
+    <h3 class="footer-logo">MoviePulse</h3>
+
+    <p class="footer-text">
+      Discover movies, watch trailers, and read reviews curated for you.
+    </p>
+
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="poster.html">Movies</a>
+      <a href="about.html">about</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+
+    <p class="footer-copy">
+      © MoviePulse. All rights reserved.
+    </p>
+
+  </div>
+</footer>
+
+</body>
+</html>
