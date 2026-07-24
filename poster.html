@@ -288,6 +288,16 @@ nav a.active::after{
   font-size:12px;
   font-weight:600;
 }
+      .genre-tag{
+    display:inline-block;
+    margin-top:8px;
+    padding:4px 12px;
+    background:#e50914;
+    color:#fff;
+    border-radius:15px;
+    font-size:12px;
+    font-weight:600;
+}
 
 </style>
 </head>
@@ -1041,8 +1051,7 @@ function renderMovies(list){
   postersRow.innerHTML = list.map(m => `
     <div class="card">
       <img src="${m.poster}" alt="${m.title}">
-
-   <div class="meta">
+<div class="meta">
   <h3>${m.title}</h3>
 
   <div class="year">
@@ -1053,13 +1062,11 @@ function renderMovies(list){
     ${"★".repeat(Math.round(m.rating || 0))}
   </div>
 
-  <div class="genre-tags">
-    ${(m.genre || []).map(g => `
-      <span class="genre">
-        ${g}
-      </span>
-    `).join("")}
+  <div class="genre-tag">
+    ${m.genre ? m.genre[0] : ""}
   </div>
+
+</div>
 
 </div>
 
