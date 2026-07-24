@@ -273,6 +273,21 @@ nav a.active::after{
 .suggest-item:hover{
     background:#ff1f1f;
 }
+      .genre-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:10px;
+}
+
+.genre{
+  background:#e50914;
+  color:white;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:600;
+}
 
 </style>
 </head>
@@ -1027,11 +1042,26 @@ function renderMovies(list){
     <div class="card">
       <img src="${m.poster}" alt="${m.title}">
 
-      <div class="meta">
-        <h3>${m.title}</h3>
-        <div>${m.date || ""}</div>
-        <div>${"★".repeat(Math.round(m.rating || 0))}</div>
-      </div>
+   <div class="meta">
+  <h3>${m.title}</h3>
+
+  <div class="year">
+    ${m.date || ""}
+  </div>
+
+  <div class="stars">
+    ${"★".repeat(Math.round(m.rating || 0))}
+  </div>
+
+  <div class="genre-tags">
+    ${(m.genre || []).map(g => `
+      <span class="genre">
+        ${g}
+      </span>
+    `).join("")}
+  </div>
+
+</div>
 
       <div class="hover-buttons">
         <button class="btn" onclick="goTrailer(${m.id})">
