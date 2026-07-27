@@ -168,18 +168,57 @@ p{
     margin-bottom:15px;
 }
 
-
-footer{
-    text-align:center;
-    padding:30px;
-    border-top:1px solid #222;
-    color:#aaa;
+/* FOOTER */
+  .site-footer{
+  margin-top:60px;
+  background:#0f0f0f;
+  color:#fff;
+  padding:40px 20px;
+  text-align:center;
+  border-top:1px solid #222;
 }
 
+.footer-container{
+  max-width:1000px;
+  margin:auto;
+  text-align:center;
+}
 
-footer a{
-    color:#ff1e1e;
-    text-decoration:none;
+.footer-logo{
+  font-size:24px;
+  margin-bottom:10px;
+}
+
+.footer-text{
+  color:#bbb;
+  margin-bottom:20px;
+  line-height:1.6;
+}
+
+.footer-links{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.footer-links a{
+  color:#fff;
+  text-decoration:none;
+  font-size:14px;
+  opacity:0.8;
+  transition:0.3s;
+}
+
+.footer-links a:hover{
+  opacity:1;
+  color:red;
+}
+
+.footer-copy{
+  font-size:13px;
+  color:#777;
 }
 
 
@@ -319,17 +358,30 @@ Last updated: July 2026
 
 
 
-<footer>
+<footer class="site-footer">
 
-<p>
-© 2026 MoviePulse. All Rights Reserved.
-</p>
+  <div class="footer-container">
 
-<p>
-<a href="privacy.html">Privacy Policy</a> |
-<a href="terms.html">Terms & Conditions</a> |
-<a href="disclaimer.html">Disclaimer</a>
-</p>
+    <h3 class="footer-logo">MoviePulse</h3>
+
+    <p class="footer-text">
+      Discover movies, watch trailers, and read reviews curated for you.
+    </p>
+
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="poster.html">Movies</a>
+      <a href="about.html">about</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="disclaimer.html">Disclaimer</a>
+    </div>
+
+    <p class="footer-copy">
+      © MoviePulse. All rights reserved.
+    </p>
+
+  </div>
 
 </footer>
 
