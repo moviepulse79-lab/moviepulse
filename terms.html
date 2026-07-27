@@ -87,6 +87,21 @@ nav a::after{
     background:#ff1e1e;
     transition:.3s;
 }
+    nav a.active{
+    color:#ff1e1e;
+}
+
+
+nav a.active::after{
+    width:100%;
+    height:3px;
+    background:#ff1e1e;
+
+    box-shadow:
+    0 0 8px #ff1e1e,
+    0 0 15px #ff1e1e,
+    0 0 25px rgba(255,30,30,0.8);
+}
 
 
 nav a:hover::after{
