@@ -164,9 +164,29 @@
         drop-shadow(0 0 8px #ff1e1e)
         drop-shadow(0 0 20px #ff1e1e);
 
+}
+    .popup {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+    }
 
+    .popup-content {
+        background: #fff;
+        margin: 10% auto;
+        padding: 20px;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 10px;
+        text-align: left;
+        color: #000;
+    }
 
- 
     .close-btn {
         float: right;
         font-size: 25px;
@@ -383,6 +403,11 @@
         We are passionate about cinema, storytelling, and helping movie lovers stay informed 24/7.
     </p>
 
+    <p>
+        To read our Terms & Conditions, click here:
+        <a href="#terms" class="terms-link" id="openTerms">Go to Terms & Conditions</a>
+    </p>
+
         <section class="about-page">
 
   <h2>Our Mission</h2>
@@ -450,7 +475,7 @@
   <div class="team-container">
 
     <div class="member-card">
-      <img src="profile 1.jpeg" alt="Shyaka Patrick" class="profile-img">
+      <img src="porfile2.jpeg" alt="Shyaka Patrick" class="profile-img">
       <h3>Patrick</h3>
       <p class="role">co-Founder & Lead Developer</p>
 
@@ -469,7 +494,7 @@
     </div>
 
     <div class="member-card">
-      <img src="profile 2.jpeg" alt="Faradji" class="profile-img">
+      <img src="profile3.jpeg" alt="Faradji" class="profile-img">
       <h3>Faradji</h3>
       <p class="role">Founder & Content Contributor</p>
 
@@ -518,6 +543,41 @@
 
 </section>
 
+
+<div id="termsPopup" class="popup">
+  <div class="popup-content">
+    <span class="close-btn" id="closeTerms">&times;</span>
+    <h2>Terms & Conditions</h2>
+    <p>
+     <bold>Terms and Conditions</bold> 
+
+Welcome to MoviePulse. By accessing this website, you agree to comply with these terms.
+<strong> Use of Content</strong>
+All content on this site is for informational purposes only. You may not copy, reproduce, or distribute content without permission.
+<bold>Intellectual Property</bold> 
+
+All logos, text, and design elements are owned by MoviePulse unless otherwise stated. Third-party content belongs to its respective owners.
+
+<strong> No Hosting of Content</strong>
+
+MoviePulse does not host or upload any movies or copyrighted content. We only provide reviews, trailers, and informational content.
+
+<strong> User Responsibilities</strong>
+
+Users agree not to misuse the website or engage in harmful activities.
+
+<bold>Contact</bold>
+
+For any questions, please contact us via the Contact page.
+
+    </p>
+  </div>
+</div>
+        </div>
+        
+
+
+</div>
    <footer class="site-footer">
   <div class="footer-container">
 
