@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Disclaimer - MoviePulse</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+
+body{
+
+    background:#080808;
+    color:white;
+    font-family:Poppins,Arial,sans-serif;
+
+}
+
+
+
+/* NAVBAR */
+
+header{
+
+    position:sticky;
+    top:0;
+    z-index:1000;
+
+    background:rgba(0,0,0,0.85);
+    backdrop-filter:blur(10px);
+
+}
+
+
+.navbar{
+
+    max-width:1200px;
+    margin:auto;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:20px;
+
+}
+
+
+.logo{
+
+    font-size:28px;
+    font-weight:700;
+
+    color:white;
+    text-decoration:none;
+
+}
+
+
+.logo span{
+
+    color:#ff1e1e;
+
+}
+
+
+
+nav{
+
+    display:flex;
+    gap:25px;
+
+}
+
+
+
+nav a{
+
+    color:white;
+    text-decoration:none;
+
+    font-size:15px;
+
+    position:relative;
+
+}
+
+
+
+nav a:hover{
+
+    color:#ff1e1e;
+
+}
+
+
+
+nav a::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    bottom:-8px;
+
+    width:0;
+
+    height:2px;
+
+    background:#ff1e1e;
+
+    transition:.3s;
+
+}
+
+
+
+nav a:hover::after{
+
+    width:100%;
+
+}
+
+
+
+nav a.active{
+
+    color:#ff1e1e;
+
+}
+
+
+
+nav a.active::after{
+
+    width:100%;
+
+    height:3px;
+
+    background:#ff1e1e;
+
+    box-shadow:
+
+    0 0 8px #ff1e1e,
+    0 0 15px #ff1e1e,
+    0 0 25px rgba(255,30,30,0.8);
+
+}
+
+
+
+/* CONTENT BOX */
+
+
+.container{
+
+    max-width:1000px;
+
+    margin:60px auto;
+
+    padding:40px;
+
+
+    background:linear-gradient(
+    145deg,
+    #120000,
+    #080808
+    );
+
+
+    border:1px solid #ff1e1e;
+
+    border-left:8px solid #ff1e1e;
+
+    border-right:3px solid #8b0000;
+
+
+    border-radius:15px;
+
+
+    box-shadow:
+
+    0 0 20px rgba(255,30,30,0.35),
+    inset 0 0 20px rgba(255,30,30,0.08);
+
+
+}
+
+
+
+h1{
+
+    color:#ff1e1e;
+
+    font-size:42px;
+
+    margin-bottom:30px;
+
+    text-shadow:
+    0 0 10px rgba(255,30,30,0.5);
+
+}
+
+
+
+h2{
+
+    color:white;
+
+    margin-top:35px;
+
+    margin-bottom:12px;
+
+
+    border-left:4px solid #ff1e1e;
+
+    padding-left:12px;
+
+
+}
+
+
+
+p{
+
+    color:#d6d6d6;
+
+    line-height:1.9;
+
+    margin-bottom:18px;
+
+}
+
+
+
+
+/* FOOTER */
+
+
+footer{
+
+    text-align:center;
+
+    padding:30px;
+
+    border-top:1px solid #222;
+
+    color:#aaa;
+
+}
+
+
+
+footer a{
+
+    color:#ff1e1e;
+
+    text-decoration:none;
+
+}
+
+
+
+
+@media(max-width:800px){
+
+.navbar{
+
+flex-direction:column;
+
+gap:20px;
+
+}
+
+
+nav{
+
+flex-wrap:wrap;
+
+justify-content:center;
+
+}
+
+}
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+
+<header>
+
+
+<div class="navbar">
+
+
+<a href="index.html" class="logo">
+Movie<span>Pulse</span>
+</a>
+
+
+
+<nav>
+
+<a href="index.html">Home</a>
+
+<a href="poster.html">Movies</a>
+
+<a href="trailer.html">Trailers</a>
+
+<a href="articles.html">Articles</a>
+
+<a href="about.html">About</a>
+
+<a href="contact.html">Contact</a>
+
+<a href="disclaimer.html" class="active">Disclaimer</a>
+
+
+</nav>
+
+
+</div>
+
+
+</header>
+
+
+
+
+<div class="container">
+
+
+<h1>Disclaimer</h1>
+
+
+<p>
+Welcome to MoviePulse. The information provided on this website is for general entertainment and informational purposes only. By using MoviePulse, you agree to the terms stated in this disclaimer.
+</p>
+
+
+
+<h2>Movie Information</h2>
+
+
+<p>
+MoviePulse provides information about movies, including reviews, trailers, release dates, cast details, and entertainment news. While we make every effort to keep information accurate and updated, we cannot guarantee that all details will always be completely correct.
+</p>
+
+
+
+<h2>Copyright Disclaimer</h2>
+
+
+<p>
+MoviePulse does not own the rights to movies, posters, trailers, logos, images, or other copyrighted materials displayed on this website. All trademarks and copyrighted materials belong to their respective owners.
+</p>
+
+
+<p>
+The materials used on this website are intended for entertainment, commentary, reviews, and informational purposes.
+</p>
+
+
+
+
+<h2>Reviews And Opinions</h2>
+
+
+<p>
+The reviews, ratings, and opinions published on MoviePulse represent personal views and entertainment discussions. They do not represent official statements from movie studios, directors, actors, or production companies.
+</p>
+
+
+
+
+<h2>External Links</h2>
+
+
+<p>
+MoviePulse may include links to third-party websites, streaming platforms, or social media pages. We are not responsible for the content, availability, security, or privacy policies of external websites.
+</p>
+
+
+
+
+<h2>Advertisement Disclaimer</h2>
+
+
+<p>
+MoviePulse may display advertisements from third-party advertising partners such as Google AdSense. These advertisements help support the website and allow us to continue providing free entertainment content.
+</p>
+
+
+<p>
+MoviePulse does not control the advertisements shown and is not responsible for the products or services promoted by advertisers.
+</p>
+
+
+
+
+<h2>Affiliate Disclaimer</h2>
+
+
+<p>
+Some links on MoviePulse may be affiliate links. If users make purchases through certain links, we may receive a small commission at no extra cost to the user.
+</p>
+
+
+
+
+<h2>Changes To This Disclaimer</h2>
+
+
+<p>
+We reserve the right to update this disclaimer whenever necessary. Any changes will be published on this page.
+</p>
+
+
+
+
+<h2>Contact Us</h2>
+
+
+<p>
+If you have any questions regarding this Disclaimer, please contact us through our Contact page.
+</p>
+
+
+
+<p>
+Last updated: July 2026
+</p>
+
+
+
+</div>
+
+
+
+
+<footer>
+
+
+<p>
+© 2026 MoviePulse. All Rights Reserved.
+</p>
+
+
+<p>
+
+<a href="privacy.html">Privacy Policy</a> |
+
+<a href="terms.html">Terms & Conditions</a> |
+
+<a href="disclaimer.html">Disclaimer</a>
+
+</p>
+
+
+</footer>
+
+
+
+</body>
+
+</html>
