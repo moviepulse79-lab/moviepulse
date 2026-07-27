@@ -9,8 +9,44 @@
 <style>
 body{margin:0;font-family:Poppins,sans-serif;background:#050505;color:#fff}
 header{position:sticky;top:0;background:#090909;padding:18px 40px;border-bottom:1px solid #222}
-nav a{color:#fff;text-decoration:none;margin-right:20px;font-weight:600}
-nav a:hover{color:#ff1f1f}
+}
+.logo {
+    display:flex;
+    align-items:center;
+   border-radius:14px;
+}
+
+.logo a {
+    display:flex;
+    align-items:center;
+}
+  .links a{
+    color:white;
+    text-decoration:none;
+    font-family:Poppins,sans-serif;
+    position:relative;
+    transition:0.3s;
+}
+
+.links a::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-8px;
+    width:0;
+    height:2px;
+    background:#ff1e1e;
+    transition:0.3s ease;
+}
+
+.links a:hover::after,
+.links a.active::after{
+    width:100%;
+}
+
+.links a.active{
+    color:#ff1e1e;
+}
 .container{max-width:1000px;margin:40px auto;padding:0 20px}
 .card{background:#111;padding:35px;border-radius:14px;line-height:1.9}
 h1,h2{color:#ff1f1f}
@@ -20,12 +56,20 @@ footer a{color:#fff;margin:0 10px;text-decoration:none}
 </head>
 <body>
 <header>
-<nav>
+  <nav>
+       <div class="logo">
+            <a href="index.html">
+                <img src="chatgpt image jul 7, 2026, 09_00_03 am.png" alt="MoviePulse Logo">
+            </a>
+        </div>
+ <div class="links">
 <a href="index.html">Home</a>
 <a href="poster.html">Movies</a>
 <a href="about.html">About</a>
 <a href="privacy.html">Privacy Policy</a>
 <a href="contact.html">Contact</a>
+ </div>
+    
 </nav>
 </header>
 <div class="container">
