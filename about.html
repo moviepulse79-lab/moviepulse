@@ -56,8 +56,16 @@
         border-bottom: 2px solid red;
         padding-bottom: 2px;
     }
- .menu-btn{
-    display:none;
+ .links ul{
+    display:flex;
+    list-style:none;
+    gap:25px;
+    margin:0;
+    padding:0;
+}
+
+.links ul li{
+    list-style:none;
 }
 
     .content-box {
@@ -367,32 +375,39 @@
     font-size:15px;
     margin-top:10px;
 }
- @media(max-width:768px){
+@media (max-width:768px){
 
     .menu-btn{
         display:block;
         font-size:30px;
-        color:white;
         cursor:pointer;
+        color:#fff;
     }
 
-    nav{
+    .links{
         display:none;
         position:absolute;
         top:75px;
         left:0;
         width:100%;
         background:#111;
-        flex-direction:column;
     }
 
-    nav.active{
-        display:flex;
-    }
-
-    nav a{
+    .links.active{
         display:block;
+    }
+
+    .links ul{
+        flex-direction:column;
+        gap:0;
+    }
+
+    .links ul li{
         width:100%;
+    }
+
+    .links ul li a{
+        display:block;
         padding:18px;
         text-align:center;
         border-bottom:1px solid rgba(255,255,255,.1);
@@ -660,14 +675,12 @@ window.onclick = function(event) {
   }, 2500);
 });
 
-         <script>
 const menuBtn = document.querySelector(".menu-btn");
-const nav = document.querySelector("nav");
+const nav = document.querySelector(".links");
 
-menuBtn.addEventListener("click", function(){
+menuBtn.addEventListener("click", () => {
     nav.classList.toggle("active");
 });
-</script>
         </script>
 
 </body>
