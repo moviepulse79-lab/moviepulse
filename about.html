@@ -56,6 +56,9 @@
         border-bottom: 2px solid red;
         padding-bottom: 2px;
     }
+ .menu-btn{
+    display:none;
+}
 
     .content-box {
         max-width: 900px;
@@ -364,6 +367,37 @@
     font-size:15px;
     margin-top:10px;
 }
+ @media(max-width:768px){
+
+    .menu-btn{
+        display:block;
+        font-size:30px;
+        color:white;
+        cursor:pointer;
+    }
+
+    nav{
+        display:none;
+        position:absolute;
+        top:75px;
+        left:0;
+        width:100%;
+        background:#111;
+        flex-direction:column;
+    }
+
+    nav.active{
+        display:flex;
+    }
+
+    nav a{
+        display:block;
+        width:100%;
+        padding:18px;
+        text-align:center;
+        border-bottom:1px solid rgba(255,255,255,.1);
+    }
+}
 </style>
 </head>
 
@@ -376,7 +410,9 @@
     </a>
 </div>
         
- 
+   <div class="menu-btn">
+        ☰
+    </div>
     <nav class="navbar">
         <ul id ="menu">
             <li><a href="index.html">Home</a></li>
@@ -623,6 +659,15 @@ window.onclick = function(event) {
     document.getElementById("loader").style.display = "none";
   }, 2500);
 });
+
+         <script>
+const menuBtn = document.querySelector(".menu-btn");
+const nav = document.querySelector("nav");
+
+menuBtn.addEventListener("click", function(){
+    nav.classList.toggle("active");
+});
+</script>
         </script>
 
 </body>
