@@ -4283,24 +4283,6 @@ User Rating:
 
   </div>
 
-
-  <!-- COMMENTS -->
-  <div class="comments-box">
-
-    <h3>💬 Comments</h3>
-
-    <textarea id="commentInput" placeholder="Write your comment..."></textarea>
-
-    <button onclick="addComment()" class="comment-btn">
-      Post Comment
-    </button>
-
-    <div id="commentsList"></div>
-
-  </div>
-
-</div>
-
       <div class="article-side">
         ${movie.article || ""}
       </div>
@@ -4345,6 +4327,23 @@ User Rating:
       src="${movie.trailer || ""}"
       allowfullscreen>
     </iframe>
+    <div class="facebook-comments">
+
+<h2 class="section-title">
+💬 Comments
+</h2>
+
+<div class="fb-comments"
+
+data-href="https://moviepulse247.netlify.app/trailer.html?id=${movie.id}"
+
+data-width="100%"
+
+data-numposts="5">
+
+</div>
+
+</div>
 
     <div class="summary-box">
       <h2 class="section-title">Movie Summary</h2>
@@ -4456,72 +4455,76 @@ document.addEventListener("click", function(e){
 
 });
 
+  // =====================
+// USER RATING SYSTEM
+// =====================
 
-// COMMENT SYSTEM
+document.addEventListener("click", function(e){
 
-function addComment(){
+    if(e.target.dataset.rate){
 
-    const input = document.getElementById("commentInput");
+        let rating = e.target.dataset.rate;
 
-    if(!input.value.trim()) return;
+        let ratings = JSON.parse(
+            localStorage.getItem("ratings_" + current.id)
+        ) || [];
 
 
-    let comments = JSON.parse(
-        localStorage.getItem("comments_" + current.id)
+        ratings.push(Number(rating));
+
+
+        localStorage.setItem(
+            "ratings_" + current.id,
+            JSON.stringify(ratings)
+        );
+
+
+        showRating();
+
+    }
+
+});
+
+
+function showRating(){
+
+    let ratings = JSON.parse(
+        localStorage.getItem("ratings_" + current.id)
     ) || [];
 
 
-    comments.push(input.value);
+    if(ratings.length === 0){
+        document.getElementById("averageRating").innerText = 0;
+        document.getElementById("voteCount").innerText = 0;
+        return;
+    }
 
 
-    localStorage.setItem(
-        "comments_" + current.id,
-        JSON.stringify(comments)
-    );
+    let total = ratings.reduce((a,b)=>a+b,0);
+
+    let average = total / ratings.length;
 
 
-    input.value="";
-
-    loadComments();
-
-}
+    document.getElementById("averageRating").innerText =
+    average.toFixed(1);
 
 
-function loadComments(){
-
-    const box=document.getElementById("commentsList");
-
-    if(!box) return;
-
-
-    let comments = JSON.parse(
-        localStorage.getItem("comments_" + current.id)
-    ) || [];
-
-
-    box.innerHTML = comments.map(c=>`
-
-        <div class="comment-item">
-        💬 ${c}
-        </div>
-
-    `).join("");
+    document.getElementById("voteCount").innerText =
+    ratings.length;
 
 }
 
 
 document.addEventListener("DOMContentLoaded",()=>{
-
-    const count=document.getElementById("likeCount");
-
-    if(count){
-        count.innerText =
-        localStorage.getItem("likes_" + current.id) || 0;
-    }
-
-    loadComments();
-
+    showRating();
 });
+
+  
+<!-- Facebook Comments Plugin -->
+<div id="fb-root"></div>
+
+<script async defer crossorigin="anonymous"
+src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0">
 </script>
  
 </body>
