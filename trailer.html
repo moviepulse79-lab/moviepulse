@@ -687,7 +687,17 @@ margin:auto;
 </footer>
 
 
-<script>
+<script type="module">
+
+import { db } from "./firebase.js";
+  import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 const movies = [
      {
   id: 83,
@@ -4186,6 +4196,30 @@ Sequel To: Based on Minecraft video game universe</i>`
 ];
 
 
+import { 
+ getFirestore,
+ collection,
+ addDoc,
+ getDocs,
+ query,
+ where,
+ orderBy
+} from "firebase/firestore";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDEXUiLXQvM4Z1aN1H_6CR5WMMxfcrsPY0",
+  authDomain: "moviepulse-21121.firebaseapp.com",
+  projectId: "moviepulse-21121",
+  storageBucket: "moviepulse-21121.firebasestorage.app",
+  messagingSenderId: "394594918212",
+  appId: "1:394594918212:web:6017455852a7abfd198111"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
 /* ===================== URL ID ===================== */
 /////////////////////////////
 ///////////////////////////////
@@ -4351,14 +4385,18 @@ User Rating:
       allowfullscreen>
     </iframe>
     
-<div class="facebook-comments">
-    <h2 class="section-title">💬 Comments</h2>
+<div class="comments-box">
 
-    <div class="fb-comments"
-         data-href="https://moviepulse247.netlify.app/trailer.html?id=${movie.id}"
-         data-width="100%"
-         data-numposts="5">
-    </div>
+<h2 class="section-title">💬 Comments</h2>
+
+<textarea id="commentInput" placeholder="Write your comment..."></textarea>
+
+<button id="commentBtn">
+Post Comment
+</button>
+
+<div id="commentsList"></div>
+
 </div>
 
     <div class="summary-box">
@@ -4426,15 +4464,7 @@ User Rating:
   `;
 }
   
-if(window.FB){
 
-FB.XFBML.parse(document.getElementById("mainArea"));
-
-}
-
-setupRating();
-
-showRating
   
   
 const backBtn=document.getElementById("backBtn");
@@ -4446,12 +4476,18 @@ backBtn.href=id?
 
 }
  
+
 const menuBtn = document.querySelector(".menu-btn");
 const nav = document.querySelector("nav");
+
+if(menuBtn){
 
 menuBtn.addEventListener("click", function(){
     nav.classList.toggle("active");
 });
+
+}
+
 
 
   // =====================
@@ -4459,41 +4495,47 @@ menuBtn.addEventListener("click", function(){
 // =====================
 
 
-function setupRating(){
+async function setupRating(){
 
 const stars = document.querySelectorAll(".stars span");
 
+
 stars.forEach(star=>{
 
-star.addEventListener("click",()=>{
+
+star.addEventListener("click", async()=>{
+
 
 let value = Number(star.dataset.rate);
 
 
-let ratings = JSON.parse(
-localStorage.getItem("ratings_" + current.id)
-) || [];
 
-
-ratings.push(value);
-
-
-localStorage.setItem(
-"ratings_" + current.id,
-JSON.stringify(ratings)
+await addDoc(
+collection(db,"ratings"),
+{
+movieId: current.id,
+rating:value,
+createdAt:new Date()
+}
 );
+
 
 
 showRating();
 
-});
 
 });
+
+
+});
+
 
 }
 
 
-function showRating(){
+
+
+async function showRating(){
 
 const average = document.getElementById("averageRating");
 const votes = document.getElementById("voteCount");
@@ -4502,12 +4544,34 @@ const votes = document.getElementById("voteCount");
 if(!average || !votes) return;
 
 
-let ratings = JSON.parse(
-localStorage.getItem("ratings_" + current.id)
-) || [];
+
+const snapshot = await getDocs(
+collection(db,"ratings")
+);
 
 
-if(ratings.length === 0){
+
+let ratings=[];
+
+
+
+snapshot.forEach(doc=>{
+
+const data = doc.data();
+
+
+if(data.movieId === current.id){
+
+ratings.push(data.rating);
+
+}
+
+
+});
+
+
+
+if(ratings.length===0){
 
 average.innerText="0";
 votes.innerText="0";
@@ -4517,25 +4581,142 @@ return;
 }
 
 
+
 let total = ratings.reduce(
 (a,b)=>a+b,0
 );
+
 
 
 average.innerText =
 (total / ratings.length).toFixed(1);
 
 
+
 votes.innerText =
 ratings.length;
 
+
 }
+// =====================
+// COMMENTS SYSTEM
+// =====================
+
+
+async function addComment(){
+
+
+const input = document.getElementById("commentInput");
+
+
+if(!input.value.trim()) return;
+
+
+
+await addDoc(
+collection(db,"comments"),
+{
+movieId: current.id,
+text: input.value,
+createdAt:new Date()
+}
+);
+
+
+
+input.value="";
+
+
+loadComments();
+
+
+}
+
+
+
+
+async function loadComments(){
+
+
+const box=document.getElementById("commentsList");
+
+
+if(!box) return;
+
+
+
+const q=query(
+collection(db,"comments"),
+where("movieId","==",current.id),
+orderBy("createdAt","desc")
+);
+
+
+
+const snapshot=await getDocs(q);
+
+
+
+box.innerHTML="";
+
+
+
+snapshot.forEach(doc=>{
+
+
+const data=doc.data();
+
+
+box.innerHTML += `
+
+<div class="comment-item">
+
+💬 ${data.text}
+
+</div>
+
+`;
+
+});
+
+
+}
+
+// PAGE LOAD
+// PAGE LOAD
 
 document.addEventListener("DOMContentLoaded",()=>{
 
+
 loadMain(current);
 
+
+setTimeout(()=>{
+
+
+setupRating();
+
+showRating();
+
+loadComments();
+
+
+const btn=document.getElementById("commentBtn");
+
+
+if(btn){
+
+btn.addEventListener("click",addComment);
+
+}
+
+
+},500);
+
+
+
 const backBtn=document.getElementById("backBtn");
+
 
 if(backBtn){
 
@@ -4544,15 +4725,8 @@ backBtn.href=id?
 
 }
 
-});
-  
-</script>
-  
-  <!-- Facebook Comments Plugin -->
-<div id="fb-root"></div>
 
-<script async defer crossorigin="anonymous"
-src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0">
+});
 </script>
  
 </body>
