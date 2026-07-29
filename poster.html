@@ -347,6 +347,19 @@ nav a.active::after{
         border-bottom:1px solid rgba(255,255,255,.1);
     }
 }
+      .search-container{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    padding-top:100px;
+    background:#0b0b0b;
+}
+
+
+.search-wrap{
+    width:60%;
+    max-width:500px;
+}
 
 </style>
 </head>
@@ -359,10 +372,6 @@ nav a.active::after{
     </a>
 </div>
 
-  <div class="search-wrap">
-    <input id="searchInput" placeholder="Search movies..." />
-          <div id="suggestBox" class="suggest-box"></div>
-  </div>
     
    <div class="menu-btn">
         ☰
@@ -377,6 +386,14 @@ nav a.active::after{
          <a href="terms.html">Terms & Condition</a>
   </nav>
 </header>
+      <div class="search-container">
+
+<div class="search-wrap">
+    <input id="searchInput" placeholder="Search movies..." />
+    <div id="suggestBox" class="suggest-box"></div>
+</div>
+
+</div>
       <!-- ✅ FILTER BUTTONS (PUT HERE) -->
 <div class="filter-bar">
 <button onclick="showAll()">All</button>
