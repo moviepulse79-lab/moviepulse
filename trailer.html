@@ -533,6 +533,72 @@ margin:auto;
         border-bottom:1px solid rgba(255,255,255,.1);
     }
 }
+  .engagement-box{
+    margin-top:15px;
+    text-align:center;
+}
+
+.like-btn{
+    background:#e50914;
+    color:white;
+    border:none;
+    padding:10px 25px;
+    border-radius:20px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+}
+
+.like-btn:hover{
+    transform:scale(1.05);
+}
+
+
+.comments-box{
+    margin-top:20px;
+    background:#111;
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #222;
+}
+
+
+.comments-box h3{
+    color:#e50914;
+    margin-bottom:10px;
+}
+
+
+.comments-box textarea{
+    width:100%;
+    height:80px;
+    background:#0b0b0b;
+    color:white;
+    border:1px solid #333;
+    border-radius:8px;
+    padding:10px;
+    resize:none;
+}
+
+
+.comment-btn{
+    margin-top:10px;
+    background:#e50914;
+    color:white;
+    border:none;
+    padding:8px 18px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+
+.comment-item{
+    background:#181818;
+    padding:10px;
+    margin-top:10px;
+    border-radius:8px;
+    color:#ddd;
+}
 </style>
 </head>
 
@@ -4172,13 +4238,40 @@ function loadMain(movie){
 
     <div class="content-wrap">
 
-      <div class="poster-column">
-        <img class="hero-poster" src="${movie.poster}" alt="${movie.title}">
+     <div class="poster-column">
 
-        <div class="movie-rating">
-          ${"⭐".repeat(Math.round(movie.rating || 0))}
-        </div>
-      </div>
+  <img class="hero-poster" src="${movie.poster}" alt="${movie.title}">
+
+  <div class="movie-rating">
+    ${"⭐".repeat(Math.round(movie.rating || 0))}
+  </div>
+
+  <!-- LIKE BUTTON -->
+  <div class="engagement-box">
+
+    <button id="likeBtn" class="like-btn">
+      ❤️ Like <span id="likeCount">0</span>
+    </button>
+
+  </div>
+
+
+  <!-- COMMENTS -->
+  <div class="comments-box">
+
+    <h3>💬 Comments</h3>
+
+    <textarea id="commentInput" placeholder="Write your comment..."></textarea>
+
+    <button onclick="addComment()" class="comment-btn">
+      Post Comment
+    </button>
+
+    <div id="commentsList"></div>
+
+  </div>
+
+</div>
 
       <div class="article-side">
         ${movie.article || ""}
@@ -4314,6 +4407,93 @@ menuBtn.addEventListener("click", function(){
     nav.classList.toggle("active");
 });
 
+
+  // LIKE SYSTEM
+
+let likes = localStorage.getItem("likes_" + current.id) || 0;
+
+document.addEventListener("click", function(e){
+
+    if(e.target.id === "likeBtn"){
+
+        likes++;
+
+        localStorage.setItem(
+            "likes_" + current.id,
+            likes
+        );
+
+        document.getElementById("likeCount").innerText = likes;
+    }
+
+});
+
+
+// COMMENT SYSTEM
+
+function addComment(){
+
+    const input = document.getElementById("commentInput");
+
+    if(!input.value.trim()) return;
+
+
+    let comments = JSON.parse(
+        localStorage.getItem("comments_" + current.id)
+    ) || [];
+
+
+    comments.push(input.value);
+
+
+    localStorage.setItem(
+        "comments_" + current.id,
+        JSON.stringify(comments)
+    );
+
+
+    input.value="";
+
+    loadComments();
+
+}
+
+
+function loadComments(){
+
+    const box=document.getElementById("commentsList");
+
+    if(!box) return;
+
+
+    let comments = JSON.parse(
+        localStorage.getItem("comments_" + current.id)
+    ) || [];
+
+
+    box.innerHTML = comments.map(c=>`
+
+        <div class="comment-item">
+        💬 ${c}
+        </div>
+
+    `).join("");
+
+}
+
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    const count=document.getElementById("likeCount");
+
+    if(count){
+        count.innerText =
+        localStorage.getItem("likes_" + current.id) || 0;
+    }
+
+    loadComments();
+
+});
 </script>
  
 </body>
