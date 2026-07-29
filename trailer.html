@@ -4424,12 +4424,12 @@ User Rating:
   </div>
   `;
 }
-
+if(window.FB){
+    FB.XFBML.parse(document.getElementById("mainArea"));
+}
 /////////////////////////////
 // INIT PAGE
 /////////////////////////////
-document.addEventListener("DOMContentLoaded", () => {
-  loadMain(current);
 
   const params = new URLSearchParams(window.location.search);
   const movieId = params.get("id");
@@ -4532,16 +4532,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadMain(current);
 
-    // Wait until the HTML is created
-    setTimeout(() => {
-        setupRating();
-        showRating();
+    setupRating();
 
-        // Render Facebook comments
-        if (window.FB) {
-            FB.XFBML.parse();
-        }
-    }, 100);
+    showRating();
+
+    if(window.FB){
+        FB.XFBML.parse(document.getElementById("mainArea"));
+    }
 
 });
 
