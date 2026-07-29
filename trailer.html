@@ -538,19 +538,28 @@ margin:auto;
     text-align:center;
 }
 
-.like-btn{
-    background:#e50914;
-    color:white;
-    border:none;
-    padding:10px 25px;
-    border-radius:20px;
-    cursor:pointer;
-    font-weight:600;
-    transition:.3s;
+.rating-box{
+    margin-top:15px;
+    background:#111;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
 }
 
-.like-btn:hover{
-    transform:scale(1.05);
+.rating-box h3{
+    color:#e50914;
+}
+
+.stars span{
+    font-size:35px;
+    color:#777;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.stars span:hover,
+.stars span.active{
+    color:#ffd700;
 }
 
 
@@ -4249,9 +4258,28 @@ function loadMain(movie){
   <!-- LIKE BUTTON -->
   <div class="engagement-box">
 
-    <button id="likeBtn" class="like-btn">
-      ❤️ Like <span id="likeCount">0</span>
-    </button>
+  <div class="rating-box">
+
+<h3>⭐ Rate This Movie</h3>
+
+<div class="stars" id="stars">
+    <span data-rate="1">☆</span>
+    <span data-rate="2">☆</span>
+    <span data-rate="3">☆</span>
+    <span data-rate="4">☆</span>
+    <span data-rate="5">☆</span>
+</div>
+
+<p>
+User Rating:
+<span id="averageRating">0</span>/5
+</p>
+
+<p>
+<span id="voteCount">0</span> votes
+</p>
+
+</div>
 
   </div>
 
