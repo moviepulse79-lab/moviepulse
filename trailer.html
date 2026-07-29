@@ -4435,92 +4435,105 @@ menuBtn.addEventListener("click", function(){
 });
 
 
-  // LIKE SYSTEM
-
-let likes = localStorage.getItem("likes_" + current.id) || 0;
-
-document.addEventListener("click", function(e){
-
-    if(e.target.id === "likeBtn"){
-
-        likes++;
-
-        localStorage.setItem(
-            "likes_" + current.id,
-            likes
-        );
-
-        document.getElementById("likeCount").innerText = likes;
-    }
-
-});
-
   // =====================
 // USER RATING SYSTEM
 // =====================
 
-document.addEventListener("click", function(e){
 
-    if(e.target.dataset.rate){
+function setupRating(){
 
-        let rating = e.target.dataset.rate;
+const stars = document.querySelectorAll(".stars span");
 
-        let ratings = JSON.parse(
-            localStorage.getItem("ratings_" + current.id)
-        ) || [];
+stars.forEach(star=>{
 
+star.addEventListener("click",()=>{
 
-        ratings.push(Number(rating));
+let value = Number(star.dataset.rate);
 
 
-        localStorage.setItem(
-            "ratings_" + current.id,
-            JSON.stringify(ratings)
-        );
+let ratings = JSON.parse(
+localStorage.getItem("ratings_" + current.id)
+) || [];
 
 
-        showRating();
+ratings.push(value);
 
-    }
+
+localStorage.setItem(
+"ratings_" + current.id,
+JSON.stringify(ratings)
+);
+
+
+showRating();
 
 });
 
-
-function showRating(){
-
-    let ratings = JSON.parse(
-        localStorage.getItem("ratings_" + current.id)
-    ) || [];
-
-
-    if(ratings.length === 0){
-        document.getElementById("averageRating").innerText = 0;
-        document.getElementById("voteCount").innerText = 0;
-        return;
-    }
-
-
-    let total = ratings.reduce((a,b)=>a+b,0);
-
-    let average = total / ratings.length;
-
-
-    document.getElementById("averageRating").innerText =
-    average.toFixed(1);
-
-
-    document.getElementById("voteCount").innerText =
-    ratings.length;
+});
 
 }
 
 
-document.addEventListener("DOMContentLoaded",()=>{
-    showRating();
+function showRating(){
+
+const average = document.getElementById("averageRating");
+const votes = document.getElementById("voteCount");
+
+
+if(!average || !votes) return;
+
+
+let ratings = JSON.parse(
+localStorage.getItem("ratings_" + current.id)
+) || [];
+
+
+if(ratings.length === 0){
+
+average.innerText="0";
+votes.innerText="0";
+
+return;
+
+}
+
+
+let total = ratings.reduce(
+(a,b)=>a+b,0
+);
+
+
+average.innerText =
+(total / ratings.length).toFixed(1);
+
+
+votes.innerText =
+ratings.length;
+
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    loadMain(current);
+
+    // Wait until the HTML is created
+    setTimeout(() => {
+        setupRating();
+        showRating();
+
+        // Render Facebook comments
+        if (window.FB) {
+            FB.XFBML.parse();
+        }
+    }, 100);
+
 });
 
   
-<!-- Facebook Comments Plugin -->
+</script>
+  
+  <!-- Facebook Comments Plugin -->
 <div id="fb-root"></div>
 
 <script async defer crossorigin="anonymous"
