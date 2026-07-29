@@ -68,7 +68,22 @@ nav a{
 
 nav a:hover,
 nav a.active{
-  color:);
+    color:#ff1f1f;
+}
+  nav a::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-8px;
+    width:0;
+    height:2px;
+    background:#ff1f1f;
+    transition:0.3s ease;
+}
+
+nav a:hover::after,
+nav a.active::after{
+    width:100%;
 }
 
 /* MAIN */
@@ -540,6 +555,7 @@ margin:auto;
     <a href='/about'>About</a>
     <a href='/privacy'>privacy policy</a>
     <a href='/contact'>Contact</a>
+     <a href='/terms'>Terms &  Conditions</a>
   </nav>
 </header>
  
@@ -564,7 +580,6 @@ margin:auto;
       <a href='/about'>about</a>
       <a href='/contact'>Contact</a>
       <a href='/privacy'>Privacy Policy</a>
-      <a href='/terms'>Terms &  Conditions</a>
        <a href='/disclaimer'>Disclaimer</a>
     </div>
 
