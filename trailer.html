@@ -4304,6 +4304,7 @@ User Rating:
 </div>
 
   </div>
+  </div>
 
       <div class="article-side">
         ${movie.article || ""}
@@ -4424,23 +4425,26 @@ User Rating:
   </div>
   `;
 }
+  
 if(window.FB){
-    FB.XFBML.parse(document.getElementById("mainArea"));
+
+FB.XFBML.parse(document.getElementById("mainArea"));
+
 }
-/////////////////////////////
-// INIT PAGE
-/////////////////////////////
 
-  const params = new URLSearchParams(window.location.search);
-  const movieId = params.get("id");
+setupRating();
 
-  const backBtn = document.getElementById("backBtn");
+showRating
+  
+  
+const backBtn=document.getElementById("backBtn");
 
-  if (backBtn) {
-    backBtn.href = movieId ? `movie.html?id=${movieId}` : "/";
-  }
-});
+if(backBtn){
 
+backBtn.href=id?
+`movie.html?id=${id}`:"/";
+
+}
  
 const menuBtn = document.querySelector(".menu-btn");
 const nav = document.querySelector("nav");
@@ -4527,21 +4531,20 @@ ratings.length;
 
 }
 
+document.addEventListener("DOMContentLoaded",()=>{
 
-document.addEventListener("DOMContentLoaded", () => {
+loadMain(current);
 
-    loadMain(current);
+const backBtn=document.getElementById("backBtn");
 
-    setupRating();
+if(backBtn){
 
-    showRating();
+backBtn.href=id?
+`movie.html?id=${id}`:"/";
 
-    if(window.FB){
-        FB.XFBML.parse(document.getElementById("mainArea"));
-    }
+}
 
 });
-
   
 </script>
   
