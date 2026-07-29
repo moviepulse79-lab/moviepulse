@@ -29,16 +29,16 @@ body{
 }
 
 
-header{
-    position:relative;
-    margin:0;
-    top:0;
-    left:0;
-    width:100%;
-    padding:12px 5%;
-    background:#0b0b0b;
-    border-bottom:1px solid #222;
-}
+header{ position:relative; /* or use position:relative; if you don't want it to stick at all */ 
+       top:0; width:100%; 
+       z-index:1000; 
+       display:flex; 
+       justify-content:space-between; 
+       align-items:center; 
+       padding:12px 5%;
+       background:#0b0b0b;
+       border-bottom:1px solid #222; 
+      }
   .menu-btn{
     display:none;
 }
