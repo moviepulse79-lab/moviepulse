@@ -38,7 +38,7 @@
     #0b0b0b;
 }
  header{
-    position:fixed;
+    position:relative;
     top:0;
     left:0;
     width:100%;
@@ -55,13 +55,9 @@
 }
       
 .search-container{
-    margin-top:95px;
     display:flex;
     justify-content:center;
-    align-items:center;
-    width:100%;
-    padding:20px 0;
-    background:#0b0b0b;
+    padding:20px;
 }
 
 
@@ -87,11 +83,12 @@
     border-radius:25px;
     cursor:pointer;
     transition:.3s;
-    font-weight:600;
 }
 
-.filter-bar button:hover{
+.filter-bar button:hover,
+.filter-bar button.active{
     background:#ff1f1f;
+    color:#fff;
 }
       .links ul{
     display:flex;
@@ -106,7 +103,7 @@
 }
 
 .logo img{
-    width:160px;
+    width:130px;
     height:auto;
     object-fit:contain;
     display:block;
@@ -298,7 +295,7 @@ nav a.active::after{
   color:#777;
 }
       main{
-    padding-top:30px;
+    padding-top:20px 0;
 }
       /* suggestion box */
       .suggest-box{
@@ -441,12 +438,12 @@ nav a.active::after{
 </div>
       <!-- ✅ FILTER BUTTONS (PUT HERE) -->
 <div class="filter-bar">
-<button onclick="showAll()">All</button>
-<button onclick="showGenre('Action')">Action</button>
-<button onclick="showGenre('Horror')">Horror</button>
-<button onclick="showGenre('Animation')">Animation</button>
-<button onclick="showGenre('Sci-Fi')">Sci-Fi</button>
-<button onclick="showGenre('Superhero')">Superhero</button>
+    <button class="active" onclick="setFilter(this);showAll()">All</button>
+    <button onclick="setFilter(this);showGenre('Action')">Action</button>
+    <button onclick="setFilter(this);showGenre('Horror')">Horror</button>
+    <button onclick="setFilter(this);showGenre('Animation')">Animation</button>
+    <button onclick="setFilter(this);showGenre('Sci-Fi')">Sci-Fi</button>
+    <button onclick="setFilter(this);showGenre('Superhero')">Superhero</button>
 </div>
 
 </section>
@@ -1245,14 +1242,14 @@ function showAll(){
 /////////////////////////////
 // FILTER BY GENRE (NEW 🔥)
 /////////////////////////////
-
 function showGenre(genre){
 
-  const filtered = movies.filter(m =>
-    m.genre && m.genre.includes(genre)
-  );
+    const filtered = movies.filter(movie =>
+        movie.genre &&
+        movie.genre.some(g => g.toLowerCase() === genre.toLowerCase())
+    );
 
-  renderMovies(filtered);
+    renderMovies(filtered);
 }
 
 /////////////////////////////
@@ -1328,6 +1325,15 @@ const nav = document.querySelector(".links");
 menuBtn.addEventListener("click", () => {
     nav.classList.toggle("active");
 });
+
+      function setFilter(button){
+
+    document.querySelectorAll(".filter-bar button").forEach(btn=>{
+        btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+}
 </script>
 </body>
 </html>
