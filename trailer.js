@@ -485,6 +485,10 @@ loadMain(current);
 setTimeout(()=>{
 
 
+console.log("Comments box:");
+console.log(document.getElementById("commentsList"));
+
+
 setupRating();
 
 showRating();
@@ -502,7 +506,7 @@ btn.addEventListener("click",addComment);
 }
 
 
-},500);
+},1000);
 
 
 
