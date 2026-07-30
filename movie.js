@@ -1,4 +1,69 @@
 window.movies = [
+          {
+  id: 84,
+  title: "RAMAYANA(2026)",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/f3yZZw7zIsWo6m9xJStfjDauIZX.jpg",
+  rating: 5,
+  trailer: "https://www.youtube.com/embed/1zip1rNaNYs",
+  starring: [
+  "Ranbir Kapoor",
+  "Sai Pallavi",
+  "Yash",
+  "Sunny Deol",
+  "Ravie Dubey",
+  "Arun Govil",
+  "Indira Krishnan",
+  "Lara Dutta"
+],
+     summary:`**Summary:**
+
+*Ramayana* is a grand mythological adventure that tells the timeless story of Prince Rama, whose life changes forever after he is forced into exile from his kingdom. Accompanied by his devoted wife Sita and his loyal brother Lakshmana, Rama journeys through forests, facing challenges that test his courage, compassion, and sense of duty. When the powerful king Ravana kidnaps Sita, Rama begins an epic quest to rescue her, forging alliances with the fearless Hanuman and the mighty Vanara army. Their journey leads to an unforgettable battle between good and evil, where bravery, loyalty, and sacrifice determine the fate of kingdoms. Combining breathtaking action, heartfelt emotion, and enduring themes, *Ramayana* brings one of the world's greatest epics to life for a new generation while celebrating its rich cultural heritage.
+`,
+
+article: `
+<p>
+Ramayana is one of the most ambitious Indian films ever produced, bringing one of the world's oldest and most beloved epics to the big screen with a modern cinematic vision. Rather than simply retelling a familiar legend, the film aims to immerse audiences in a spectacular world where honor, sacrifice, courage, and destiny shape every decision.
+</p>
+
+<p>
+The story follows Prince Rama, a noble warrior whose peaceful life changes forever when he is sent into exile from his kingdom. Alongside his devoted wife Sita and loyal brother Lakshmana, Rama begins a journey filled with challenges that test his strength, wisdom, and commitment to doing what is right.
+</p>
+
+<p>
+When the powerful king Ravana abducts Sita, Rama's journey becomes a mission to rescue her and restore justice. With the help of the fearless Hanuman and the mighty Vanara army, Rama faces an unforgettable battle between good and evil that will decide the fate of many lives.
+</p>
+
+<p>
+What makes Ramayana special is the emotional power behind its characters. Rama represents honor and responsibility, Sita represents courage and resilience, Hanuman represents loyalty and devotion, while Ravana remains one of mythology's most complex and powerful villains.
+</p>
+
+<p>
+The film promises a massive cinematic experience with breathtaking visuals, epic battles, detailed ancient worlds, and advanced visual effects. By combining traditional storytelling with modern filmmaking technology, Ramayana aims to introduce this legendary tale to a global audience.
+</p>
+
+<p>
+Beyond the action and spectacle, Ramayana explores timeless themes of sacrifice, love, loyalty, and the struggle between righteousness and darkness. These messages have allowed the epic to survive for generations, and the film hopes to bring those values to a new generation of viewers.
+</p>
+
+<p>
+With its impressive scale, talented cast, and powerful story, Ramayana is shaping up to be one of the most anticipated epic films. It is not only a movie adaptation but a celebration of one of the greatest stories ever told.
+</p>
+<i>
+Genre: Mythological, Epic, Fantasy, Adventure<br>
+Director: Nitesh Tiwari<br>
+Release Year: 2026<br>
+Setting: Ancient India, Ayodhya and the mythical world of the Ramayana<br>
+Audience: Fans of mythology, fantasy, adventure, and epic storytelling<br>
+Runtime: Not officially confirmed<br>
+Based On: The ancient Indian epic Ramayana
+</i>`,
+
+       verdictTitle: "Ramayana Could Become India's Next Global Epic",
+
+verdict: "Ramayana has the potential to be one of the biggest cinematic experiences ever created from Indian mythology. With its legendary story, powerful characters, massive scale, and modern visual effects, the film has everything needed to capture the attention of audiences around the world. The biggest challenge will be balancing the expectations of millions of fans with the need to deliver a fresh and emotionally powerful experience. If the storytelling, performances, and visuals come together perfectly, Ramayana could become a landmark epic that stays memorable for years.",
+
+hype: 9
+          },
      {
   id: 83,
   title: "JUMANJI:open world(2026)",
