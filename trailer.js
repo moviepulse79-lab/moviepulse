@@ -219,7 +219,7 @@ User Rating:
 <textarea id="commentInput" placeholder="Write your comment..."></textarea>
 
 <button id="commentBtn">
-Post Comment
+🚀 Share Your Thoughts
 </button>
 
 <div id="commentsList"></div>
