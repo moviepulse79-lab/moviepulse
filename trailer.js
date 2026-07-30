@@ -37,9 +37,8 @@ const videoSchema = {
   "thumbnailUrl": current.poster,
   "embedUrl": current.trailer,
   "contentUrl": current.trailer,
-  "uploadDate": "2026-07-30"
+  "uploadDate": "2026-07-30T12:00:00+02:00"
 };
-
 
 const script = document.createElement("script");
 
