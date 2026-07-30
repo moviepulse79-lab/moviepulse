@@ -1,9 +1,19 @@
 <script>
+  
+import { db } from "./firebase.js";
 
 
-/* ===================== URL ID ===================== */
-/////////////////////////////
-///////////////////////////////
+import {
+
+collection,
+addDoc,
+getDocs,
+query,
+where,
+orderBy
+
+} from 
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 // GET ID FROM URL
 /////////////////////////////
 
