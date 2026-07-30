@@ -1,4 +1,4 @@
-const movies = [
+window.movies = [
      {
   id: 83,
   title: "JUMANJI:open world(2026)",
