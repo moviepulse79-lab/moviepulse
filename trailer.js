@@ -300,13 +300,13 @@ star.addEventListener("click", async()=>{
 let value = Number(star.dataset.rate);
 
 
-
 await addDoc(
-collection(db,"ratings"),
+collection(db,"comments"),
 {
 movieId: current.id,
-rating:value,
-createdAt:new Date()
+username: "Guest",
+text: input.value,
+createdAt: new Date()
 }
 );
 
@@ -461,6 +461,8 @@ const data=doc.data();
 box.innerHTML += `
 
 <div class="comment-item">
+
+<strong>${data.username}</strong><br>
 
 💬 ${data.text}
 
