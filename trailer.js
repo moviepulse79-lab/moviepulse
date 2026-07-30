@@ -337,15 +337,13 @@ let value = Number(star.dataset.rate);
 
 
 await addDoc(
-collection(db,"comments"),
+collection(db,"ratings"),
 {
 movieId: current.id,
-username: "Guest",
-text: input.value,
+rating: value,
 createdAt: new Date()
 }
 );
-
 
 
 showRating();
@@ -358,7 +356,6 @@ showRating();
 
 
 }
-
 
 
 
