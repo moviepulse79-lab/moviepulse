@@ -518,4 +518,3 @@ backBtn.href=id?
 
 
 });
-</script>
