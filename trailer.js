@@ -23,6 +23,34 @@ const id = params.get("id");
 
 
 const current = movies.find( m => String(m.id) === String(id));
+// =====================
+// VIDEO SEO SCHEMA
+// =====================
+
+if(current){
+
+const videoSchema = {
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": `${current.title} Official Trailer`,
+  "description": `Watch the official trailer for ${current.title} on MoviePulse.`,
+  "thumbnailUrl": current.poster,
+  "embedUrl": current.trailer,
+  "contentUrl": current.trailer,
+  "uploadDate": "2026-07-30"
+};
+
+
+const script = document.createElement("script");
+
+script.type = "application/ld+json";
+
+script.textContent = JSON.stringify(videoSchema);
+
+
+document.head.appendChild(script);
+
+}
 
 // =====================
 // DYNAMIC SEO METADATA
@@ -168,13 +196,22 @@ User Rating:
 
     </div>
 
-    <h2 class="section-title">Official Trailer</h2>
+<div class="video-container">
 
-    <iframe
-      class="video-frame"
-      src="${movie.trailer || ""}"
-      allowfullscreen>
-    </iframe>
+  <h2 class="section-title">
+    ${movie.title} Official Trailer
+  </h2>
+
+  <iframe
+    class="video-frame"
+    src="${movie.trailer || ""}"
+    title="${movie.title} Official Trailer"
+    loading="lazy"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen>
+  </iframe>
+
+</div>
     
 <div class="comments-box">
 
