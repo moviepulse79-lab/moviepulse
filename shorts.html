@@ -97,8 +97,7 @@
     display: flex;
     gap: 25px;
     overflow-x: auto;
-    scroll-behavior: smooth;
-    padding-bottom: 20px;
+    padding: 20px 0;
 }
 
 
@@ -114,12 +113,13 @@
 
 
 .short-card {
-    min-width: 330px;
+    min-width: 300px;
+    max-width: 300px;
     background: #111;
     border-radius: 15px;
     overflow: hidden;
     border: 1px solid #222;
-    transition: 0.3s;
+    padding: 10px;
 }
 
 
@@ -134,18 +134,25 @@
     height: 190px;
     border: none;
 }
+    .short-card .tiktok-embed {
+    width: 100% !important;
+    max-height: 520px;
+    overflow: hidden;
+}
 
 
 .short-card h3 {
     color: white;
-    padding: 15px 15px 5px;
+    font-size: 18px;
+    margin: 15px 10px 5px;
 }
+
 
 
 .short-card p {
     color: #aaa;
-    padding: 0 15px 20px;
-    line-height: 1.5;
+    font-size: 14px;
+    margin: 0 10px 15px;
 }
 </style>
 </head>
