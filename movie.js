@@ -1,7 +1,7 @@
 window.movies = [
 
             {
-  id: 85,
+  id: 86,
   title: "The Thomas Crown Affair(2027)",
   poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/sT1TQeAy1PdRfPIb6rrM2DB7DB.jpg",
   rating: 5,
@@ -74,7 +74,80 @@ The Thomas Crown Affair (2027) looks like it has everything needed to become one
 </p>`,
  hype: 9
             },
-                      
+
+
+                     {
+  id: 85,
+  title: "Other Mommy(2026)",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/kNxRgcTeqeU5jauBackTERoO2De.jpg",
+  rating: 5,
+  trailer: "https://www.youtube.com/embed/bEpTgowZ1dI",
+  starring: [
+  "Jessica Chastain",
+  "Jay Duplass",
+  "Arabella Olivia Clark",
+  "Dichen Lachman",
+  "Sean Kaufman",
+  "Karen Allen",
+  "Adam Silver"
+],
+summary: "Other Mommy (2026) follows a young girl whose peaceful life begins to change when she encounters a mysterious presence that appears to know her deepest fears and desires. What starts as an unusual friendship slowly turns into a terrifying battle as the strange figure reveals a much darker purpose. As her family struggles to understand what is happening, they must confront secrets from the past and fight to protect their home from a force that is far more dangerous than they imagined.",
+                                 
+ article:` <p>
+    Horror movies are often at their strongest when they take something familiar and turn it into something frightening. <strong>Other Mommy (2026)</strong> explores that idea by transforming a seemingly innocent connection into a disturbing nightmare filled with mystery, fear, and emotional tension. Instead of depending only on sudden scares, the film focuses on the uncomfortable feeling that something is wrong even when everything appears normal.
+  </p>
+
+  <p>
+    The story follows a young girl whose life begins to change after meeting a mysterious figure who seems strangely familiar. At first, the presence of Other Mommy feels almost comforting, offering attention and understanding that make the girl feel special. However, as time passes, the relationship becomes more unsettling, revealing that this mysterious visitor may have intentions far beyond what anyone expected.
+  </p>
+
+  <p>
+    What makes the movie interesting is the way it explores fear from a child's perspective. The film does not only ask what happens when a monster appears, but also what happens when something frightening hides behind a friendly appearance. That contrast creates a disturbing atmosphere where viewers are constantly questioning whether the character can be trusted or whether a much darker truth is waiting to be revealed.
+  </p>
+
+  <p>
+    The psychological side of the story adds another layer of suspense. The characters are forced to deal with fear, confusion, and uncertainty as they try to understand the strange events happening around them. Rather than presenting a simple battle between good and evil, the movie creates a more complicated situation where emotions, family relationships, and hidden secrets all become part of the horror.
+  </p>
+
+  <p>
+    Visually, <strong>Other Mommy (2026)</strong> aims for a chilling atmosphere built through tension, silence, and carefully created moments of discomfort. The film's horror comes from the feeling that danger could appear at any moment. Dark environments, unsettling encounters, and a growing sense of mystery help build an experience designed to keep audiences feeling uneasy from start to finish.
+  </p>
+
+  <p>
+    Jessica Chastain brings a powerful presence to the story, adding emotional depth to a character surrounded by mystery and danger. The young cast also plays an important role by bringing authenticity to the family drama at the center of the film. Their performances help make the horror more personal because the audience is not only watching terrifying events happen, but also seeing how those events affect relationships and trust.
+  </p>
+
+  <p>
+    One of the strongest elements of <strong>Other Mommy</strong> is its ability to combine supernatural horror with emotional storytelling. The film uses its frightening elements to explore themes like loneliness, attachment, manipulation, and the importance of family. This gives the story more meaning than a traditional monster movie because the real conflict is not only against a mysterious force, but also against the fear of losing control.
+  </p>
+
+  <p>
+    Fans of psychological horror and supernatural thrillers may find this movie especially interesting because it focuses on suspense rather than relying only on violence or predictable scares. The mystery surrounding Other Mommy creates curiosity, while the emotional journey of the characters gives the audience a reason to stay invested.
+  </p>
+
+  <p>
+    Overall, <strong>Other Mommy (2026)</strong> looks like a dark and unsettling horror experience that combines family drama, supernatural mystery, and psychological fear. With its unique concept, strong performances, and focus on emotional tension, the movie has the potential to become one of the more memorable horror releases for audiences looking for something different.
+  </p><p><strong>Genre:</strong> Horror, Psychological Thriller, Supernatural</p><br>
+
+<p><strong>Director:</strong> Rob Savage</p><br>
+
+<p><strong>Release Year:</strong> 2026</p><br>
+
+<p><strong>Setting:</strong> A family home where strange supernatural events begin to unfold.</p><br>
+
+<p><strong>Audience:</strong> TBA</p><br>
+
+<p><strong>Runtime:</strong> TBA</p>`,
+
+verdictTitle: "A Disturbing Horror Experience With a Unique Twist",
+
+verdict: `
+<p>
+Other Mommy (2026) has the potential to be a memorable horror film because it focuses on fear, mystery, and emotional tension rather than relying only on traditional scares. The idea of a familiar presence becoming something terrifying creates an unsettling atmosphere that keeps the audience curious. With Jessica Chastain leading the cast and Rob Savage bringing his horror style to the project, the movie could deliver a powerful mix of psychological suspense and supernatural terror. If you enjoy slow-burning horror stories with strong characters and a mysterious threat, Other Mommy is a film worth keeping an eye on.
+</p>
+`,
+hype: 8
+                     },
           {
   id: 84,
   title: "RAMAYANA(2026)",
