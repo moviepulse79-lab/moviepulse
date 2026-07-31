@@ -1815,9 +1815,9 @@ Status: Upcoming </i>`
   {
     id: 52,
     title: "Avengers: Doomsday.",
-    poster:"https://i.pinimg.com/1200x/68/0d/e9/680de9fe446da14ca66ecfada1a38858.jpg",
+    poster:"https://image.tmdb.org/t/p/original/dZUvGlIeXpCP7GVX6kafFYsKyxp.jpg",
     rating: 4.8,
-     trailer: "https://www.youtube.com/embed/399Ez7WHK5s",
+     trailer: "https://www.youtube.com/embed/irVNGjRFZGk",
       starring: [
   "Robert Downey Jr.",
   "Chris Hemsworth",
