@@ -1,4 +1,80 @@
 window.movies = [
+
+            {
+  id: 85,
+  title: "The Thomas Crown Affair(2027)",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/sT1TQeAy1PdRfPIb6rrM2DB7DB.jpg",
+  rating: 5,
+  trailer: "https://www.youtube.com/embed/gnm4HgIAVmU",
+    starring: [
+  "Michael B. Jordan",
+  "Adria Arjona",
+  "Kenneth Branagh",
+  "Lily Gladstone",
+  "Danai Gurira",
+  "Pilou Asbæk",
+  "Ruth Negga",
+  "Aubrey Plaza",
+  "Aiysha Hart",
+  "Paapa Essiedu"
+],
+ summary: "A brilliant and charismatic billionaire lives for the thrill of impossible heists, turning priceless works of art into the ultimate challenge. When an intelligent investigator begins tracking his latest masterpiece theft, their pursuit becomes a dangerous game of wit, deception, and undeniable attraction. As secrets unravel and loyalties are tested, each move draws them deeper into a high-stakes world where trust is the rarest treasure of all.",
+  article:` <p>
+    Some stories never lose their charm, and <strong>The Thomas Crown Affair (2027)</strong> is one of those rare films that proves style and intelligence can be just as exciting as explosions and car chases. This fresh take on the classic crime romance introduces a new generation to the mysterious world of Thomas Crown, a wealthy man whose fortune gives him everything he could ever want except one thing: the thrill of the impossible. Instead of chasing money, he chases the excitement that comes from planning perfect crimes, always staying one step ahead of everyone around him.
+  </p>
+
+  <p>
+    What immediately makes this film stand out is its focus on strategy rather than brute force. Every move feels carefully calculated, turning each scene into a fascinating puzzle. Crown is not the typical criminal audiences are used to seeing. He is calm, charming, and incredibly intelligent, making it difficult to decide whether to admire him or question his choices. That uncertainty becomes one of the movie's greatest strengths because it keeps viewers emotionally invested from beginning to end.
+  </p>
+
+  <p>
+    The story becomes even more engaging when a determined investigator enters the picture. Rather than relying on action alone, the film builds suspense through conversations, hidden clues, and psychological games. Their relationship quickly grows into something far more complicated than a simple chase. Every meeting feels like a battle of intelligence, where every word has meaning and every decision changes the direction of the story. Their chemistry creates a perfect balance between romance and suspense, making it impossible to predict who will gain the upper hand.
+  </p>
+
+  <p>
+    Visually, the movie embraces elegance. Expensive artwork, luxurious homes, breathtaking city locations, and carefully designed costumes all contribute to an atmosphere that feels sophisticated without becoming overwhelming. Instead of flashy action sequences every few minutes, the film allows style, confidence, and clever storytelling to take center stage. This approach gives every scene a polished appearance while maintaining a sense of mystery throughout the experience.
+  </p>
+
+  <p>
+    One of the reasons this adaptation feels refreshing is that it explores the personalities behind the crimes. It asks interesting questions about ambition, obsession, trust, and the excitement that comes from living outside ordinary rules. The characters are not simply heroes or villains. Each has understandable motivations, making the emotional conflict just as compelling as the central mystery. That depth helps the audience connect with the story on more than one level.
+  </p>
+
+  <p>
+    Michael B. Jordan brings a fresh interpretation to Thomas Crown, presenting him as confident, charismatic, and endlessly unpredictable. His presence gives the film modern energy while still respecting the timeless appeal of the character. The supporting cast adds further depth, ensuring every important player contributes something meaningful to the unfolding mystery rather than existing only to move the plot forward.
+  </p>
+
+  <p>
+    Beyond the glamorous settings and carefully planned heists, <strong>The Thomas Crown Affair (2027)</strong> is ultimately about the excitement of matching minds. Every encounter feels like a carefully choreographed chess match where intelligence becomes the most powerful weapon. The tension continues to build as both sides refuse to make mistakes, creating an atmosphere where every glance and every conversation could completely change the outcome.
+  </p>
+
+  <p>
+    Fans of sophisticated thrillers will likely appreciate how the film prioritizes clever storytelling over nonstop spectacle. It delivers suspense through confidence, patience, and carefully constructed twists instead of relying only on loud action. That slower, smarter approach gives the story lasting appeal and allows its biggest moments to feel genuinely rewarding when they finally arrive.
+  </p>
+
+  <p>
+    Whether you're discovering Thomas Crown for the first time or returning to this iconic story in a modern form, the 2027 adaptation promises a stylish blend of mystery, romance, and psychological tension. It celebrates intelligence, confidence, and the thrill of impossible challenges while reminding viewers that the greatest game is often played inside the human mind.
+  </p><br>
+  <strong>Genre:</strong> Crime, Thriller, Romance<br>
+
+<strong>Director:</strong> Michael B. Jordan<br>
+
+<strong>Release Year:</strong> 2027<br>
+
+<strong>Setting:</strong> Luxury estates, prestigious art galleries, and international cities.<br>
+
+<strong>Audience:</strong> PG-13<br>
+
+<p><strong>Runtime:</strong> To Be Announced</p>` ,
+                      
+verdictTitle: "A Stylish Return to an Iconic Thriller",
+
+verdict: `
+<p>
+The Thomas Crown Affair (2027) looks like it has everything needed to become one of the most sophisticated thrillers of the year. Instead of relying on nonstop action, it focuses on intelligent storytelling, elegant visuals, and the thrilling battle of minds between its lead characters. Michael B. Jordan brings fresh energy to the iconic role while maintaining the charm and mystery that made Thomas Crown unforgettable. If the film delivers on its promise of clever twists, strong performances, and emotional chemistry, it could easily stand alongside the best modern crime thrillers. For anyone who enjoys stylish heists, psychological suspense, and a touch of romance, this is definitely a movie worth watching.
+</p>`,
+ hype: 9
+            },
+                      
           {
   id: 84,
   title: "RAMAYANA(2026)",
