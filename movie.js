@@ -1636,7 +1636,7 @@ Status: Upcoming</i>`
         },
        {
       id: 54,
-    title: "street fight (2026)",
+    title: "The Street Fight (2026)",
     poster:"https://i.pinimg.com/736x/87/2c/b8/872cb8fda05d95a86966f57cc12e5fd9.jpg",
     rating: 4.9,
      trailer: "https://www.youtube.com/embed/Xt4X4FvXk2A",
