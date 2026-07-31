@@ -18,6 +18,15 @@ const shorts = [
         title: "SPIDER-MAN:Brand new day",
         description: "Daily movie news and cinematic moments.",
         tiktok: "https://www.tiktok.com/@moviepulse_247/video/7663518101870349575"
+    },
+     {
+        title: "The End of Aok street",
+        description: "Daily movie news and cinematic moments.",
+        tiktok: "https://www.tiktok.com/@moviepulse_247/video/7658630866230447368"
+    },
+     {
+        title: "Priyanka chopra in her Era",
+        description: "Daily movie news and cinematic moments.",
+        tiktok: "https://www.tiktok.com/@moviepulse_247/video/7664118890435218708"
     }
-
 ];
