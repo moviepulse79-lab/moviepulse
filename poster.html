@@ -1302,19 +1302,16 @@ const suggestBox = document.getElementById("suggestBox");
 // RENDER MOVIES
 /////////////////////////////
 
-function renderMovies(list){
-
 postersRow.innerHTML = list.map(m => `
 
 <div class="card">
 
-    <a href="javascript:void(0)" 
-       class="poster-link" 
-       onclick="openMovieModal(${m.id})">
+
+    <div class="poster-link" onclick="openMovieModal(${m.id})">
 
         <img src="${m.poster}" alt="${m.title}">
 
-    </a>
+    </div>
 
 
     <div class="meta">
@@ -1326,27 +1323,28 @@ postersRow.innerHTML = list.map(m => `
         </div>
 
         <div class="stars">
-          ${"★".repeat(Math.round(m.rating || 0))}
+            ${"★".repeat(Math.round(m.rating || 0))}
         </div>
 
         <div class="genre-tag">
-          ${m.genre ? m.genre[0] : ""}
+            ${m.genre ? m.genre[0] : ""}
         </div>
-
-      </div>
-
-
-      <div class="hover-buttons">
-        <a class="btn" href="trailer.html?id=${m.id}">
-          ▶ view more...
-        </a>
-      </div>
 
     </div>
 
-  `).join("");
 
-}
+    <div class="hover-buttons">
+
+        <a class="btn" href="trailer.html?id=${m.id}">
+            ▶ view more...
+        </a>
+
+    </div>
+
+
+</div>
+
+`).join("");
 
 /////////////////////////////
 // INITIAL LOAD
