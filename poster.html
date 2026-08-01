@@ -590,14 +590,24 @@ nav a.active::after{
   // MOVIES ARRAY (now embedded here, no movie.js needed)
 const movies = [
       
-                {
-           id:86,
-    title: "The Thomas Crown Affair(2027)",
-    poster:"https://image.tmdb.org/t/p/original/kQR6nMz7u2g3xFof7JsKd6cLXDC.jpg",
-    date: 2027,
-    rating:4.5,
-    genre: ["crime","romance"]
-  },
+   {
+ id:86,
+ title:"The Thomas Crown Affair(2027)",
+ poster:"...",
+ date:2027,
+ rating:4.5,
+ genre:["Crime","Romance"],
+
+ summary:"A wealthy businessman becomes involved in a dangerous game of mystery, romance and deception.",
+
+ starring:[
+    "Michael B. Jordan",
+    "Regé-Jean Page",
+    "Scarlett Johansson"
+ ],
+
+ article:"thomas-crown-affair.html"
+},
       {
                 id:85,
     title: "Other Mommy(2026)",
@@ -1485,10 +1495,29 @@ function openMovieModal(id){
         return;
     }
 
-    console.log(movie);
 
     document.getElementById("modalPoster").src = movie.poster;
+
     document.getElementById("modalTitle").textContent = movie.title;
+
+
+    document.getElementById("modalGenre").textContent =
+        movie.genre.join(" • ");
+
+
+    document.getElementById("modalSummary").textContent =
+        movie.summary || "No summary available.";
+
+
+    document.getElementById("modalCast").innerHTML =
+        movie.starring 
+        ? movie.starring.map(name => `<li>${name}</li>`).join("")
+        : "<li>Unknown</li>";
+
+
+    document.getElementById("modalTrailer").href =
+        `trailer.html?id=${movie.id}`;
+
 
     document.getElementById("movieModal").classList.add("show");
 
