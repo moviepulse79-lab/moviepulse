@@ -435,28 +435,9 @@ nav a.active::after{
 }
 
 
-.movie-modal.show{
-    display:flex;
-}
 
 
-.movie-modal-content{
 
-    width:850px;
-    max-width:90%;
-
-    background:#111;
-
-    display:flex;
-    gap:30px;
-
-    padding:30px;
-
-    border-radius:20px;
-
-    color:white;
-
-}
 
 
 .modal-poster img{
@@ -538,17 +519,46 @@ nav a.active::after{
 
 
 .movie-modal{
-
     position:fixed;
-    inset:0;
-
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
     display:none;
-
     justify-content:center;
     align-items:center;
+    background:rgba(0,0,0,.8);
+    z-index:99999;
+}
 
-    overflow:hidden;
+.movie-modal.show{
+    display:flex;
+}
 
+.movie-modal-content{
+    position:relative;
+    width:850px;
+    max-width:90%;
+    background:#111;
+    display:flex;
+    gap:30px;
+    padding:30px;
+    border-radius:20px;
+    color:#fff;
+    z-index:2;
+
+    animation:popup .3s ease;
+}
+
+@keyframes popup{
+    from{
+        transform:scale(.8);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
 }
 
 </style>
