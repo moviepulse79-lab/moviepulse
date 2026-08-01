@@ -8,7 +8,7 @@ function displayShorts(shortList) {
 
     shortList.forEach(short => {
 
-        const videoId = short.tiktok.split("/video/")[1];
+        const videoId = short.tiktok.split("/video/")[1]; 
 
 
         container.innerHTML += `
