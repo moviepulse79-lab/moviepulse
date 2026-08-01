@@ -59,8 +59,17 @@ function displayShorts(shortList) {
 }
 
 
-
 function filterShorts(category){
+
+    const buttons = document.querySelectorAll(".shorts-filter button");
+
+    buttons.forEach(button => {
+        button.classList.remove("active-filter");
+    });
+
+
+    event.target.classList.add("active-filter");
+
 
     if(category === "All"){
         displayShorts(shorts);
