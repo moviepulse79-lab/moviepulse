@@ -19,7 +19,7 @@ const shorts = [
     {
         title: "SPIDER-MAN:Brand new day",
         description: "Daily movie news and cinematic moments.",
-        tiktok: "https://www.tiktok.com/@moviepulse_247/video/7663518101870349575".
+        tiktok: "https://www.tiktok.com/@moviepulse_247/video/7663518101870349575",
         movieId:35
     },
      {
