@@ -453,6 +453,46 @@ nav a.active::after{
   </section>
 </main>
 
+      <!-- Movie Preview Modal -->
+<div class="movie-modal" id="movieModal">
+
+    <div class="movie-modal-content">
+
+        <button class="close-modal" onclick="closeMovieModal()">
+            ✕
+        </button>
+
+        <div class="modal-poster">
+            <img id="modalPoster" src="" alt="">
+        </div>
+
+        <div class="modal-info">
+
+            <h2 id="modalTitle"></h2>
+
+            <p id="modalGenre"></p>
+
+            <p id="modalSummary"></p>
+
+            <h4>Starring</h4>
+
+            <ul id="modalCast"></ul>
+
+            <div class="modal-actions">
+                <a id="modalTrailer">
+                    ▶ Watch Trailer
+                </a>
+
+                <a id="modalArticle">
+                    📰 Read Article
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
  <footer class="site-footer">
   <div class="footer-container">
 
@@ -1210,13 +1250,22 @@ const suggestBox = document.getElementById("suggestBox");
 
 function renderMovies(list){
 
-  postersRow.innerHTML = list.map(m => `
-    
-    <div class="card">
+postersRow.innerHTML = list.map(m => `
 
-      <a href="trailer.html?id=${m.id}" class="poster-link">
+<div class="card">
+
+    <div class="poster-link" onclick="openMovieModal(${m.id})">
+
         <img src="${m.poster}" alt="${m.title}">
-      </a>
+
+    </div>
+
+    <h3>${m.title}</h3>
+
+</div>
+
+`).join("");
+      
 
       <div class="meta">
 
