@@ -413,17 +413,6 @@ nav a.active::after{
     flex:1 1 120px;
 }
 
-}
-  .movie-modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.85);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-}
-
 
 .movie-modal.show{
     display:flex;
@@ -508,6 +497,38 @@ nav a.active::after{
 .poster-link img{
     cursor:pointer;
 }
+      
+      .modal-backdrop{
+
+    position:absolute;
+    inset:0;
+
+    background-size:cover;
+    background-position:center;
+
+    filter:blur(25px);
+
+    transform:scale(1.15);
+
+    opacity:.35;
+
+    z-index:-1;
+}
+
+
+.movie-modal{
+
+    position:fixed;
+    inset:0;
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    overflow:hidden;
+
+}
 
 </style>
 </head>
@@ -565,6 +586,8 @@ nav a.active::after{
       <!-- Movie Preview Modal -->
 <div class="movie-modal" id="movieModal">
 
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+      
     <div class="movie-modal-content">
 
         <button class="close-modal" onclick="closeMovieModal()">
@@ -1557,6 +1580,8 @@ function openMovieModal(id){
 
     document.getElementById("modalTrailer").href =
         `trailer.html?id=${movie.id}`;
+      document.getElementById("modalBackdrop").style.backgroundImage =
+`url(${movie.poster})`;
 
 
     document.getElementById("movieModal").classList.add("show");
