@@ -111,3 +111,24 @@ searchInput.addEventListener("keyup", function(){
     displayShorts(filtered);
 
 });
+
+function searchShorts(){
+
+    const value = document
+    .getElementById("short-search")
+    .value
+    .toLowerCase();
+
+
+    const filtered = shorts.filter(short =>
+
+        short.title.toLowerCase().includes(value) ||
+        short.description.toLowerCase().includes(value) ||
+        short.category.toLowerCase().includes(value)
+
+    );
+
+
+    displayShorts(filtered);
+
+}
