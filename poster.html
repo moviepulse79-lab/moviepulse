@@ -790,15 +790,16 @@ nav a.active::after{
   // MOVIES ARRAY (now embedded here, no movie.js needed)
 const movies = [
       
-   {
+{
  id:86,
  title:"The Thomas Crown Affair(2027)",
  poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/sT1TQeAy1PdRfPIb6rrM2DB7DB.jpg",
+ backdrop:"https://image.tmdb.org/t/p/original/aaiHF0aMm6mBYMhucP5fKMwqTRZ.jpg",
  date:2027,
  rating:4.5,
  genre:["Crime","Romance"],
 
- summary:"A wealthy businessman becomes involved in a dangerous game of mystery, romance and deception.",
+ summary:"A charming billionaire with a taste for high-risk challenges finds himself drawn into a thrilling game of secrets and attraction when he crosses paths with a brilliant investigator determined to uncover the truth.",
 
  starring:[
     "Michael B. Jordan",
@@ -808,510 +809,817 @@ const movies = [
 
  article:"thomas-crown-affair.html"
 },
-      {
-                id:85,
-    title: "Other Mommy(2026)",
-    poster:"https://image.tmdb.org/t/p/original/8CXwxpyvQiz9COMLZov4Oae8NKb.jpg",
-    date: 2026,
-    rating:4,
-    genre: ["Horror"]
-  },
 
-          {
-           id:84,
-    title: "Ramayana(2026)",
-    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/f3yZZw7zIsWo6m9xJStfjDauIZX.jpg",
-    date: 2026,
-    rating:5.1,
-    genre: ["action","fantasy"]
-  },
-        {
-           id:83,
-    title: "JUMANJI:open world(2026)",
-    poster:"https://media.themoviedb.org/t/p/w220_and_h330_face/wlzAdBQw2XnmVW05YEJLNdAbizA.jpg",
-    date: 2026,
-    rating:5.1,
-    genre: ["Adventure"]
-  },
-      {
-              id:82,
-    title: "CHILDREN OF blood & bone(2026)",
-    poster:"https://image.tmdb.org/t/p/original/k9iVH7XUhShJbw8Al06ZkpOX8xJ.jpg",
-    date: 2027,
-    rating:5.7,
-    genre: ["fantasy"]
-  },
-      {
-                id:81,
-    title: "MatchBox(2026)",
-    poster:"https://image.tmdb.org/t/p/original/fV3CMJjJYSkhdUnYNlTdeH85xpz.jpg",
-    date: 2026,
-    rating:5.6,
-    genre: ["Action"]
-  },
-     {
-           id:80,
-    title: "Evil Dead Burn(2026)",
-    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/ztadKzIIR0ERYqpHteaPFtk7inP.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["horror"]
-  },
-                      {
-           id:79,
-    title: "The UpRising(2026)",
-    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/7TUl15TOsIvndKlgMWTtLgtEzZP.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Action"]
-  },
+{
+ id:85,
+ title:"Other Mommy(2026)",
+ poster:"https://image.tmdb.org/t/p/original/8CXwxpyvQiz9COMLZov4Oae8NKb.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4,
+ genre:["Horror"],
 
-                 {
-           id:78,
-    title: "MayDay(2026)",
-    poster:"https://i.pinimg.com/736x/57/c2/63/57c263dd7f39f08b7d088ba17ec42b46.jpg",
-    date: 2026,
-    rating:6.7,
-    genre: ["Action"]
-  },
+ summary:"A terrifying supernatural presence enters a family's life, turning ordinary moments into a nightmare as hidden fears and dark secrets begin to surface.",
 
-             {
-           id:77,
-    title: "Lucky(2026)",
-    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/xsrkiXg8EuNNtbPtbmvCxg95gK7.jpg",
-    date: 2026,
-    rating:6.7,
-    genre: ["drama","crime"]
-  },
+ starring:[
+    "Alyssa Sutherland",
+    "Julia Goldani Telles",
+    "John Gallagher Jr."
+ ]
+},
+
+{
+ id:84,
+ title:"Ramayana(2026)",
+ poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/f3yZZw7zIsWo6m9xJStfjDauIZX.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5.1,
+ genre:["Action","Fantasy"],
+
+ summary:"An epic fantasy adventure inspired by the legendary tale of courage, loyalty and sacrifice as powerful heroes face impossible battles to protect their world.",
+
+ starring:[
+    "Ranbir Kapoor",
+    "Sai Pallavi",
+    "Yash"
+ ]
+},
+
+{
+ id:83,
+ title:"JUMANJI: Open World(2026)",
+ poster:"https://media.themoviedb.org/t/p/w220_and_h330_face/wlzAdBQw2XnmVW05YEJLNdAbizA.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5.1,
+ genre:["Adventure"],
+
+ summary:"A new generation enters a dangerous digital world where survival depends on teamwork, courage and discovering the hidden rules of a mysterious game.",
+
+ starring:[
+    "Dwayne Johnson",
+    "Kevin Hart",
+    "Jack Black"
+ ]
+},
+
+{
+ id:82,
+ title:"CHILDREN OF BLOOD & BONE(2026)",
+ poster:"https://image.tmdb.org/t/p/original/k9iVH7XUhShJbw8Al06ZkpOX8xJ.jpg",
+ backdrop:"",
+ date:2027,
+ rating:5.7,
+ genre:["Fantasy"],
+
+ summary:"In a world where magic has been destroyed, a young girl discovers a power that could bring back hope and challenge the forces controlling her kingdom.",
+
+ starring:[
+    "Thuso Mbedu",
+    "Damson Idris",
+    "Viola Davis"
+ ]
+},
+
+{
+ id:81,
+ title:"MatchBox(2026)",
+ poster:"https://image.tmdb.org/t/p/original/fV3CMJjJYSkhdUnYNlTdeH85xpz.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5.6,
+ genre:["Action"],
+
+ summary:"A high-energy adventure following a group of skilled characters caught in a dangerous mission where speed, strategy and teamwork decide their fate.",
+
+ starring:[
+    "John Cena",
+    "Anthony Ramos",
+    "Teyana Taylor"
+ ]
+},
+
+{
+ id:80,
+ title:"Evil Dead Burn(2026)",
+ poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/ztadKzIIR0ERYqpHteaPFtk7inP.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Horror"],
+
+ summary:"A new nightmare begins when a group of survivors encounter a deadly supernatural force that pushes them into a fight for survival.",
+
+ starring:[
+    "Lily Sullivan",
+    "Alyssa Sutherland",
+    "Nell Fisher"
+ ]
+},
+
+{
+ id:79,
+ title:"The UpRising(2026)",
+ poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/7TUl15TOsIvndKlgMWTtLgtEzZP.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Action"],
+
+ summary:"When a society reaches its breaking point, a group of fighters rises against powerful enemies in a battle for freedom and justice.",
+
+ starring:[
+    "Michael Jai White",
+    "Luke Evans",
+    "Scott Adkins"
+ ]
+},
+
+{
+ id:78,
+ title:"MayDay(2026)",
+ poster:"https://i.pinimg.com/736x/57/c2/63/57c263dd7f39f08b7d088ba17ec42b46.jpg",
+ backdrop:"",
+ date:2026,
+ rating:6.7,
+ genre:["Action"],
+
+ summary:"A dangerous mission turns into a race against time when unexpected events force a team to fight through chaos and survive against all odds.",
+
+ starring:[
+    "Ryan Reynolds",
+    "Kenneth Branagh",
+    "Maria Bakalova"
+ ]
+},
+
+{
+ id:77,
+ title:"Lucky(2026)",
+ poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/xsrkiXg8EuNNtbPtbmvCxg95gK7.jpg",
+ backdrop:"",
+ date:2026,
+ rating:6.7,
+ genre:["Drama","Crime"],
+
+ summary:"A man chasing a better life finds himself trapped between ambition, crime and the consequences of his choices in a story about survival and redemption.",
+
+ starring:[
+    "Rachel McAdams",
+    "Colin Farrell",
+    "Jason Isaacs"
+ ]
+},
+
       
-           {
-           id:76,
-    title: "Digger(2026)",
-    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/1ATXKrIPJyKNwnJ6lcG088Sa6zi.jpg",
-    date: 2026,
-    rating:6.0,
-    genre: ["comedy"]
-  },
-       
-                       {
-           id:75,
-    title: "Godzilla minus one(2026)",
-    poster:"https://m.media-amazon.com/images/M/MV5BZTU0OGFhYmItMDkzMy00NzA5LThiMzItMjBhZDIzYWFhYjBhXkEyXkFqcGc@._V1_QL75_UX388_.jpg",
-    date: 2026,
-    rating:5.9,
-    genre: ["monsterHorror"]
-  },
-                  {
-           id:74,
-    title: "Not Alone(2027)",
-    poster:"https://image.tmdb.org/t/p/original/9p3PA8fAXeqRgnoFBrVleIIt310.jpg",
-    date: 2027,
-    rating:5,
-    genre: ["animation"]
-  },
-            {
-           id:73,
-    title: "The Last House(2026)",
-    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/ivmUB2djVH6HQrQfV0qEekdJWWf.jpg",
-    date: 2026,
-    rating:5.9,
-    genre: ["horror"]
-  },
-          {
-           id:72,
-    title: "Pompeii: out of time(2026)",
-    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/qnOYQ6uqxj5HEuXtVf1vSZicok.jpg",
-    date: 2026,
-    rating:5.7,
-    genre: ["Documentary"]
-  },
-                   {
-           id:71,
-    title: "Deavil's Mouth(2026)",
-    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/lH8k9uCWYn2b2gsYleqYBDPbWa8.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Horror", "Thriller"]
-  },
-             {
-           id:70,
-    title: "Onslaught(2026)",
-    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/3k69IPJEoLBMB3J5FCYehL8NMs2.jpg",
-    date: 2026,
-    rating:4,
-    genre: ["Horror", "Action"]
-  },
-                     {
-           id:69,
-    title: "WERWULF(2026)",
-    poster:"https://image.tmdb.org/t/p/w600_and_h900_face/eq4XjWBuvNkoNeXcrQ0N42mlTnL.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Horror", "Supernatural"]
-  },
-               {
-           id:68,
-    title: "INSIDIOUS: Out of the Further(2026)",
-    poster:"https://image.tmdb.org/t/p/w600_and_h900_face/4tTrW9dXCByS5wt2pXVWb58zNjz.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Horror", "Supernatural"]
-  },
-      
-            {
-           id:67,
-    title: "By Any Means(2026)",
-    poster:"https://m.media-amazon.com/images/M/MV5BZTUwODQ5N2QtMGM3Ny00YTk1LWJlZTctMTE5ZTAzNTMwOGQxXkEyXkFqcGc@._V1_QL75_UX147_.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Action", "Thriller", "Crime"]
-  },
-      {
-           id:66,
-    title: "WhaleFall(2026)",
-    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/wse4S4EuVHSNk9yzsjhdRLmipXk.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Survival", "Thriller", "Drama"]
-  },
-                {
-                  
-       id:65,
-    title: " Enola Holmes 3(2026)",
-    poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/7kRYHH9H9PjBFwz1FprbHB2AAjI.jpg",
-    date: 2026,
-    rating:4,
-    genre: ["Adventure", "Crime", "action"]
-  },
-          {
-       id:64,
-    title: " One night Only(2026)",
-    poster:"https://image.tmdb.org/t/p/w600_and_h900_face/gzy1L7wqkFRznQPv4WrdPQ9bCJ8.jpg",
-    date: 2026,
-    rating:4,
-    genre: ["Drama", "Romanticr", "Comedy"]
-  },
-      {
-       id:63,
-    title: " CLAYFACE(2026)",
-    poster:"https://image.tmdb.org/t/p/w600_and_h900_face/5jCpQnWPikggmQZoDp1eAi6BI6w.jpg",
-    date: 2026,
-    rating:4.5,
-    genre: ["Horror", "Thriller", "scienceFinction"]
-  },
-                     {
-    id:62,
-    title: " KLARA AND THE SUN (2026)",
-    poster:"https://image.tmdb.org/t/p/w600_and_h900_face/xqovj2p6HRsgHxN81qYAYF4StgM.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Drama", "Sci-Fi", "Adventure"]
-  },
-                {
-    id:61,
-    title: " Fall 2 (2026)",
-    poster:"https://i.pinimg.com/736x/87/bc/74/87bc746ac49cbebfe5e453c329a9acad.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Drama", "Thriller", "Adventure"]
-  },
-             {
-    id:60,
-    title: "heart of The beast (2026)",
-    poster:"https://m.media-amazon.com/images/M/MV5BMDVlMTRhMjgtMjdmZi00NjJhLWExMmYtODExNWJkZGZjNjdhXkEyXkFqcGc@._V1_QL75_UX147_.jpg",
-    date: 2026,
-    rating:4.9,
-    genre: ["Action", "Thriller", "Adventure"]
-  },
        {
-  id: 59,
-  title: "Michael (2026)",
-  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/zm0KAbOjlt9eR5y7vDiL2dEOwMl.jpg",
-  rating: 5.6,
- genre: ["Drama", "Music", "Biography"]
-       },
-             
-            {
-    id:58,
-    title: "The End of Oak Street (2026)",
-    poster:"https://i.pinimg.com/736x/76/b1/44/76b144acd5089eaad98421f8092ff84e.jpg",
-    date: 2026,
-    rating:4.9,
-    genre: ["Sci-Fi", "Thriller", "Adventure"]
-  },
-  {
-    id:57,
-    title: "Hope(2026)",
-    poster:"https://i.pinimg.com/1200x/ea/db/d8/eadbd87eac989e7246f4ee77b952d4fd.jpg",
-    date: 2026,
-    rating:4.5,
-    genre: ["Sci-Fi", "Drama", "Mystery"]
-  },
-  {
-    id:56,
-    title: "Resident Evil",
-    poster:"https://i.pinimg.com/736x/cc/51/e4/cc51e44b99c15d4ad40e580a6d0c74e9.jpg",
-    date: 2026,
-    rating:4.9,
-    genre: ["Horror", "Thriller", "Action"]
-  },
-  {
-    id:55,
-    title: "Lanterns(2026)",
-    poster:"https://i.pinimg.com/1200x/41/dd/eb/41ddebaa41c4966dd8924634ff61d6a2.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Crime", "Drama", "Sci-Fi"]
-  },
-  {
-    id:54,
-    title: "Street Fighter (2026)",
-    poster:"https://i.pinimg.com/736x/87/2c/b8/872cb8fda05d95a86966f57cc12e5fd9.jpg",
-    date: 2026,
-    rating:4.9,
-    genre: ["Action", "Martial Arts", "Adventure"]
-  },
-  {
-    id:53,
-    title: "The Odyssey (2026)",
-    poster:"https://i.pinimg.com/736x/0e/20/39/0e2039f0720e8ca031d222c2b21ed4e8.jpg",
-    date: 2026,
-    rating:4.8,
-    genre: ["Adventure", "Fantasy", "Epic"]
-  },
-  {
-    id:52,
-    title: "Avengers: Doomsday",
-    poster:"https://i.pinimg.com/1200x/68/0d/e9/680de9fe446da14ca66ecfada1a38858.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Action", "Sci-Fi", "Superhero"]
-  },
-         {
-    id: 51,
-    title: "forgotten island",
-    poster:"https://i.pinimg.com/736x/f6/64/7e/f6647e0c5c5fa3502d3ecbb1b6c38d31.jpg",
-    date:2026,
-    rating: 4,
-    genre:["animation","Action","Comedy"]
-         },   
-  {
-    id:50,
-    title: "DUNE: part 3",
-    poster:"https://i.pinimg.com/736x/c5/41/25/c54125168fcdcff6e773f8ec6b1fc59a.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Sci-Fi", "Adventure", "Drama"]
-  },
-  {
-    id:49,
-    title: "Avatar: The last Airbender",
-    poster:"https://i.pinimg.com/736x/cb/93/e5/cb93e539496f361cf1996889f097d880.jpg",
-    date: 2026,
-    rating:4.9,
-    genre: ["Fantasy", "Adventure", "Action"]
-  },
-  {
-    id:48,
-    title: "Runner",
-    poster:"https://i.pinimg.com/736x/2c/ab/c8/2cabc8c9277a5d7e74d18526eaca70f1.jpg",
-    date: 2026,
-    rating:4.9,
-    genre: ["Action", "Thriller", "Sci-Fi"]
-  },
-  {
-    id:47,
-    title: "Passenger",
-    poster:"https://i.pinimg.com/736x/39/6c/37/396c37f6ec9820a4e9266f0516df218d.jpg",
-    date: 2026,
-    rating:4.8,
-    genre: ["Drama", "Sci-Fi", "Mystery"]
-  },
-  {
-    id:46,
-    title: "The Dog Star",
-    poster:"https://i.pinimg.com/736x/14/c9/27/14c9271422e27f5d08de98f639c73b1b.jpg",
-    date: 2026,
-    rating:4.6,
-    genre: ["Sci-Fi", "Adventure"]
-  },
-  {
-    id:45,
-    title: "Supergirl",
-    poster:"https://i.pinimg.com/736x/aa/cc/19/aacc194e9d29333d8cddd5d3661b5498.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Superhero", "Action", "Fantasy"]
-  },
-  {
-    id:44,
-    title: "ALPHA",
-    poster:"https://i.pinimg.com/736x/d4/8b/52/d48b521b6a3a40f320db8c72a42659ac.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Action", "Thriller"]
-  },
-  {
-    id:43,
-    title: "BERLIN season 2",
-    poster:"https://i.pinimg.com/736x/0a/c8/74/0ac874b3c7f8120ba1f241d3f233e500.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Crime", "Drama", "Thriller"]
-  },
-  {
-    id:42,
-    title: "SPIDER-NOIR",
-    poster:"https://i.pinimg.com/736x/5f/6d/a4/5f6da4a4ae9e3251d5b005e27b200890.jpg",
-    date: 2026,
-    rating:5,
-    genre: ["Superhero", "Crime", "Action"]
-  },
-  {
-    id:41,
-    title: "THE Punisher One Last Kill",
-    poster:"https://i.pinimg.com/736x/cd/ed/6b/cded6b72af5a9612228c2ef4a060539d.jpg",
-    date: 2026,
-    rating:4,
-    genre: ["Action", "Crime", "Thriller"]
-  },
-  {
-    id:40,
-    title: "APEX",
-    poster:"https://i.pinimg.com/736x/8e/ba/82/8eba824f089754d25e9f22f0f5494adc.jpg",
-    date: 2026,
-    rating:4.9,
-    genre: ["Action", "Sci-Fi", "Thriller"]
-  },
-  {
-    id:39,
-    title: "CRIME 101",
-    poster:"https://i.pinimg.com/736x/b3/48/ef/b348ef761252b78c6b2dc007e286fca9.jpg",
-    date: 2026,
-    rating:4.9,
-    genre: ["Crime", "Drama", "Thriller"]
-  },
-  {
-    id:38,
-    title: "HAIL MARY",
-    poster:"https://i.pinimg.com/736x/d9/ee/0e/d9ee0e2e6875a9e9205f6dc47f34ff58.jpg",
-    date: 2026,
-    rating:4,
-    genre: ["Sci-Fi", "Adventure"]
-  },
-  {
-    id:37,
-    title: "OFF CAMPUS",
-    poster:"https://i.pinimg.com/736x/93/1b/f5/931bf52a4b8d4c417c0914ab280a077d.jpg",
-    trailer:"https://www.youtube.com/embed/4Vin2GSA4V0",
-    date: 2026,
-    rating:5,
-    genre: ["Drama", "Romance"]
-  },
-       {
-    id: 36,
-    title: "WAR MACHINE 2026",
-    poster:"https://i.pinimg.com/736x/49/60/b6/4960b6a8ee37a04e01a45c97d7836134.jpg",
-    date: 2026,
-    rating: 5,
-    genre: ["Action", "Sci-Fi", "War"]
-  },
-  {
-    id: 35,
-    title: "SPIDER-MAN Brand New Day",
-    poster:"https://i.pinimg.com/736x/c2/65/1f/c2651f93f4fec4dbfaa6488bd379365b.jpg",
-    date: 2026,
-    rating: 5,
-    genre: ["Superhero", "Action", "Adventure"]
-  },
-  {
-    id: 30,
-    title: "Captain America: Brave New World",
-    poster:"https://i.pinimg.com/736x/15/3e/aa/153eaa19c88070b8169f9b97f855b5f4.jpg",
-    date: 2026,
-    rating: 5,
-    genre: ["Superhero", "Action", "Sci-Fi"]
-  },
-  {
-    id: 31,
-    title: "Thunderbolts*",
-    poster:"https://image.tmdb.org/t/p/w500/m9EtP1Yrzv6v7dMaC9mRaGhd1um.jpg",
-    date: 2026,
-    rating: 5,
-    genre: ["Superhero", "Action", "Adventure"]
-  },
-  {
-    id: 32,
-    title: "Blade 4 (2026)",
-    poster:"https://i.pinimg.com/1200x/4e/47/11/4e47114c06758a2b9dfd9f1afba17251.jpg",
-    date: 2026,
-    rating: 4,
-    genre: ["Horror", "Action", "Supernatural"]
-  },
-  {
-    id: 33,
-    title: "Mission: Impossible – The Final Reckoning",
-    poster:"https://i.pinimg.com/736x/8c/34/53/8c3453960d34d7d083266cabd2123758.jpg",
-    date: 2025,
-    rating: 4,
-    genre: ["Action", "Thriller", "Spy"]
-  },
-  {
-    id: 34,
-    title: "Superman (2026)",
-    poster:"https://i.pinimg.com/736x/e1/5f/c9/e15fc912b33a0c9aa2819130a20625b5.jpg",
-    date: 2026,
-    rating: 4,
-    genre: ["Superhero", "Action", "Drama"]
-  },
-  {
-    id: 29,
-    title: "Friday the 13th (2025)",
-    poster:"https://i.pinimg.com/736x/30/08/06/300806b96dc77f67988d87aa043e6b6d.jpg",
-    date: 2025,
-    rating: 4,
-    genre: ["Horror", "Slasher"]
-  },
-  {
-    id: 28,
-    title: "The Matrix 5",
-    poster:"https://i.pinimg.com/1200x/bd/30/b1/bd30b101d3e348872ceb62f95654e691.jpg",
-    date: 2026,
-    rating: 4,
-    genre: ["Sci-Fi", "Action", "Cyberpunk"]
-  },
-  {
-    id: 27,
-    title: "Transformers One",
-    poster:"https://i.pinimg.com/736x/2c/0f/1d/2c0f1d0ea64457c0b95fa7b510ebf145.jpg",
-    date: 2025,
-    rating: 5,
-    genre: ["Animation", "Sci-Fi", "Action"]
-  },
-  {
-    id: 24,
-    title: "The Legend of Zelda",
-    poster:"https://i.pinimg.com/736x/1c/05/42/1c05428c3ab99b0203e2ae8d6f4f97c1.jpg",
-    date: 2026,
-    rating: 4,
-    genre: ["Fantasy", "Adventure", "Action"]
-  },
-  {
-    id: 26,
-    title: "Monster High (2025)",
-    poster:"https://i.pinimg.com/1200x/b6/cd/0d/b6cd0d27d8cb39829f2e68d3462381da.jpg",
-    date: 2025,
-    rating: 3,
-    genre: ["Animation", "Fantasy", "Comedy"]
-  },
-  {
-    id: 25,
-    title: "Moana 2026",
-    poster:"https://i.pinimg.com/1200x/7f/00/f0/7f00f0e58932cf7db60aaa441ea5b0c4.jpg",
-    date: 2026,
-    rating: 4,
-    genre: ["Animation", "Adventure", "Fantasy"]
-  },
+{
+ id:59,
+ title:"Michael (2026)",
+ poster:"https://www.themoviedb.org/t/p/w600_and_h900_face/zm0KAbOjlt9eR5y7vDiL2dEOwMl.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5.6,
+ genre:["Drama","Music","Biography"],
+
+ summary:"A powerful biographical drama exploring the life, talent and challenges of one of the most influential performers in music history, revealing the passion behind the legend.",
+
+ starring:[
+    "Jaafar Jackson",
+    "Nia Long",
+    "Miles Teller"
+ ]
+},
+
+{
+ id:58,
+ title:"The End of Oak Street (2026)",
+ poster:"https://i.pinimg.com/736x/76/b1/44/76b144acd5089eaad98421f8092ff84e.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4.9,
+ genre:["Sci-Fi","Thriller","Adventure"],
+
+ summary:"A group of people discover that their quiet neighborhood hides a dangerous secret connected to the future of humanity. Their search for answers leads them into a fight for survival.",
+
+ starring:[
+    "Austin Butler",
+    "Zendaya",
+    "Jenna Ortega"
+ ]
+},
+
+{
+ id:57,
+ title:"Hope (2026)",
+ poster:"https://i.pinimg.com/1200x/ea/db/d8/eadbd87eac989e7246f4ee77b952d4fd.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4.5,
+ genre:["Sci-Fi","Drama","Mystery"],
+
+ summary:"In a world facing uncertainty, a young survivor searches for answers about a mysterious event that changed everything while holding on to the last signs of hope.",
+
+ starring:[
+    "Florence Pugh",
+    "John Boyega",
+    "Oscar Isaac"
+ ]
+},
+
+{
+ id:56,
+ title:"Resident Evil (2026)",
+ poster:"https://i.pinimg.com/736x/cc/51/e4/cc51e44b99c15d4ad40e580a6d0c74e9.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4.9,
+ genre:["Horror","Thriller","Action"],
+
+ summary:"A new outbreak threatens humanity as survivors battle terrifying creatures and uncover the dark secrets behind a deadly experiment.",
+
+ starring:[
+    "Kaya Scodelario",
+    "Hannah John-Kamen",
+    "Tom Hopper"
+ ]
+},
+
+{
+ id:55,
+ title:"Lanterns (2026)",
+ poster:"https://i.pinimg.com/1200x/41/dd/eb/41ddebaa41c4966dd8924634ff61d6a2.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Crime","Drama","Sci-Fi"],
+
+ summary:"Two investigators are pulled into a mysterious case that reveals secrets beyond their understanding, combining crime, human conflict and a larger cosmic mystery.",
+
+ starring:[
+    "Kyle Chandler",
+    "Aaron Pierre",
+    "Nathan Fillion"
+ ]
+},
+
+{
+ id:54,
+ title:"Street Fighter (2026)",
+ poster:"https://i.pinimg.com/736x/87/2c/b8/872cb8fda05d95a86966f57cc12e5fd9.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4.9,
+ genre:["Action","Martial Arts","Adventure"],
+
+ summary:"Fighters from around the world enter a brutal competition where skill, honor and personal rivalries collide in a battle for victory.",
+
+ starring:[
+    "Andrew Koji",
+    "Jason Momoa",
+    "Noah Centineo"
+ ]
+},
+
+{
+ id:53,
+ title:"The Odyssey (2026)",
+ poster:"https://i.pinimg.com/736x/0e/20/39/0e2039f0720e8ca031d222c2b21ed4e8.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4.8,
+ genre:["Adventure","Fantasy","Epic"],
+
+ summary:"An epic journey across dangerous lands and mythical worlds follows a hero fighting to return home while facing legendary creatures and impossible challenges.",
+
+ starring:[
+    "Matt Damon",
+    "Tom Holland",
+    "Anne Hathaway"
+ ]
+},
+
+{
+ id:52,
+ title:"Avengers: Doomsday",
+ poster:"https://i.pinimg.com/1200x/68/0d/e9/680de9fe446da14ca66ecfada1a38858.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Action","Sci-Fi","Superhero"],
+
+ summary:"Earth's greatest heroes unite against a powerful threat that could reshape the universe. The battle pushes the Avengers to their limits as old and new heroes join forces.",
+
+ starring:[
+    "Robert Downey Jr.",
+    "Chris Hemsworth",
+    "Anthony Mackie"
+ ]
+},
+ {
+ id:51,
+ title:"Forgotten Island",
+ poster:"https://i.pinimg.com/736x/f6/64/7e/f6647e0c5c5fa3502d3ecbb1b6c38d31.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4,
+ genre:["Animation","Action","Comedy"],
+
+ summary:"A group of unexpected heroes discovers a mysterious island filled with secrets, danger and strange creatures. Their adventure becomes a journey of friendship, courage and survival.",
+
+ starring:[
+    "TBA",
+    "TBA",
+    "TBA"
+ ]
+},
+
+{
+ id:50,
+ title:"DUNE: Part 3",
+ poster:"https://i.pinimg.com/736x/c5/41/25/c54125168fcdcff6e773f8ec6b1fc59a.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Sci-Fi","Adventure","Drama"],
+
+ summary:"The journey of Paul Atreides continues as he faces the consequences of his choices while battling political enemies and shaping the future of a vast desert world.",
+
+ starring:[
+    "Timothée Chalamet",
+    "Zendaya",
+    "Rebecca Ferguson"
+ ]
+},
+
+{
+ id:49,
+ title:"Avatar: The Last Airbender",
+ poster:"https://i.pinimg.com/736x/cb/93/e5/cb93e539496f361cf1996889f097d880.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4.9,
+ genre:["Fantasy","Adventure","Action"],
+
+ summary:"A young hero with the power to control the elements must master his abilities and unite a divided world while facing powerful enemies.",
+
+ starring:[
+    "Gordon Cormier",
+    "Kiawentiio",
+    "Ian Ousley"
+ ]
+},
+
+{
+ id:48,
+ title:"Runner",
+ poster:"https://i.pinimg.com/736x/2c/ab/c8/2cabc8c9277a5d7e74d18526eaca70f1.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4.9,
+ genre:["Action","Thriller","Sci-Fi"],
+
+ summary:"A skilled runner becomes trapped in a dangerous mission where speed, survival and technology collide in a fight against powerful forces.",
+
+ starring:[
+    "Hailee Steinfeld",
+    "Aaron Taylor-Johnson",
+    "John Boyega"
+ ]
+},
+
+{
+ id:47,
+ title:"Passenger",
+ poster:"https://i.pinimg.com/736x/39/6c/37/396c37f6ec9820a4e9266f0516df218d.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4.8,
+ genre:["Drama","Sci-Fi","Mystery"],
+
+ summary:"A mysterious journey forces a passenger to uncover hidden truths about their past while facing questions about identity, technology and humanity.",
+
+ starring:[
+    "Chris Pratt",
+    "Jennifer Lawrence",
+    "Michael Shannon"
+ ]
+},
+
+{
+ id:46,
+ title:"The Dog Star",
+ poster:"https://i.pinimg.com/736x/14/c9/27/14c9271422e27f5d08de98f639c73b1b.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4.6,
+ genre:["Sci-Fi","Adventure"],
+
+ summary:"In a changing world, a survivor and his loyal companion embark on a dangerous journey where they discover hope in the middle of uncertainty.",
+
+ starring:[
+    "Jacob Elordi",
+    "Margaret Qualley",
+    "Ben Affleck"
+ ]
+},
+
+{
+ id:45,
+ title:"Supergirl",
+ poster:"https://i.pinimg.com/736x/aa/cc/19/aacc194e9d29333d8cddd5d3661b5498.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Superhero","Action","Fantasy"],
+
+ summary:"A powerful young hero leaves Earth to discover her own path while facing enemies that challenge her strength, beliefs and destiny.",
+
+ starring:[
+    "Milly Alcock",
+    "Jason Momoa",
+    "Matthias Schoenaerts"
+ ]
+},
+
+{
+ id:44,
+ title:"ALPHA",
+ poster:"https://i.pinimg.com/736x/d4/8b/52/d48b521b6a3a40f320db8c72a42659ac.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Action","Thriller"],
+
+ summary:"A dangerous mission pushes an elite fighter to the limit as they uncover a conspiracy that threatens everything they are fighting for.",
+
+ starring:[
+    "Charlize Theron",
+    "Tom Hardy",
+    "Jessica Chastain"
+ ]
+},
+
+{
+ id:43,
+ title:"BERLIN Season 2",
+ poster:"https://i.pinimg.com/736x/0a/c8/74/0ac874b3c7f8120ba1f241d3f233e500.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Crime","Drama","Thriller"],
+
+ summary:"The stylish thief returns with new challenges, dangerous plans and unexpected enemies as he continues his journey through the world of crime.",
+
+ starring:[
+    "Pedro Alonso",
+    "Michelle Jenner",
+    "Tristán Ulloa"
+ ]
+},
+
+{
+ id:42,
+ title:"SPIDER-NOIR",
+ poster:"https://i.pinimg.com/736x/5f/6d/a4/5f6da4a4ae9e3251d5b005e27b200890.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Superhero","Crime","Action"],
+
+ summary:"A darker version of the Spider-Man story follows a detective-like hero fighting crime in a dangerous city filled with mystery and corruption.",
+
+ starring:[
+    "Nicolas Cage",
+    "Lamorne Morris",
+    "Li Jun Li"
+ ]
+},
+
+{
+ id:41,
+ title:"The Punisher: One Last Kill",
+ poster:"https://i.pinimg.com/736x/cd/ed/6b/cded6b72af5a9612228c2ef4a060539d.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4,
+ genre:["Action","Crime","Thriller"],
+
+ summary:"Frank Castle returns for one final battle as he hunts down criminals while confronting the violence and pain that have defined his life.",
+
+ starring:[
+    "Jon Bernthal",
+    "Aidan Gillen",
+    "Amber Rose Revah"
+ ]
+},
+
+{
+ id:40,
+ title:"APEX",
+ poster:"https://i.pinimg.com/736x/8e/ba/82/8eba824f089754d25e9f22f0f5494adc.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4.9,
+ genre:["Action","Sci-Fi","Thriller"],
+
+ summary:"A futuristic battle begins when skilled fighters enter a deadly competition where survival depends on strategy, strength and advanced technology.",
+
+ starring:[
+    "Charlize Theron",
+    "Taron Egerton",
+    "Henry Cavill"
+ ]
+},
+ {
+ id:39,
+ title:"CRIME 101",
+ poster:"https://i.pinimg.com/736x/b3/48/ef/b348ef761252b78c6b2dc007e286fca9.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4.9,
+ genre:["Crime","Drama","Thriller"],
+
+ summary:"A skilled thief plans one final operation while navigating a dangerous world of crime, loyalty and betrayal. A tense story about ambition and the consequences of chasing the perfect score.",
+
+ starring:[
+    "Chris Hemsworth",
+    "Mark Ruffalo",
+    "Halle Berry"
+ ]
+},
+
+{
+ id:38,
+ title:"HAIL MARY",
+ poster:"https://i.pinimg.com/736x/d9/ee/0e/d9ee0e2e6875a9e9205f6dc47f34ff58.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4,
+ genre:["Sci-Fi","Adventure"],
+
+ summary:"A lone astronaut wakes up facing an impossible mission that could decide the future of humanity. With limited time, she must uncover a mystery beyond Earth.",
+
+ starring:[
+    "Ryan Gosling",
+    "Sandra Hüller",
+    "Milana Vayntrub"
+ ]
+},
+
+{
+ id:37,
+ title:"OFF CAMPUS",
+ poster:"https://i.pinimg.com/736x/93/1b/f5/931bf52a4b8d4c417c0914ab280a077d.jpg",
+ trailer:"https://www.youtube.com/embed/4Vin2GSA4V0",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Drama","Romance"],
+
+ summary:"A young romance develops outside the classroom as two people discover love, personal struggles and the challenges of growing up together.",
+
+ starring:[
+    "TBA",
+    "TBA",
+    "TBA"
+ ]
+},
+
+{
+ id:36,
+ title:"WAR MACHINE 2026",
+ poster:"https://i.pinimg.com/736x/49/60/b6/4960b6a8ee37a04e01a45c97d7836134.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Action","Sci-Fi","War"],
+
+ summary:"A futuristic war pushes advanced technology and human courage to their limits as soldiers fight against a powerful enemy threatening the world.",
+
+ starring:[
+    "Brad Pitt",
+    "Anthony Mackie",
+    "Dwayne Johnson"
+ ]
+},
+
+{
+ id:35,
+ title:"SPIDER-MAN Brand New Day",
+ poster:"https://i.pinimg.com/736x/c2/65/1f/c2651f93f4fec4dbfaa6488bd379365b.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Superhero","Action","Adventure"],
+
+ summary:"Peter Parker begins a new chapter while facing fresh dangers, powerful enemies and the challenges of protecting the city as Spider-Man.",
+
+ starring:[
+    "Tom Holland",
+    "Zendaya",
+    "Jacob Batalon"
+ ]
+},
+
+{
+ id:30,
+ title:"Captain America: Brave New World",
+ poster:"https://i.pinimg.com/736x/15/3e/aa/153eaa19c88070b8169f9b97f855b5f4.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Superhero","Action","Sci-Fi"],
+
+ summary:"Sam Wilson takes on the responsibility of Captain America while uncovering a dangerous conspiracy that threatens global security.",
+
+ starring:[
+    "Anthony Mackie",
+    "Harrison Ford",
+    "Danny Ramirez"
+ ]
+},
+
+{
+ id:31,
+ title:"Thunderbolts*",
+ poster:"https://image.tmdb.org/t/p/w500/m9EtP1Yrzv6v7dMaC9mRaGhd1um.jpg",
+ backdrop:"",
+ date:2026,
+ rating:5,
+ genre:["Superhero","Action","Adventure"],
+
+ summary:"A group of unlikely heroes and antiheroes are brought together for a dangerous mission where trust becomes their greatest challenge.",
+
+ starring:[
+    "Florence Pugh",
+    "Sebastian Stan",
+    "David Harbour"
+ ]
+},
+
+{
+ id:32,
+ title:"Blade 4 (2026)",
+ poster:"https://i.pinimg.com/1200x/4e/47/11/4e47114c06758a2b9dfd9f1afba17251.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4,
+ genre:["Horror","Action","Supernatural"],
+
+ summary:"The legendary vampire hunter returns to battle a new supernatural threat while protecting humanity from creatures hiding in the shadows.",
+
+ starring:[
+    "Mahershala Ali",
+    "Mia Goth",
+    "Aaron Pierre"
+ ]
+},
+
+{
+ id:33,
+ title:"Mission: Impossible - The Final Reckoning",
+ poster:"https://i.pinimg.com/736x/8c/34/53/8c3453960d34d7d083266cabd2123758.jpg",
+ backdrop:"",
+ date:2025,
+ rating:4,
+ genre:["Action","Thriller","Spy"],
+
+ summary:"Ethan Hunt faces his most dangerous mission yet as he races against time to stop a threat that could change the world forever.",
+
+ starring:[
+    "Tom Cruise",
+    "Hayley Atwell",
+    "Simon Pegg"
+ ]
+},
+
+{
+ id:34,
+ title:"Superman (2026)",
+ poster:"https://i.pinimg.com/736x/e1/5f/c9/e15fc912b33a0c9aa2819130a20625b5.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4,
+ genre:["Superhero","Action","Drama"],
+
+ summary:"A new Superman begins his journey balancing his powerful abilities with his mission to inspire hope and protect humanity.",
+
+ starring:[
+    "David Corenswet",
+    "Rachel Brosnahan",
+    "Nicholas Hoult"
+ ]
+},
+
+{
+ id:29,
+ title:"Friday the 13th (2025)",
+ poster:"https://i.pinimg.com/736x/30/08/06/300806b96dc77f67988d87aa043e6b6d.jpg",
+ backdrop:"",
+ date:2025,
+ rating:4,
+ genre:["Horror","Slasher"],
+
+ summary:"A terrifying return to a legendary horror world where a group of people must survive a deadly encounter with a mysterious killer.",
+
+ starring:[
+    "TBA",
+    "TBA",
+    "TBA"
+ ]
+},
+
+{
+ id:28,
+ title:"The Matrix 5",
+ poster:"https://i.pinimg.com/1200x/bd/30/b1/bd30b101d3e348872ceb62f95654e691.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4,
+ genre:["Sci-Fi","Action","Cyberpunk"],
+
+ summary:"The Matrix universe expands with a new battle over reality, technology and freedom as humanity faces another dangerous evolution.",
+
+ starring:[
+    "Keanu Reeves",
+    "Carrie-Anne Moss",
+    "TBA"
+ ]
+},
+
+{
+ id:27,
+ title:"Transformers One",
+ poster:"https://i.pinimg.com/736x/2c/0f/1d/2c0f1d0ea64457c0b95fa7b510ebf145.jpg",
+ backdrop:"",
+ date:2025,
+ rating:5,
+ genre:["Animation","Sci-Fi","Action"],
+
+ summary:"The origins of Cybertron's greatest heroes are revealed in an adventure showing how friendship and rivalry shaped the Transformers forever.",
+
+ starring:[
+    "Chris Hemsworth",
+    "Brian Tyree Henry",
+    "Scarlett Johansson"
+ ]
+},
+
+{
+ id:24,
+ title:"The Legend of Zelda",
+ poster:"https://i.pinimg.com/736x/1c/05/42/1c05428c3ab99b0203e2ae8d6f4f97c1.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4,
+ genre:["Fantasy","Adventure","Action"],
+
+ summary:"A young hero embarks on a legendary quest through a magical kingdom filled with secrets, battles and ancient powers.",
+
+ starring:[
+    "TBA",
+    "TBA",
+    "TBA"
+ ]
+},
+
+{
+ id:26,
+ title:"Monster High (2025)",
+ poster:"https://i.pinimg.com/1200x/b6/cd/0d/b6cd0d27d8cb39829f2e68d3462381da.jpg",
+ backdrop:"",
+ date:2025,
+ rating:3,
+ genre:["Animation","Fantasy","Comedy"],
+
+ summary:"A fun fantasy adventure following unique characters as they embrace their differences and discover the power of friendship.",
+
+ starring:[
+    "TBA",
+    "TBA",
+    "TBA"
+ ]
+},
+
+{
+ id:25,
+ title:"Moana 2026",
+ poster:"https://i.pinimg.com/1200x/7f/00/f0/7f00f0e58932cf7db60aaa441ea5b0c4.jpg",
+ backdrop:"",
+ date:2026,
+ rating:4,
+ genre:["Animation","Adventure","Fantasy"],
+
+ summary:"Moana returns for another ocean adventure filled with new challenges, discoveries and a journey that tests her courage and connection to her world.",
+
+ starring:[
+    "Auli'i Cravalho",
+    "Dwayne Johnson",
+    "Alan Tudyk"
+ ]
+},
   {
     id: 0.1,
     title: "Minecraft: The Movie",
