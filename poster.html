@@ -1302,10 +1302,11 @@ const suggestBox = document.getElementById("suggestBox");
 // RENDER MOVIES
 /////////////////////////////
 
+function renderMovies(list){
+
 postersRow.innerHTML = list.map(m => `
 
 <div class="card">
-
 
     <div class="poster-link" onclick="openMovieModal(${m.id})">
 
@@ -1322,13 +1323,16 @@ postersRow.innerHTML = list.map(m => `
             ${m.date || ""}
         </div>
 
+
         <div class="stars">
             ${"★".repeat(Math.round(m.rating || 0))}
         </div>
 
+
         <div class="genre-tag">
             ${m.genre ? m.genre[0] : ""}
         </div>
+
 
     </div>
 
@@ -1344,8 +1348,10 @@ postersRow.innerHTML = list.map(m => `
 
 </div>
 
+
 `).join("");
 
+}
 /////////////////////////////
 // INITIAL LOAD
 /////////////////////////////
