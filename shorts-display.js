@@ -89,3 +89,25 @@ function filterShorts(category){
 
 // Load all shorts initially
 displayShorts(shorts);
+
+
+const searchInput = document.getElementById("short-search");
+
+
+searchInput.addEventListener("keyup", function(){
+
+    const searchValue = this.value.toLowerCase();
+
+
+    const filtered = shorts.filter(short =>
+
+        short.title.toLowerCase().includes(searchValue) ||
+        short.description.toLowerCase().includes(searchValue) ||
+        short.category.toLowerCase().includes(searchValue)
+
+    );
+
+
+    displayShorts(filtered);
+
+});
