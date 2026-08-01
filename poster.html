@@ -414,37 +414,77 @@ nav a.active::after{
 }
 
 }
-      .movie-modal{
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+  .movie-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.85);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
 }
 
 
 .movie-modal.show{
-    display: flex;
+    display:flex;
 }
 
 
 .movie-modal-content{
-    width: 80%;
-    max-width: 900px;
-    background: #111;
-    color:white;
+
+    width:850px;
+    max-width:90%;
+
+    background:#111;
+
     display:flex;
     gap:30px;
+
     padding:30px;
+
     border-radius:20px;
+
+    color:white;
+
 }
 
 
 .modal-poster img{
-    width:250px;
-    border-radius:15px;
+
+    width:260px;
+
+    height:380px;
+
+    object-fit:cover;
+
+    border-radius:12px;
+
+}
+
+
+.modal-info h2{
+
+    color:#fff;
+
+}
+
+
+.modal-actions a{
+
+    display:inline-block;
+
+    margin-right:10px;
+
+    padding:10px 15px;
+
+    background:#e50914;
+
+    color:white;
+
+    border-radius:8px;
+
+    text-decoration:none;
+
 }
 
 
