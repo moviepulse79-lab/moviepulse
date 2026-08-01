@@ -1254,17 +1254,21 @@ postersRow.innerHTML = list.map(m => `
 
 <div class="card">
 
-    <div class="poster-link" onclick="openMovieModal(${m.id})">
+    <a href="javascript:void(0)" 
+       class="poster-link" 
+       onclick="openMovieModal(${m.id})">
 
         <img src="${m.poster}" alt="${m.title}">
 
-    </div>
+    </a>
 
     <h3>${m.title}</h3>
 
 </div>
 
 `).join("");
+
+}
       
 
       <div class="meta">
