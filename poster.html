@@ -399,6 +399,50 @@ nav a.active::after{
 }
 
 }
+      .movie-modal{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+
+.movie-modal.show{
+    display: flex;
+}
+
+
+.movie-modal-content{
+    width: 80%;
+    max-width: 900px;
+    background: #111;
+    color:white;
+    display:flex;
+    gap:30px;
+    padding:30px;
+    border-radius:20px;
+}
+
+
+.modal-poster img{
+    width:250px;
+    border-radius:15px;
+}
+
+
+.close-modal{
+    position:absolute;
+    top:30px;
+    right:40px;
+    font-size:30px;
+    background:none;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
 
 </style>
 </head>
@@ -1402,6 +1446,31 @@ menuBtn.addEventListener("click", () => {
     });
 
     button.classList.add("active");
+}
+
+      function openMovieModal(id){
+
+    const movie = movies.find(m => m.id === id);
+
+    if(!movie){
+        console.log("Movie not found");
+        return;
+    }
+
+    console.log(movie);
+
+    document.getElementById("modalPoster").src = movie.poster;
+    document.getElementById("modalTitle").textContent = movie.title;
+
+    document.getElementById("movieModal").classList.add("show");
+
+}
+
+      function closeMovieModal(){
+
+    document.getElementById("movieModal")
+    .classList.remove("show");
+
 }
 </script>
 </body>
