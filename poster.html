@@ -1564,8 +1564,8 @@ function openMovieModal(id){
     document.getElementById("modalTitle").textContent = movie.title;
 
 
-    document.getElementById("modalGenre").textContent =
-        movie.genre.join(" • ");
+   document.getElementById("modalGenre").textContent =
+    movie.genre ? movie.genre.join(" • ") : "Genre unavailable";
 
 
     document.getElementById("modalSummary").textContent =
