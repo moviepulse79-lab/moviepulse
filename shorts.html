@@ -281,39 +281,21 @@
 }
 
 
-.search-icon {
-
-    position:absolute;
-
-    right:25px;
-    top:50%;
-
-    transform:translateY(-50%);
-
-    font-size:22px;
-
-    color:#e50914;
-
-    pointer-events:none;
-
+.search-box input{
+    width:100%;
+    padding:18px 60px 18px 25px;
 }
-    .search-icon {
 
+.search-icon{
     position:absolute;
     right:15px;
     top:50%;
-
     transform:translateY(-50%);
-
     background:none;
     border:none;
-
     color:#e50914;
-
     font-size:22px;
-
     cursor:pointer;
-
 }
 </style>
 </head>
@@ -351,16 +333,18 @@
     
 <div class="shorts-search">
 
-    <div class="search-box">
+<div class="search-box">
 
-        <input 
-        type="text" 
-        id="short-search" 
+    <input
+        type="text"
+        id="short-search"
         placeholder="Search Shorts...">
 
-      <button class="search-icon" onclick="searchShorts()">🔍</button>
+    <button type="button" class="search-icon" onclick="searchShorts()">
+        🔍
+    </button>
 
-    </div>
+</div>
 
 </div>
     <div class="shorts-filter">
