@@ -1571,7 +1571,45 @@ menuBtn.addEventListener("click", () => {
     button.classList.add("active");
 }
 
+function openMovieModal(id){
 
+    const movie = movies.find(m => m.id === id);
+
+    if(!movie){
+        return;
+    }
+
+
+    document.getElementById("modalPoster").src = movie.poster;
+
+    document.getElementById("modalTitle").textContent = movie.title;
+
+
+    document.getElementById("modalGenre").textContent =
+        movie.genre ? movie.genre.join(" • ") : "Genre unavailable";
+
+
+    document.getElementById("modalSummary").textContent =
+        movie.summary || "No summary available.";
+
+
+    document.getElementById("modalCast").innerHTML =
+        movie.starring 
+        ? movie.starring.map(name => `<li>${name}</li>`).join("")
+        : "<li>Unknown</li>";
+
+
+    document.getElementById("modalTrailer").href =
+        `trailer.html?id=${movie.id}`;
+
+
+    document.getElementById("modalBackdrop").style.backgroundImage =
+    `url(${movie.poster})`;
+
+
+    document.getElementById("movieModal").classList.add("show");
+
+}
 
       function closeMovieModal(){
 
@@ -1579,11 +1617,7 @@ menuBtn.addEventListener("click", () => {
     .classList.remove("show");
 
 }
-      function openMovieModal(id){
 
-    alert("Clicked ID: " + id);
-
-}
 </script>
 </body>
 </html>
