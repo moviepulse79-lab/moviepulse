@@ -1,54 +1,82 @@
 const container = document.getElementById("shorts-container");
 
-shorts.forEach(short => {
 
-    // Extract the video ID from the TikTok URL
-    const videoId = short.tiktok.split("/video/")[1];
+function displayShorts(shortList) {
 
-
-    container.innerHTML += `
-
-    <div class="short-card">
-
-        <blockquote
-            class="tiktok-embed"
-            cite="${short.tiktok}"
-            data-video-id="${videoId}"
-            style="max-width:325px; min-width:325px;">
-
-            <section>
-                <a target="_blank" href="https://www.tiktok.com/@moviepulse_247">
-                    @moviepulse_247
-                </a>
-            </section>
-
-        </blockquote>
+    container.innerHTML = "";
 
 
-        <h3>${short.title}</h3>
+    shortList.forEach(short => {
 
-        <p>${short.description}</p>
+        const videoId = short.tiktok.split("/video/")[1];
 
 
-        ${
-            short.movieId 
-            ? `
-            <a href="trailer.html?id=${short.movieId}" class="watch-movie-btn">
+        container.innerHTML += `
+
+        <div class="short-card">
+
+            <blockquote
+                class="tiktok-embed"
+                cite="${short.tiktok}"
+                data-video-id="${videoId}"
+                style="max-width:325px; min-width:325px;">
+
+                <section>
+                    <a target="_blank" href="https://www.tiktok.com/@moviepulse_247">
+                        @moviepulse_247
+                    </a>
+                </section>
+
+            </blockquote>
+
+
+            <h3>${short.title}</h3>
+
+            <p>${short.description}</p>
+
+
+            ${
+                short.movieId
+                ?
+                `<a href="trailer.html?id=${short.movieId}" class="watch-movie-btn">
                 🎬 Movie Details
-            </a>
-            `
-            : ""
-        }
+                </a>`
+                :
+                ""
+            }
+
+        </div>
+
+        `;
+
+    });
 
 
-    </div>
+    if(window.tiktokEmbed && typeof window.tiktokEmbed.load === "function"){
+        window.tiktokEmbed.load();
+    }
 
-    `;
-
-});
-
-
-// Tell TikTok to render the newly added embeds
-if (window.tiktokEmbed && typeof window.tiktokEmbed.load === "function") {
-    window.tiktokEmbed.load();
 }
+
+
+
+function filterShorts(category){
+
+    if(category === "All"){
+        displayShorts(shorts);
+    }
+    else{
+
+        const filtered = shorts.filter(short => 
+            short.category === category
+        );
+
+        displayShorts(filtered);
+
+    }
+
+}
+
+
+// Load all shorts initially
+displayShorts(shorts);
