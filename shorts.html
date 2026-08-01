@@ -234,43 +234,67 @@
     box-shadow:0 0 15px rgba(229,9,20,0.7);
 
 }
-    .shorts-search {
-
-    text-align:center;
-    margin:25px 0;
-
+.shorts-search {
+    display:flex;
+    justify-content:center;
+    margin:35px 0;
 }
 
 
-.shorts-search input {
+.search-box {
+    position:relative;
+    width:75%;
+    max-width:700px;
+}
 
-    width:60%;
-    max-width:500px;
-    padding:14px 20px;
+
+.search-box input {
+
+    width:100%;
+    padding:18px 60px 18px 25px;
 
     background:#111;
     color:white;
 
     border:1px solid #333;
-    border-radius:30px;
+    border-radius:35px;
 
-    font-size:16px;
+    font-size:18px;
+
     outline:none;
 
 }
 
 
-.shorts-search input:focus {
+.search-box input:focus {
 
     border-color:#e50914;
-    box-shadow:0 0 15px rgba(229,9,20,0.5);
+    box-shadow:0 0 18px rgba(229,9,20,0.5);
 
 }
 
 
-.shorts-search input::placeholder {
+.search-box input::placeholder {
 
     color:#888;
+
+}
+
+
+.search-icon {
+
+    position:absolute;
+
+    right:25px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    font-size:22px;
+
+    color:#e50914;
+
+    pointer-events:none;
 
 }
 </style>
@@ -306,7 +330,20 @@
         <h1>MoviePulse Shorts</h1>
         <p>Watch the latest movie moments, trailers and cinematic clips.</p>
     </div>
-    
+<div class="shorts-search">
+
+    <div class="search-box">
+
+        <input 
+        type="text" 
+        id="short-search" 
+        placeholder="Search Shorts...">
+
+        <span class="search-icon">🔍</span>
+
+    </div>
+
+</div>
     <div class="shorts-filter">
 
     <button onclick="filterShorts('All')">All</button>
