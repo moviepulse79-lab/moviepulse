@@ -244,9 +244,30 @@ nav a.active::after{
     z-index:5;
     text-shadow:0 2px 5px #000;
 }
-      .hover-buttons{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;transition:opacity .18s;pointer-events:none}
-  .card:hover .hover-buttons{opacity:1;pointer-events:auto;background:rgba(0,0,0,0.45)}
-  .btn{padding:8px 12px;border-radius:6px;border:none;background:var(--accent);color:#fff;cursor:pointer;font-weight:700}
+.hover-buttons{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:45px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    opacity:0;
+    transition:.2s;
+
+    pointer-events:none;
+
+    z-index:5;
+}
+.card:hover .hover-buttons{
+    opacity:1;
+    pointer-events:auto;
+    background:rgba(0,0,0,.45);
+}
+      .btn{padding:8px 12px;border-radius:6px;border:none;background:var(--accent);color:#fff;cursor:pointer;font-weight:700}
   .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.08)}
   .rating{color:#FFD700;margin-top:6px}
 
