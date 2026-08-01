@@ -5,30 +5,48 @@ shorts.forEach(short => {
     // Extract the video ID from the TikTok URL
     const videoId = short.tiktok.split("/video/")[1];
 
+
     container.innerHTML += `
-        <div class="short-card">
 
-            <blockquote
-                class="tiktok-embed"
-                cite="${short.tiktok}"
-                data-video-id="${videoId}"
-                style="max-width:325px; min-width:325px;">
+    <div class="short-card">
 
-                <section>
-                    <a target="_blank" href="https://www.tiktok.com/@moviepulse_247">
-                        @moviepulse_247
-                    </a>
-                </section>
+        <blockquote
+            class="tiktok-embed"
+            cite="${short.tiktok}"
+            data-video-id="${videoId}"
+            style="max-width:325px; min-width:325px;">
 
-            </blockquote>
+            <section>
+                <a target="_blank" href="https://www.tiktok.com/@moviepulse_247">
+                    @moviepulse_247
+                </a>
+            </section>
 
-            <h3>${short.title}</h3>
-            <p>${short.description}</p>
+        </blockquote>
 
-        </div>
+
+        <h3>${short.title}</h3>
+
+        <p>${short.description}</p>
+
+
+        ${
+            short.movieId 
+            ? `
+            <a href="trailer.html?id=${short.movieId}" class="watch-movie-btn">
+                🎬 Movie Details
+            </a>
+            `
+            : ""
+        }
+
+
+    </div>
+
     `;
 
 });
+
 
 // Tell TikTok to render the newly added embeds
 if (window.tiktokEmbed && typeof window.tiktokEmbed.load === "function") {
