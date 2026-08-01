@@ -297,6 +297,24 @@
     pointer-events:none;
 
 }
+    .search-icon {
+
+    position:absolute;
+    right:15px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    background:none;
+    border:none;
+
+    color:#e50914;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+}
 </style>
 </head>
 <body>
@@ -330,6 +348,7 @@
         <h1>MoviePulse Shorts</h1>
         <p>Watch the latest movie moments, trailers and cinematic clips.</p>
     </div>
+    
 <div class="shorts-search">
 
     <div class="search-box">
@@ -339,7 +358,7 @@
         id="short-search" 
         placeholder="Search Shorts...">
 
-        <span class="search-icon">🔍</span>
+      <button class="search-icon" onclick="searchShorts()">🔍</button>
 
     </div>
 
