@@ -2025,11 +2025,12 @@ function openMovieModal(id){
         `trailer.html?id=${movie.id}`;
 
 
-    document.getElementById("modalBackdrop").style.backgroundImage =
-    `url(${movie.poster})`;
-
-
     document.getElementById("movieModal").classList.add("show");
+      
+      document.getElementById("modalBackdrop").style.backgroundImage =
+movie.backdrop 
+? `url(${movie.backdrop})`
+: `url(${movie.poster})`;
 
 }
 
