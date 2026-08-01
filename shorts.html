@@ -199,6 +199,31 @@
     transform:translateY(-2px);
     box-shadow:0 0 18px rgba(229,9,20,.5);
 }
+    .shorts-filter {
+    text-align:center;
+    margin:30px 0;
+}
+
+
+.shorts-filter button {
+
+    background:#111;
+    color:white;
+    border:1px solid #e50914;
+    padding:10px 20px;
+    margin:5px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:.3s;
+
+}
+
+
+.shorts-filter button:hover {
+
+    background:#e50914;
+
+}
 </style>
 </head>
 <body>
@@ -232,6 +257,17 @@
         <h1>MoviePulse Shorts</h1>
         <p>Watch the latest movie moments, trailers and cinematic clips.</p>
     </div>
+    
+    <div class="shorts-filter">
+
+    <button onclick="filterShorts('All')">All</button>
+    <button onclick="filterShorts('Action')">Action</button>
+    <button onclick="filterShorts('Horror')">Horror</button>
+    <button onclick="filterShorts('Romance')">Romance</button>
+    <button onclick="filterShorts('Sci-Fi')">Sci-Fi</button>
+    <button onclick="filterShorts('Animation')">Animation</button>
+
+</div>
 <div class="shorts-container" id="shorts-container"></div>
 
 
