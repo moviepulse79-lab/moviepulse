@@ -148,6 +148,73 @@ nav a.active::after{
         text-align:center;
         border-bottom:1px solid rgba(255,255,255,.1);
     }
+      .favorites-page{
+    padding:40px 5%;
+}
+
+
+#favoritesContainer{
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+
+}
+
+
+#favoritesContainer .movie-card{
+
+    width:160px;
+    flex-shrink:0;
+
+}
+
+
+#favoritesContainer .poster-box{
+
+    position:relative;
+    overflow:hidden;
+    border-radius:10px;
+
+}
+
+
+#favoritesContainer img{
+
+    width:160px;
+    height:240px;
+    object-fit:cover;
+    display:block;
+
+}
+
+
+#favoritesContainer h3{
+
+    font-size:14px;
+    margin-top:10px;
+    color:white;
+
+}
+
+
+.remove-favorite{
+
+    position:absolute;
+    top:8px;
+    right:8px;
+    z-index:2;
+
+    border:none;
+    background:#000;
+    border-radius:50%;
+
+    width:35px;
+    height:35px;
+
+    cursor:pointer;
+
+}
   </style>
 </head>
   <body>
