@@ -38,6 +38,12 @@ const shorts = [
         tiktok: "https://www.tiktok.com/@moviepulse_247/video/7664118890435218708",
          category:"Action"
     },
+     {
+        title: "Drama series",
+        description: "Daily movie news and cinematic moments.",
+        tiktok: "https://www.tiktok.com/@moviepulse_247/video/7669085445816372500",
+         category:"Drama"
+    },
     {
         title: "chackie chan him self",
         description: "Daily movie news and cinematic moments.",
