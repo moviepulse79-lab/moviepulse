@@ -1,4 +1,28 @@
+const favoritesContainer =
+document.getElementById("favoritesContainer");
+
+
+let favorites =
+JSON.parse(localStorage.getItem("favorites")) || [];
+
+
+let favoriteMovies = movies.filter(movie =>
+    favorites.includes(movie.id)
+);
+
+
+if(favoriteMovies.length === 0){
+
+    favoritesContainer.innerHTML = `
+    <h2>No favorites yet ❤️</h2>
+    <p>Open a movie and add it to your favorites.</p>
+    `;
+
+}else{
+
+
 favoriteMovies.forEach(movie => {
+
 
 favoritesContainer.innerHTML += `
 
@@ -27,3 +51,27 @@ favoritesContainer.innerHTML += `
 `;
 
 });
+
+}
+
+
+// ADD THIS AT THE VERY BOTTOM 👇
+
+function removeFavorite(id){
+
+    let favorites =
+    JSON.parse(localStorage.getItem("favorites")) || [];
+
+
+    favorites = favorites.filter(movieId => movieId !== id);
+
+
+    localStorage.setItem(
+        "favorites",
+        JSON.stringify(favorites)
+    );
+
+
+    location.reload();
+
+}
