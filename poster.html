@@ -2309,7 +2309,8 @@ function openMovieModal(id){
     if(!movie){
         return;
     }
-
+      
+  currentMovieId = movie.id;
 
     document.getElementById("modalPoster").src = movie.poster;
 
