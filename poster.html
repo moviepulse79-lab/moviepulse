@@ -754,7 +754,9 @@ nav a.active::after{
                 <a id="modalTrailer">
                     ▶ Trailer
                 </a>
-
+ <button id="modalFavorite" onclick="toggleFavorite()">
+        🤍 Add Favorite
+    </button>
             </div>
 
         </div>
@@ -788,6 +790,8 @@ nav a.active::after{
  </footer>
 <script>
   // MOVIES ARRAY (now embedded here, no movie.js needed)
+      let currentMovieId = null;
+
 const movies = [
 {
  id:86,
@@ -2327,22 +2331,50 @@ function openMovieModal(id){
         `trailer.html?id=${movie.id}`;
 
 
-    document.getElementById("movieModal").classList.add("show");
-      
-      document.getElementById("modalBackdrop").style.backgroundImage =
+document.getElementById("movieModal").classList.add("show");
+
+document.getElementById("modalBackdrop").style.backgroundImage =
 movie.backdrop 
 ? `url(${movie.backdrop})`
 : `url(${movie.poster})`;
 
 }
 
-      function closeMovieModal(){
+
+function toggleFavorite(){
+
+    let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+    if(favorites.includes(currentMovieId)){
+
+        favorites = favorites.filter(id => id !== currentMovieId);
+
+        document.getElementById("modalFavorite").innerHTML =
+        "🤍 Add Favorite";
+
+    }else{
+
+        favorites.push(currentMovieId);
+
+        document.getElementById("modalFavorite").innerHTML =
+        "❤️ Added";
+
+    }
+
+    localStorage.setItem(
+        "favorites",
+        JSON.stringify(favorites)
+    );
+
+}
+
+
+function closeMovieModal(){
 
     document.getElementById("movieModal")
     .classList.remove("show");
 
 }
-
 </script>
 </body>
 </html>
