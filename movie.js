@@ -76,6 +76,109 @@ The Thomas Crown Affair (2027) looks like it has everything needed to become one
             },
 
 
+                       {
+  id: 86,
+  title: "Confinement",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/i92X6pBSqZgHAvIX28p0AZJU8xz.jpg",
+  rating: 4,
+  trailer: "https://www.youtube.com/embed/pKD5M0JAH3w",
+ starring: [
+        "Nathalie Emmanuel",
+        "Ben Cura",
+        "Claire Forlani",
+        "Eloise Lovell Anderson"
+    ],
+summary:`<p>
+After losing her husband, a pregnant widow accepts an invitation to stay with his estranged family at their secluded countryside estate, hoping to find comfort and support during the most vulnerable time of her life. Instead, she is welcomed into a house filled with strange traditions, hidden tensions, and unsettling behavior that quickly makes her question everyone's intentions.
+<br><br>
+As disturbing events become impossible to ignore, paranoia begins to replace grief, and every passing day reveals another layer of the family's dark secrets. Trapped far from help and unsure of who she can trust, she must fight to protect herself and her unborn child before the truth surrounding the estate consumes them both. Blending psychological suspense with chilling mystery, <strong>Confinement</strong> promises an intense and nerve-racking story where danger hides behind every friendly smile.
+</p>`,
+ article:`
+
+<h1>Confinement Movie Review: A Tense Journey Into Fear, Survival, and Human Instincts</h1>
+
+<p>
+Confinement is a movie that explores one of the most powerful fears people can experience: being trapped with no easy way out. From the beginning, the film creates a tense atmosphere that keeps viewers questioning what will happen next. Instead of depending only on action or simple scares, the movie focuses on the emotional pressure of isolation, the choices people make under extreme circumstances, and how fear can change human behavior.
+</p>
+
+<p>
+The story follows characters who find themselves caught in a dangerous situation where escape becomes almost impossible. As the pressure increases, the movie slowly reveals their struggles, showing that the biggest challenges are not always physical but also psychological. The feeling of confinement becomes more than just a place. It becomes a test of trust, courage, and survival.
+</p>
+
+<p>
+One of the strongest elements of Confinement is the way it builds suspense. The movie understands that tension does not always come from explosions or fast-paced action. Sometimes silence, uncertainty, and the fear of the unknown can create a much stronger impact. Every scene carries a sense of danger, making viewers feel connected to the characters' desperate situation.
+</p>
+
+<p>
+The performances help bring the story to life. The characters are not shown as perfect heroes, but as real people with fears, mistakes, and personal struggles. Their reactions under pressure make the story more believable and allow audiences to understand the emotional weight of their situation.
+</p>
+
+<p>
+Visually, Confinement uses its limited setting effectively. The restricted environment increases the feeling of pressure and danger, creating an atmosphere where every decision feels important. The cinematography and dark tone support the suspenseful nature of the story and make the audience feel trapped alongside the characters.
+</p>
+
+<p>
+Although some moments may feel slower compared to traditional thrillers, the pacing helps develop the characters and strengthen the emotional side of the story. The movie is more focused on psychological tension than constant action, making it a better experience for viewers who enjoy mystery, survival, and character-driven thrillers.
+</p>
+
+<p>
+Overall, Confinement delivers a tense and engaging experience that explores fear, isolation, and human instincts. The film uses its concept effectively to create suspense while showing how people react when pushed into extreme situations. With its atmosphere, performances, and survival themes, Confinement is a thriller worth watching for fans of intense psychological stories.
+</p>
+
+<h2>Verdict</h2>
+
+<p>
+Confinement is a gripping survival thriller that creates strong tension through its atmosphere and emotional storytelling. While it may not completely change the genre, it offers enough mystery, suspense, and human drama to keep audiences interested until the end.
+</p>
+
+ <p>
+<strong>Genre:</strong><br>
+Thriller, Drama, Mystery, Survival
+</p>
+
+<p>
+<strong>Director:</strong><br>
+The official director details for Confinement have not been fully confirmed yet.
+</p>
+
+<p>
+<strong>Release Year:</strong><br>
+2026
+</p>
+
+<p>
+<strong>Setting:</strong><br>
+Confinement takes place in a tense and restricted environment where characters are forced to face fear, uncertainty, and difficult choices while fighting for survival.
+</p>
+
+<p>
+<strong>Audience:</strong><br>
+The movie is aimed at fans of psychological thrillers, suspense films, survival stories, and character-driven dramas.
+</p>
+
+<p>
+<strong>Runtime:</strong><br>
+The official runtime has not been announced yet.
+</p>
+
+<p>
+<strong>Production Companies:</strong><br>
+The official production companies behind Confinement have not been fully confirmed yet. More information about the studios involved in creating and financing the film is expected to be revealed closer to its release.
+</p>
+
+<p>
+<strong>Entertainment & Distribution:</strong><br>
+The entertainment partners, distributors, and streaming platforms connected to Confinement have not been officially announced. Updates about its release plans will be added once confirmed.
+</p>`,
+verdict: `
+<p>
+Confinement (2026) has the potential to be a tense and engaging thriller because it explores fear, isolation, and human survival under extreme circumstances. The movie’s focus on psychological pressure and the challenges of being trapped creates an atmosphere filled with suspense and uncertainty. With its survival-driven story and mysterious concept, Confinement could appeal to audiences who enjoy intense thrillers that rely on emotion, tension, and character struggles. If you enjoy movies that explore how people react when pushed to their limits, Confinement is a film worth watching.
+</p>
+`,
+
+hype: 8
+
+},
                      {
   id: 85,
   title: "Other Mommy(2026)",
