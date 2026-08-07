@@ -1,7 +1,7 @@
 window.movies = [
 
             {
-  id: 87,
+  id: 88,
   title: "The Thomas Crown Affair(2027)",
   poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/sT1TQeAy1PdRfPIb6rrM2DB7DB.jpg",
   rating: 5,
@@ -75,7 +75,82 @@ The Thomas Crown Affair (2027) looks like it has everything needed to become one
  hype: 9
             },
 
+            {
+  id: 87,
+  title: "Violent Night 2(2026)",
+  poster: "https://image.tmdb.org/t/p/original/wKgTxSjVZBjtTzK1wEXkLffaWC1.jpg",
+  rating: 5,
+  trailer: "https://www.youtube.com/embed/FmM2giDwLAE",
+   starring: [
+    "David Harbour",
+    "Kristen Bell",
+    "Jared Harris",
+    "Daniela Melchior",
+    "Joe Pantoliano"
+  ],
+ summary:`After surviving one unforgettable Christmas Eve, Santa Claus returns for another violent holiday adventure. This time, a powerful criminal organization launches a carefully planned attack that threatens an entire community during the festive season. Forced back into action, Santa must balance his magical abilities with his brutal fighting skills as he protects innocent families from ruthless mercenaries.
 
+As the danger escalates, Santa faces tougher enemies, bigger explosions, and even higher stakes than before. With Christmas hanging in the balance, he discovers that courage, sacrifice, and hope are just as important as strength. Blending over-the-top action, dark comedy, and holiday spirit, Violent Night 2 promises another thrilling and bloody Christmas adventure where the man in the red suit proves once again that he's the last person criminals should ever challenge.`,
+article:`<h1>Violent Night 2 (2026): Santa Returns for a Bigger, Bloodier Christmas Battle</h1>
+
+<p>
+When <strong>Violent Night</strong> arrived in 2022, many people expected a simple holiday action movie. Instead, it became one of the biggest surprises of the year, blending brutal action, dark comedy, and an unexpectedly emotional take on Santa Claus. Now <strong>Violent Night 2</strong> is set to continue that story with even higher stakes, bigger action sequences, and a new wave of festive chaos.
+</p>
+
+<h2>A Deadlier Christmas</h2>
+
+<p>
+David Harbour returns as the unconventional Santa Claus, who once again finds himself standing between innocent families and ruthless criminals. This time, a dangerous organization threatens Christmas on a much larger scale, forcing Santa to rely on both his magical abilities and his brutal combat skills to save the holiday.
+</p>
+
+<h2>Bigger Action and More Violence</h2>
+
+<p>
+The sequel promises larger action scenes, more creative fight choreography, and even deadlier enemies than the first film. From explosive shootouts to brutal hand-to-hand combat, the trailer suggests that Santa will face his toughest battle yet while delivering the same over-the-top violence fans loved in the original.
+</p>
+
+<h2>Dark Humor Returns</h2>
+
+<p>
+One of the biggest strengths of the first movie was its unique balance of comedy and action. <strong>Violent Night 2</strong> continues that formula by mixing hilarious one-liners with intense action, creating a Christmas movie unlike any other. The combination of festive decorations, brutal fights, and sarcastic humor gives the franchise its own identity.
+</p>
+
+<h2>Expanding Santa's World</h2>
+
+<p>
+Beyond the action, the sequel appears ready to explore more of Santa's mysterious past and the mythology surrounding the North Pole. New allies and enemies join the story, making the adventure feel larger while still keeping Santa at the heart of the narrative.
+</p>
+
+<h2>Should You Be Excited?</h2>
+
+<p>
+If you enjoyed the original <strong>Violent Night</strong>, the sequel looks like everything fans could ask for. Bigger action, stronger villains, more holiday madness, and another unforgettable performance from David Harbour make this one of the most anticipated Christmas action movies of 2026.
+</p>
+
+<h2>Movie Details</h2>
+
+<ul>
+  <li><strong>Genre:</strong> Action, Comedy, Thriller</li>
+  <li><strong>Director:</strong> Tommy Wirkola</li>
+  <li><strong>Release Year:</strong> 2026</li>
+  <li><strong>Runtime:</strong> TBA</li>
+  <li><strong>Audience:</strong> R</li>
+</ul>
+
+
+<p>
+<strong>Violent Night 2</strong> has all the ingredients for a successful sequel. By expanding the action, maintaining its dark sense of humor, and bringing back David Harbour's unforgettable Santa Claus, the film has the potential to become one of the most entertaining holiday releases of 2026.
+</p>`,
+verdict: `
+<p>
+Violent Night 2 (2026) has the potential to be an even bigger and more entertaining sequel by expanding on the brutal action, dark humor, and unique take on Santa Claus that made the original a fan favorite. With David Harbour returning to the role, higher stakes, and more explosive Christmas chaos, the film promises a thrilling holiday experience unlike any other. If it delivers the same balance of action, comedy, and heart while introducing fresh surprises, Violent Night 2 could become one of the standout action movies of the 2026 holiday season.
+</p>
+`,
+
+hype: 9.5
+
+},
+            
                        {
   id: 86,
   title: "Confinement",
