@@ -55,32 +55,38 @@ document.head.appendChild(script);
 // DYNAMIC SEO METADATA
 // =====================
 
-document.title = `${current.title} - Trailer, Cast & Review | MoviePulse`;
+const current = movies.find(m => String(m.id) === String(id));
 
-const metaDescription = document.querySelector(
-  'meta[name="description"]'
-);
+if (!current) {
+    document.title = "Movie Not Found | MoviePulse";
+} else {
 
-if (metaDescription) {
-  metaDescription.setAttribute(
-    "content",
-    `${current.title} on MoviePulse. Read the movie article, explore the cast, watch the official trailer, and discover the latest movie details.`
-  );
+    document.title = `${current.title} - Trailer, Cast & Review | MoviePulse`;
+
+    const metaDescription = document.querySelector(
+        'meta[name="description"]'
+    );
+
+    if (metaDescription) {
+        metaDescription.setAttribute(
+            "content",
+            `${current.title} on MoviePulse. Read the movie article, explore the cast, watch the official trailer, and discover the latest movie details.`
+        );
+    }
+
+    let canonical = document.querySelector(
+        'link[rel="canonical"]'
+    );
+
+    if (!canonical) {
+        canonical = document.createElement("link");
+        canonical.rel = "canonical";
+        document.head.appendChild(canonical);
+    }
+
+    canonical.href =
+        `https://moviepulse247.netlify.app/trailer.html?id=${current.id}`;
 }
-
-let canonical = document.querySelector(
-  'link[rel="canonical"]'
-);
-
-if (!canonical) {
-  canonical = document.createElement("link");
-  canonical.rel = "canonical";
-  document.head.appendChild(canonical);
-}
-
-canonical.href =
-  `https://moviepulse247.netlify.app/trailer.html?id=${current.id}`;
-
 /////////////////////////////
 // GET RECOMMENDATIONS
 /////////////////////////////
