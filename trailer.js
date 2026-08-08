@@ -55,7 +55,7 @@ document.head.appendChild(script);
 // DYNAMIC SEO METADATA
 // =====================
 
-document.title = `${current.title} | MoviePulse`;
+document.title = `${current.title} - Trailer, Cast & Review | MoviePulse`;
 
 const metaDescription = document.querySelector(
   'meta[name="description"]'
