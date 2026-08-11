@@ -216,6 +216,178 @@ nav a.active::after{
     cursor:pointer;
 
 }
+      /* Empty Favorites */
+.empty-favorites {
+    min-height: 55vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 50px 20px;
+    animation: favoriteFadeIn 0.8s ease;
+}
+
+.favorite-sticker {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 20px;
+    animation: stickerFloat 3s ease-in-out infinite;
+}
+
+/* Main sticker */
+.sticker-heart {
+    position: absolute;
+    width: 110px;
+    height: 100px;
+    left: 20px;
+    top: 25px;
+    background: #e50914;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 58px;
+    border-radius: 50%;
+    box-shadow:
+        0 0 20px rgba(229, 9, 20, 0.45),
+        0 0 45px rgba(229, 9, 20, 0.2);
+    transform: rotate(-5deg);
+}
+
+.sticker-film {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 55px;
+    height: 55px;
+    background: #111;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    transform: rotate(12deg);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.35);
+}
+
+/* Floating decorations */
+.floating-heart,
+.floating-star {
+    position: absolute;
+    color: #e50914;
+    animation: decorationFloat 2.5s ease-in-out infinite;
+}
+
+.heart-one {
+    top: 5px;
+    left: 5px;
+    font-size: 22px;
+}
+
+.heart-two {
+    bottom: 15px;
+    left: 0;
+    font-size: 17px;
+    animation-delay: 0.7s;
+}
+
+.star-one {
+    top: 15px;
+    right: 5px;
+    font-size: 20px;
+    animation-delay: 0.3s;
+}
+
+.star-two {
+    bottom: 5px;
+    right: 20px;
+    font-size: 15px;
+    animation-delay: 1s;
+}
+
+.empty-favorites h2 {
+    margin: 10px 0;
+    font-size: 26px;
+    color: #fff;
+}
+
+.empty-favorites p {
+    max-width: 420px;
+    margin: 0 0 25px;
+    color: #aaa;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.explore-favorites {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #e50914;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s ease;
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.25);
+}
+
+.explore-favorites:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px rgba(229, 9, 20, 0.55);
+}
+
+/* Animations */
+@keyframes stickerFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-8px) rotate(2deg);
+    }
+}
+
+@keyframes decorationFloat {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: translateY(-8px) scale(1.15);
+        opacity: 1;
+    }
+}
+
+@keyframes favoriteFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+    .empty-favorites {
+        min-height: 50vh;
+        padding: 35px 15px;
+    }
+
+    .empty-favorites h2 {
+        font-size: 22px;
+    }
+
+    .empty-favorites p {
+        font-size: 14px;
+    }
+}
   </style>
 </head>
   <body>
@@ -245,7 +417,27 @@ nav a.active::after{
 </header>
     <section class="favorites-page">
 
-    <h1>❤️ My Favorites</h1>
+    <h1>My Favorites</h1>
+          <div id="emptyFavorites" class="empty-favorites">
+    <div class="favorite-sticker">
+        <div class="sticker-heart">♥</div>
+        <div class="sticker-film">🎬</div>
+        <div class="floating-heart heart-one">♥</div>
+        <div class="floating-heart heart-two">♥</div>
+        <div class="floating-star star-one">✦</div>
+        <div class="floating-star star-two">✦</div>
+    </div>
+
+    <h2>Your Favorites Are Lonely 💔</h2>
+
+    <p>
+        Save movies you love and they'll appear here.
+    </p>
+
+    <a href="poster.html" class="explore-favorites">
+        Explore Movies
+    </a>
+</div>
 
     <div class="posters-row" id="favoritesContainer">
 
