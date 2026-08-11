@@ -55,8 +55,6 @@ document.head.appendChild(script);
 // DYNAMIC SEO METADATA
 // =====================
 
-const current = movies.find(m => String(m.id) === String(id));
-
 if (!current) {
     document.title = "Movie Not Found | MoviePulse";
 } else {
