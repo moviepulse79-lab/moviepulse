@@ -702,6 +702,37 @@ nav a.active::after{
     0 0 30px rgba(255,30,30,0.5);
 
 }
+      .movies-intro {
+    max-width: 1000px;
+    margin: 40px auto 25px;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.movies-intro h1 {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.movies-intro p {
+    max-width: 850px;
+    margin: 0 auto;
+    line-height: 1.7;
+    color: #bbb;
+}
+      @media (max-width: 600px) {
+    .movies-intro {
+        margin: 25px auto 20px;
+    }
+
+    .movies-intro h1 {
+        font-size: 24px;
+    }
+
+    .movies-intro p {
+        font-size: 14px;
+    }
+}
 
 </style>
 </head>
@@ -738,7 +769,16 @@ nav a.active::after{
     <input id="searchInput" placeholder="Search movies..." />
     <div id="suggestBox" class="suggest-box"></div>
 </div>
+<section class="movies-intro">
+    <h1>Movies - Watch Trailers, Discover New Films & Read Reviews</h1>
 
+    <p>
+        Explore the latest and upcoming movies on MoviePulse. Discover new films
+        across action, horror, animation, sci-fi, superhero, romance and more.
+        Watch movie trailers, explore the cast, read summaries and find films
+        worth adding to your watchlist.
+    </p>
+</section>
 </div>
       <!-- ✅ FILTER BUTTONS (PUT HERE) -->
 <div class="filter-bar">
