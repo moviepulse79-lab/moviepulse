@@ -515,49 +515,41 @@ box.innerHTML += `
 // PAGE LOAD
 // PAGE LOAD
 
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", () => {
 
+    if (!current) {
+        document.getElementById("mainArea").innerHTML = `
+            <h1>Movie Not Found</h1>
+            <p>We couldn't find this movie.</p>
+        `;
+        return;
+    }
 
-loadMain(current);
+    loadMain(current);
 
+    setTimeout(() => {
 
-setTimeout(()=>{
+        console.log("Comments box:");
+        console.log(document.getElementById("commentsList"));
 
+        setupRating();
+        showRating();
+        loadComments();
 
-console.log("Comments box:");
-console.log(document.getElementById("commentsList"));
+        const btn = document.getElementById("commentBtn");
 
+        if (btn) {
+            btn.addEventListener("click", addComment);
+        }
 
-setupRating();
+    }, 1000);
 
-showRating();
+    const backBtn = document.getElementById("backBtn");
 
-loadComments();
-
-
-const btn=document.getElementById("commentBtn");
-
-
-if(btn){
-
-btn.addEventListener("click",addComment);
-
-}
-
-
-},1000);
-
-
-
-const backBtn=document.getElementById("backBtn");
-
-
-if(backBtn){
-
-backBtn.href=id?
-`movie.html?id=${id}`:"/";
-
-}
-
+    if (backBtn) {
+        backBtn.href = id
+            ? `movie.html?id=${id}`
+            : "/";
+    }
 
 });
