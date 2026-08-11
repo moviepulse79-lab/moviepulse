@@ -11,12 +11,31 @@ let favoriteMovies = movies.filter(movie =>
 );
 
 
-if(favoriteMovies.length === 0){
 
+  if (favoriteMovies.length === 0) {
     favoritesContainer.innerHTML = `
-    <h2>No favorites yet ❤️</h2>
-    <p>Open a movie and add it to your favorites.</p>
+        <div class="empty-favorites">
+            <div class="favorite-sticker">
+                <div class="sticker-heart">♥</div>
+                <div class="sticker-film">🎬</div>
+                <span class="floating-heart heart-one">♥</span>
+                <span class="floating-heart heart-two">♥</span>
+                <span class="floating-star star-one">✦</span>
+                <span class="floating-star star-two">✦</span>
+            </div>
+
+            <h2>Your favorite movies will appear here when you save them.</h2>
+
+            <p>
+                Save movies you love and they'll appear here.
+            </p>
+
+            <a href="poster.html" class="explore-favorites">
+                Explore Movies
+            </a>
+        </div>
     `;
+
 
 }else{
 
