@@ -322,18 +322,18 @@ nav a.active::after{
     line-height: 1.6;
 }
 
-.explore-favorites {
-    display: inline-block;
-    padding: 12px 24px;
-    background: #e50914;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: 0.3s ease;
-    box-shadow: 0 0 15px rgba(229, 9, 20, 0.25);
+.empty-favorites {
+    width: 100%;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    animation: favoriteFadeIn 0.8s ease;
 }
-
 .explore-favorites:hover {
     transform: translateY(-3px);
     box-shadow: 0 0 25px rgba(229, 9, 20, 0.55);
