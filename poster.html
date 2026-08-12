@@ -2272,7 +2272,7 @@ postersRow.innerHTML = list.map(m => `
 
     <div class="poster-link" onclick="openMovieModal(${m.id})">
 
-      <img src="${m.poster}" alt="${m.title}" loading="lazy">
+   <img src="${optimizePoster(m.poster)}" alt="${m.title}" loading="lazy">
 
     </div>
 
@@ -2424,6 +2424,19 @@ menuBtn.addEventListener("click", () => {
     button.classList.add("active");
 }
 
+      function optimizePoster(url) {
+    if (!url) return "";
+
+    return url
+        .replace(
+            "https://www.themoviedb.org/t/p/w600_and_h900_face/",
+            "https://image.tmdb.org/t/p/w342/"
+        )
+        .replace(
+            "https://image.tmdb.org/t/p/w600_and_h900_face/",
+            "https://image.tmdb.org/t/p/w342/"
+        );
+}
       function optimizeBackdrop(url) {
     if (!url) return "";
 
@@ -2443,7 +2456,7 @@ function openMovieModal(id){
       
   currentMovieId = movie.id;
 
-    document.getElementById("modalPoster").src = movie.poster;
+  document.getElementById("modalPoster").src = optimizePoster(movie.poster);
 
     document.getElementById("modalTitle").textContent = movie.title;
 
