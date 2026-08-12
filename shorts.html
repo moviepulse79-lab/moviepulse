@@ -289,6 +289,110 @@
     font-size:22px;
     cursor:pointer;
 }
+    /* ================================
+   MOBILE NAVIGATION
+================================ */
+
+.menu-btn {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .mobile-header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 12px 20px;
+    }
+
+    .menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 45px;
+        height: 45px;
+
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 10px;
+
+        background: #111;
+        color: #fff;
+
+        font-size: 25px;
+        cursor: pointer;
+
+        transition: .25s;
+    }
+
+    .menu-btn:hover {
+        background: #e50914;
+    }
+
+    .navbar {
+        display: none;
+
+        width: 100%;
+
+        background: #111;
+
+        border-top: 1px solid #222;
+        border-bottom: 1px solid #222;
+
+        z-index: 9999;
+    }
+
+    .navbar.active {
+        display: block;
+    }
+
+    .navbar ul {
+        display: flex;
+
+        flex-direction: column;
+
+        width: 100%;
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    .navbar ul li {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar ul li a {
+        display: block;
+
+        width: 100%;
+
+        padding: 17px 20px;
+
+        text-align: center;
+
+        color: #ddd;
+
+        text-decoration: none;
+
+        border-bottom: 1px solid rgba(255,255,255,.08);
+
+        transition:
+            background .25s ease,
+            color .25s ease;
+    }
+
+    .navbar ul li a:hover,
+    .navbar ul li a.active {
+        background: #e50914;
+        color: #fff;
+    }
+
+}
 </style>
 </head>
 <body>
@@ -303,20 +407,49 @@
         ☰
     </div>
 
-    <nav class="navbar">
-        <ul id="menu">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="poster.html">Movies</a></li>
-            <li><a href="shorts.html" class="active">Shorts</a></li>
-           <li> <a href="favorite.html">
- Favorites
-</a></li>
-            <li><a href="about.html" >About</a></li>
-            <li><a href="privacy.html">Privacy Policy</a></li>
-            <li><a href="contact.html">Contact</a></li>
-          
-        </ul>
-    </nav>
+   <div class="mobile-header">
+
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+        ☰
+    </button>
+
+</div>
+
+<nav class="navbar" id="mainNav">
+
+    <ul id="menu">
+
+        <li>
+            <a href="index.html">Home</a>
+        </li>
+
+        <li>
+            <a href="poster.html">Movies</a>
+        </li>
+
+        <li>
+            <a href="shorts.html" class="active">Shorts</a>
+        </li>
+
+        <li>
+            <a href="favorite.html">Favorites</a>
+        </li>
+
+        <li>
+            <a href="about.html">About</a>
+        </li>
+
+        <li>
+            <a href="privacy.html">Privacy Policy</a>
+        </li>
+
+        <li>
+            <a href="contact.html">Contact</a>
+        </li>
+
+    </ul>
+
+</nav>
 </header>
 
 <section class="shorts-page">
