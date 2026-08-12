@@ -1274,7 +1274,7 @@ padding:20px;
     }
 
     nav.active{
-        display:flex;
+        display:block;
     }
 
     nav a{
@@ -2181,69 +2181,101 @@ Discover upcoming movies that are about to hit cinemas and streaming platforms.
 
 <script>
 
-window.addEventListener("load", function(){
+window.addEventListener("load", function () {
 
-setTimeout(() => {
-    document.getElementById("loader").style.display = "none";
-}, 2000);
+    setTimeout(() => {
+        const loader = document.getElementById("loader");
+
+        if (loader) {
+            loader.style.display = "none";
+        }
+    }, 2000);
 
 });
 
+
+/* ================================
+   HERO SLIDER
+================================ */
 
 let slides = document.querySelectorAll(".hero-slide");
 let i = 0;
 
-setInterval(() => {
-    slides[i].classList.remove("active");
-    i = (i + 1) % slides.length;
-    slides[i].classList.add("active");
-}, 5000);
-</script>
-     
-     <script>
+if (slides.length > 0) {
+
+    setInterval(() => {
+
+        slides[i].classList.remove("active");
+
+        i = (i + 1) % slides.length;
+
+        slides[i].classList.add("active");
+
+    }, 5000);
+
+}
+
+
+/* ================================
+   MOVIE HORIZONTAL SLIDERS
+================================ */
 
 const sliders = document.querySelectorAll(".movie-slider");
 
-
 sliders.forEach(slider => {
 
-slider.addEventListener("wheel", (event)=>{
+    slider.addEventListener("wheel", (event) => {
 
-event.preventDefault();
+        event.preventDefault();
 
-slider.scrollLeft += event.deltaY;
+        slider.scrollLeft += event.deltaY;
+
+    });
 
 });
 
+
+/* ================================
+   MOBILE MENU
+================================ */
+
 const menuBtn = document.querySelector(".menu-btn");
-const nav = document.querySelector(".links");
+const nav = document.querySelector("nav");
 
 if (menuBtn && nav) {
-    menuBtn.addEventListener("click", function(){
+    menuBtn.addEventListener("click", function () {
         nav.classList.toggle("active");
     });
 }
+
 </script>
 
 
 <script>
-let deferredPrompt;
+
+/* ================================
+   PWA INSTALL
+================================ */
+
+let deferredPrompt = null;
 
 const installBanner = document.getElementById("installBanner");
 const installBtn = document.getElementById("installBtn");
 const closeInstall = document.getElementById("closeInstall");
 
-window.addEventListener("beforeinstallprompt", (e) => {
 
-    e.preventDefault();
+window.addEventListener("beforeinstallprompt", (event) => {
 
-    deferredPrompt = e;
+    event.preventDefault();
+
+    deferredPrompt = event;
 
     if (installBanner) {
         installBanner.classList.add("show");
     }
 
 });
+
 
 if (installBtn) {
 
@@ -2267,6 +2299,7 @@ if (installBtn) {
 
 }
 
+
 if (closeInstall) {
 
     closeInstall.addEventListener("click", () => {
@@ -2279,7 +2312,10 @@ if (closeInstall) {
 
 }
 
+
 window.addEventListener("appinstalled", () => {
+
+    console.log("MoviePulse installed!");
 
     deferredPrompt = null;
 
@@ -2288,11 +2324,14 @@ window.addEventListener("appinstalled", () => {
     }
 
 });
+
 </script>
 
 
 <script src="js/movies.js"></script>
 <script src="js/search.js"></script>
+
+
 
 
 </body>
