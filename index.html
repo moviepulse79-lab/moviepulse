@@ -768,11 +768,11 @@ url("https://image.tmdb.org/t/p/original/eLH38y1TXuH5iWY4qHMCMAutuu4.jpg");
 /* RESPONSIVE */
 @media(max-width:900px){
 
-header{
-    padding:18px 5%;
-    flex-direction:column;
-    gap:15px;
-}
+  header {
+        padding: 18px 5%;
+        flex-direction: row;
+        gap: 0;
+    }
 
 /* SCROLL CONTAINER */
 .slider-wrapper{
@@ -1399,48 +1399,68 @@ padding:20px;
     }
 
 }
-  @media screen and (max-width: 768px) {
+/* =========================
+   MOBILE NAVIGATION
+========================= */
 
-    header.nav {
-        position: relative !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
+@media screen and (max-width: 768px) {
+
+    header {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+
         width: 100% !important;
         height: 70px !important;
+
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+
         padding: 10px 20px !important;
+
         box-sizing: border-box !important;
+        z-index: 99999 !important;
     }
 
-    header.nav .logo {
+    /* LOGO LEFT */
+    .logo {
+        display: flex !important;
+        align-items: center !important;
+
         margin: 0 !important;
         padding: 0 !important;
     }
 
-    header.nav .logo img {
+    .logo img {
         width: 110px !important;
         height: auto !important;
+        max-height: 50px !important;
     }
 
-    header.nav .menu-btn {
+    /* HAMBURGER RIGHT */
+    .menu-btn {
         display: flex !important;
+
         align-items: center !important;
         justify-content: center !important;
 
-        width: 45px !important;
-        height: 45px !important;
+        width: 42px !important;
+        height: 42px !important;
 
         margin-left: auto !important;
 
-        font-size: 30px !important;
-        color: white !important;
+        color: #fff !important;
+        font-size: 28px !important;
+
         cursor: pointer !important;
 
-        z-index: 10002 !important;
+        z-index: 100001 !important;
     }
 
-    /* HIDE NAV */
-    header.nav > nav {
+    /* MOBILE NAVIGATION CLOSED */
+    header > nav {
         display: none !important;
 
         position: absolute !important;
@@ -1450,29 +1470,29 @@ padding:20px;
 
         width: 100% !important;
 
-        margin: 0 !important;
         padding: 0 !important;
+        margin: 0 !important;
 
         background: #111 !important;
 
         flex-direction: column !important;
         gap: 0 !important;
 
-        z-index: 10001 !important;
+        z-index: 100000 !important;
     }
 
-    /* SHOW NAV */
-    header.nav > nav.active {
+    /* MOBILE NAVIGATION OPEN */
+    header > nav.active {
         display: flex !important;
     }
 
-    /* LINKS */
-    header.nav > nav a {
+    /* NAV LINKS */
+    header > nav a {
         display: block !important;
 
         width: 100% !important;
 
-        padding: 18px 20px !important;
+        padding: 17px 20px !important;
 
         margin: 0 !important;
 
@@ -1484,13 +1504,13 @@ padding:20px;
 
         background: #111 !important;
 
-        border-bottom: 1px solid rgba(255,255,255,.1) !important;
-
         text-decoration: none !important;
+
+        border-bottom: 1px solid rgba(255,255,255,.1) !important;
     }
 
-    header.nav > nav a:hover,
-    header.nav > nav a.active {
+    header > nav a:hover,
+    header > nav a.active {
         background: #e50914 !important;
         color: #fff !important;
     }
