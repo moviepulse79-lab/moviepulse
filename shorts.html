@@ -486,7 +486,21 @@
 
 </section>
 
+<script>
+const menuBtn = document.getElementById("menuBtn");
+const mainNav = document.getElementById("mainNav");
 
+if (menuBtn && mainNav) {
+
+    menuBtn.addEventListener("click", function () {
+
+        mainNav.classList.toggle("active");
+
+    });
+
+}
+</script>
+    
 <script src="shorts.js"></script>
 <script src="shorts-display.js"></script>
 <script async src="https://www.tiktok.com/embed.js"></script>
