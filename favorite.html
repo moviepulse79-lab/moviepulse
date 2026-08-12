@@ -111,43 +111,64 @@ nav a::after{
 nav a:hover::after,
 nav a.active::after{
     width:100%;
-}@media (max-width:768px){
+@media (max-width: 768px) {
 
-    .menu-btn{
-        display:block;
-        font-size:30px;
-        cursor:pointer;
-        color:#fff;
+    .menu-btn {
+        display: block;
+        font-size: 30px;
+        cursor: pointer;
+        color: #fff;
+        z-index: 10001;
     }
 
-    .links{
-        display:none;
-        position:absolute;
-        top:75px;
-        left:0;
-        width:100%;
-        background:#111;
+    .links {
+        display: none;
+
+        position: absolute;
+        top: 75px;
+        left: 0;
+
+        width: 100%;
+
+        background: #111;
+
+        z-index: 10000;
+
+        flex-direction: column;
     }
 
-    .links.active{
-        display:block;
+    .links.active {
+        display: flex;
     }
 
-    .links ul{
-        flex-direction:column;
-        gap:0;
+    .links a {
+        display: block;
+
+        width: 100%;
+
+        padding: 18px 20px;
+
+        box-sizing: border-box;
+
+        text-align: center;
+
+        color: #fff;
+
+        text-decoration: none;
+
+        border-bottom: 1px solid rgba(255,255,255,.1);
+
+        background: #111;
+
+        transition: .25s;
     }
 
-    .links ul li{
-        width:100%;
+    .links a:hover,
+    .links a.active {
+        background: #e50914;
+        color: #fff;
     }
 
-    .links ul li a{
-        display:block;
-        padding:18px;
-        text-align:center;
-        border-bottom:1px solid rgba(255,255,255,.1);
-    }
 }
       .favorites-page{
     padding:40px 5%;
