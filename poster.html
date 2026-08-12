@@ -221,6 +221,64 @@ nav a.active::after{
     transition:transform .22s ease,box-shadow .22s;
     background:#111;
 }
+      /* =================================
+   PROFESSIONAL MOVIE CARD EFFECTS
+================================= */
+
+.posters-row {
+    transition: opacity .25s ease;
+}
+
+.posters-row.loading {
+    opacity: .65;
+}
+
+/* Card entrance */
+
+.card {
+    animation: movieCardIn .45s ease both;
+}
+
+@keyframes movieCardIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Poster loading */
+
+.card img {
+    opacity: 0;
+    background: #181818;
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+}
+
+.card img.loaded {
+    opacity: 1;
+}
+
+/* Better hover */
+
+.card {
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+}
+
+.card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 18px 45px rgba(0,0,0,.65);
+    border-color: rgba(229,9,20,.35);
+}
 .card img{
 display:block;
 width:100%;
@@ -2260,59 +2318,75 @@ const postersRow = document.getElementById("postersRow");
 const searchInput = document.getElementById("searchInput");
 const suggestBox = document.getElementById("suggestBox");
 
+//////////////////////////////
+// RENDER MOVIES - OPTIMIZED
 /////////////////////////////
-// RENDER MOVIES
-/////////////////////////////
 
-function renderMovies(list){
+let lastRenderedIds = "";
 
-postersRow.innerHTML = list.map(m => `
+function renderMovies(list) {
 
-<div class="card">
+    const newIds = list.map(m => m.id).join(",");
 
-    <div class="poster-link" onclick="openMovieModal(${m.id})">
+    // Don't rebuild the entire grid if nothing changed
+    if (newIds === lastRenderedIds) return;
 
-   <img src="${optimizePoster(m.poster)}" alt="${m.title}" loading="lazy">
+    lastRenderedIds = newIds;
 
-    </div>
+    // Professional loading state
+    postersRow.classList.add("loading");
 
+    requestAnimationFrame(() => {
 
-    <div class="meta">
+        postersRow.innerHTML = list.map(m => `
 
-        <h3>${m.title}</h3>
+            <div class="card">
 
-        <div class="year">
-            ${m.date || ""}
-        </div>
+                <div class="poster-link" onclick="openMovieModal(${m.id})">
 
+                    <img
+                        src="${optimizePoster(m.poster)}"
+                        alt="${m.title}"
+                        loading="lazy"
+                        decoding="async"
+                        onload="this.classList.add('loaded')"
+                    >
 
-        <div class="stars">
-            ${"★".repeat(Math.round(m.rating || 0))}
-        </div>
+                </div>
 
+                <div class="meta">
 
-        <div class="genre-tag">
-            ${m.genre ? m.genre[0] : ""}
-        </div>
+                    <h3>${m.title}</h3>
 
+                    <div class="year">
+                        ${m.date || ""}
+                    </div>
 
-    </div>
+                    <div class="stars">
+                        ${"★".repeat(Math.round(m.rating || 0))}
+                    </div>
 
+                    <div class="genre-tag">
+                        ${m.genre ? m.genre[0] : ""}
+                    </div>
 
-    <div class="hover-buttons">
+                </div>
 
-        <a class="btn" href="trailer.html?id=${m.id}">
-            ▶ view more...
-        </a>
+                <div class="hover-buttons">
 
-    </div>
+                    <a class="btn" href="trailer.html?id=${m.id}">
+                        ▶ View More
+                    </a>
 
+                </div>
 
-</div>
+            </div>
 
+        `).join("");
 
-`).join("");
+        postersRow.classList.remove("loading");
 
+    });
 }
 /////////////////////////////
 // INITIAL LOAD
@@ -2342,36 +2416,48 @@ function showGenre(genre){
 }
 
 /////////////////////////////
-// SEARCH + SUGGESTIONS
+// PROFESSIONAL SEARCH
 /////////////////////////////
+
+let searchTimer;
 
 searchInput.addEventListener("input", () => {
 
-  const q = searchInput.value.toLowerCase();
+    clearTimeout(searchTimer);
 
-  if(!q){
-    suggestBox.style.display = "none";
-    renderMovies(movies);
-    return;
-  }
+    searchTimer = setTimeout(() => {
 
-  const filtered = movies.filter(m =>
-    m.title.toLowerCase().includes(q)
-  );
+        const q = searchInput.value.trim().toLowerCase();
 
-  renderMovies(filtered);
+        if (!q) {
+            suggestBox.style.display = "none";
+            renderMovies(movies);
+            return;
+        }
 
-  const top = filtered.slice(0, 5);
+        const filtered = movies.filter(m =>
+            m.title.toLowerCase().includes(q)
+        );
 
-  suggestBox.innerHTML = top.map(m => `
-    <div class="suggest-item" onclick="selectMovie(${m.id})">
-      ${m.title}
-    </div>
-  `).join("");
+        renderMovies(filtered);
 
-  suggestBox.style.display = top.length ? "block" : "none";
+        const top = filtered.slice(0, 5);
+
+        suggestBox.innerHTML = top.map(m => `
+            <div
+                class="suggest-item"
+                onclick="selectMovie(${m.id})"
+            >
+                ${m.title}
+            </div>
+        `).join("");
+
+        suggestBox.style.display =
+            top.length ? "block" : "none";
+
+    }, 180);
+
 });
-
 /////////////////////////////
 // SELECT MOVIE
 /////////////////////////////
