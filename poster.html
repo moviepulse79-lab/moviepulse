@@ -477,13 +477,7 @@ transition:0.35s ease;
         text-align:center;
         border-bottom:1px solid rgba(255,255,255,.1);
     }
-          nav {
-        display: none;
-    }
-
-    nav.active {
-        display: block;
-    }
+       
 }
 @media(max-width:768px){
 
@@ -2501,13 +2495,14 @@ function goTrailer(id){
   location.href = `trailer.html?id=${id}`;
 }
 
-      const menuBtn = document.querySelector(".menu-btn");
+const menuBtn = document.querySelector(".menu-btn");
 const nav = document.querySelector(".links");
 
-menuBtn.addEventListener("click", () => {
-    nav.classList.toggle("active");
-});
-
+if (menuBtn && nav) {
+    menuBtn.addEventListener("click", function () {
+        nav.classList.toggle("active");
+    });
+}
       function setFilter(button){
 
     document.querySelectorAll(".filter-bar button").forEach(btn=>{
