@@ -1254,36 +1254,83 @@ padding:20px;
     transform: translateY(-3px);
 }
 
-  @media(max-width:768px){
+@media (max-width: 768px) {
 
-    .menu-btn{
-        display:block;
-        font-size:30px;
-        color:white;
-        cursor:pointer;
+    header.nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        padding: 15px 20px;
     }
 
-    nav{
-        display:none;
-        position:absolute;
-        top:75px;
-        left:0;
-        width:100%;
-        background:#111;
-        flex-direction:column;
+    .logo {
+        margin-right: auto;
     }
 
-    nav.active{
-        display:block;
+    .logo img {
+        width: 110px;
     }
 
-    nav a{
-        display:block;
-        width:100%;
-        padding:18px;
-        text-align:center;
-        border-bottom:1px solid rgba(255,255,255,.1);
+    .menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 45px;
+        height: 45px;
+
+        margin-left: auto;
+
+        font-size: 28px;
+        color: #fff;
+        cursor: pointer;
+
+        z-index: 10001;
     }
+
+    nav {
+        display: none;
+
+        position: absolute;
+        top: 100%;
+        left: 0;
+
+        width: 100%;
+
+        flex-direction: column;
+        gap: 0;
+
+        background: #111;
+
+        z-index: 10000;
+    }
+
+    nav.active {
+        display: flex;
+    }
+
+    nav a {
+        display: block;
+        width: 100%;
+
+        padding: 18px 20px;
+
+        box-sizing: border-box;
+
+        text-align: center;
+
+        border-bottom: 1px solid rgba(255,255,255,.1);
+
+        color: #fff;
+    }
+
+    nav a:hover,
+    nav a.active {
+        background: #e50914;
+        color: #fff;
+    }
+
 }
   /* =================================
    PWA INSTALL BANNER
