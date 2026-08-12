@@ -1257,42 +1257,52 @@ padding:20px;
 @media (max-width: 768px) {
 
     header.nav {
+        position: relative;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        position: relative;
+
+        width: 100%;
         padding: 15px 20px;
+
+        box-sizing: border-box;
     }
 
     .logo {
-        margin-right: auto;
+        margin: 0;
     }
 
     .logo img {
         width: 110px;
+        height: auto;
     }
 
+    /* HAMBURGER */
     .menu-btn {
         display: flex;
+
         align-items: center;
         justify-content: center;
 
-        width: 45px;
-        height: 45px;
+        width: 42px;
+        height: 42px;
 
         margin-left: auto;
 
+        color: white;
         font-size: 28px;
-        color: #fff;
+
         cursor: pointer;
 
         z-index: 10001;
     }
 
-    nav {
+    /* HIDE NAVIGATION BY DEFAULT */
+    header.nav nav {
         display: none;
 
         position: absolute;
+
         top: 100%;
         left: 0;
 
@@ -1304,31 +1314,38 @@ padding:20px;
         background: #111;
 
         z-index: 10000;
+
+        box-sizing: border-box;
     }
 
-    nav.active {
+    /* SHOW ONLY WHEN MENU IS CLICKED */
+    header.nav nav.active {
         display: flex;
     }
 
-    nav a {
+    /* EACH LINK = ONE BLOCK */
+    header.nav nav a {
         display: block;
+
         width: 100%;
 
-        padding: 18px 20px;
+        padding: 17px 20px;
 
         box-sizing: border-box;
 
         text-align: center;
 
+        color: #ddd;
+
         border-bottom: 1px solid rgba(255,255,255,.1);
 
-        color: #fff;
+        text-decoration: none;
     }
 
-    nav a:hover,
-    nav a.active {
+    header.nav nav a.active,
+    header.nav nav a:hover {
         background: #e50914;
-        color: #fff;
+        color: white;
     }
 
 }
@@ -1495,9 +1512,7 @@ padding:20px;
         </a>
     </div>
 
-    <div class="menu-btn">
-        ☰
-    </div>
+    <div class="menu-btn">☰</div>
 
     <nav>
         <a href="index.html">Home</a>
@@ -2284,14 +2299,17 @@ sliders.forEach(slider => {
 /* ================================
    MOBILE MENU
 ================================ */
-
 const menuBtn = document.querySelector(".menu-btn");
-const nav = document.querySelector("nav");
+const nav = document.querySelector("header.nav nav");
 
 if (menuBtn && nav) {
+
     menuBtn.addEventListener("click", function () {
+
         nav.classList.toggle("active");
+
     });
+
 }
 
 </script>
