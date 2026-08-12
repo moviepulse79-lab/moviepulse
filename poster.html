@@ -2424,6 +2424,15 @@ menuBtn.addEventListener("click", () => {
     button.classList.add("active");
 }
 
+      function optimizeBackdrop(url) {
+    if (!url) return "";
+
+    return url.replace(
+        "https://image.tmdb.org/t/p/original/",
+        "https://image.tmdb.org/t/p/w1280/"
+    );
+}
+
 function openMovieModal(id){
 
     const movie = movies.find(m => m.id === id);
@@ -2460,10 +2469,9 @@ function openMovieModal(id){
 document.getElementById("movieModal").classList.add("show");
 
 document.getElementById("modalBackdrop").style.backgroundImage =
-movie.backdrop 
-? `url(${movie.backdrop})`
+movie.backdrop
+? `url(${optimizeBackdrop(movie.backdrop)})`
 : `url(${movie.poster})`;
-
 }
 
 
