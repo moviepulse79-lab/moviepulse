@@ -1285,6 +1285,150 @@ padding:20px;
         border-bottom:1px solid rgba(255,255,255,.1);
     }
 }
+  /* =================================
+   PWA INSTALL BANNER
+================================= */
+
+.install-banner {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+
+    width: 360px;
+    max-width: calc(100% - 30px);
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 14px;
+
+    background: rgba(18,18,18,.96);
+    border: 1px solid rgba(229,9,20,.45);
+    border-radius: 14px;
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,.65),
+        0 0 25px rgba(229,9,20,.12);
+
+    backdrop-filter: blur(15px);
+
+    transform: translateY(140px);
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        transform .4s ease,
+        opacity .4s ease,
+        visibility .4s;
+        
+    z-index: 9999;
+}
+
+.install-banner.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.install-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e50914;
+    border-radius: 12px;
+
+    font-size: 22px;
+
+    box-shadow: 0 0 18px rgba(229,9,20,.35);
+}
+
+.install-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.install-info strong {
+    color: #fff;
+    font-size: 14px;
+}
+
+.install-info span {
+    color: #999;
+    font-size: 11px;
+}
+
+#installBtn {
+    border: none;
+    background: #e50914;
+    color: white;
+
+    padding: 9px 13px;
+
+    border-radius: 8px;
+
+    font-weight: 700;
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition: .25s;
+}
+
+#installBtn:hover {
+    background: #ff1f1f;
+    transform: scale(1.05);
+}
+
+.close-install {
+    position: absolute;
+
+    top: -8px;
+    right: -8px;
+
+    width: 24px;
+    height: 24px;
+
+    border: 1px solid #333;
+    border-radius: 50%;
+
+    background: #181818;
+    color: #aaa;
+
+    cursor: pointer;
+
+    font-size: 16px;
+}
+
+.close-install:hover {
+    color: white;
+    background: #e50914;
+}
+
+/* Mobile */
+
+@media(max-width:600px) {
+
+    .install-banner {
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+
+        width: auto;
+        max-width: none;
+    }
+
+    .install-info strong {
+        font-size: 13px;
+    }
+
+}
 </style>
 </head>
 
@@ -2013,6 +2157,27 @@ Discover upcoming movies that are about to hit cinemas and streaming platforms.
   </div>
 
 </footer>
+     <!-- PWA INSTALL BANNER -->
+<div id="installBanner" class="install-banner">
+
+    <div class="install-icon">
+        📱
+    </div>
+
+    <div class="install-info">
+        <strong>Install MoviePulse</strong>
+        <span>Get a faster app experience</span>
+    </div>
+
+    <button id="installBtn">
+        Install
+    </button>
+
+    <button id="closeInstall" class="close-install">
+        ×
+    </button>
+
+</div>
 
 <script>
 
@@ -2034,6 +2199,7 @@ setInterval(() => {
     slides[i].classList.add("active");
 }, 5000);
 </script>
+     
      <script>
 
 const sliders = document.querySelectorAll(".movie-slider");
@@ -2051,15 +2217,83 @@ slider.scrollLeft += event.deltaY;
 
 });
 
-       const menuBtn = document.querySelector(".menu-btn");
+  <script>
+const menuBtn = document.querySelector(".menu-btn");
 const nav = document.querySelector("nav");
 
-menuBtn.addEventListener("click", function(){
-    nav.classList.toggle("active");
+if (menuBtn && nav) {
+    menuBtn.addEventListener("click", function(){
+        nav.classList.toggle("active");
+    });
+}
+</script>
+
+
+<script>
+let deferredPrompt;
+
+const installBanner = document.getElementById("installBanner");
+const installBtn = document.getElementById("installBtn");
+const closeInstall = document.getElementById("closeInstall");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+
+    e.preventDefault();
+
+    deferredPrompt = e;
+
+    if (installBanner) {
+        installBanner.classList.add("show");
+    }
+
+});
+
+if (installBtn) {
+
+    installBtn.addEventListener("click", async () => {
+
+        if (!deferredPrompt) return;
+
+        deferredPrompt.prompt();
+
+        const { outcome } = await deferredPrompt.userChoice;
+
+        console.log("Install result:", outcome);
+
+        deferredPrompt = null;
+
+        if (installBanner) {
+            installBanner.classList.remove("show");
+        }
+
+    });
+
+}
+
+if (closeInstall) {
+
+    closeInstall.addEventListener("click", () => {
+
+        if (installBanner) {
+            installBanner.classList.remove("show");
+        }
+
+    });
+
+}
+
+window.addEventListener("appinstalled", () => {
+
+    deferredPrompt = null;
+
+    if (installBanner) {
+        installBanner.classList.remove("show");
+    }
+
 });
 </script>
-     
-     
+
+
 <script src="js/movies.js"></script>
 <script src="js/search.js"></script>
 
