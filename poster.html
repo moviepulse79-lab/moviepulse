@@ -440,6 +440,7 @@ transition:0.35s ease;
     font-size:12px;
     font-weight:600;
 }
+      
 @media (max-width:768px){
 
     .menu-btn{
@@ -456,6 +457,7 @@ transition:0.35s ease;
         left:0;
         width:100%;
         background:#111;
+        z-index:1000;
     }
 
     .links.active{
@@ -463,20 +465,29 @@ transition:0.35s ease;
     }
 
     .links ul{
+        display:flex;
         flex-direction:column;
         gap:0;
+        width:100%;
+        margin:0;
+        padding:0;
     }
 
     .links ul li{
+        display:block;
         width:100%;
+        margin:0;
+        padding:0;
     }
 
     .links ul li a{
         display:block;
+        width:100%;
         padding:18px;
         text-align:center;
         border-bottom:1px solid rgba(255,255,255,.1);
     }
+
 }
 @media(max-width:768px){
 
