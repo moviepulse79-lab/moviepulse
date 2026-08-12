@@ -432,8 +432,17 @@ nav a.active::after{
     <div class="posters-row" id="favoritesContainer">
 
     </div>
+    </section>
+          <script>
+const menuBtn = document.querySelector(".menu-btn");
+const nav = document.querySelector(".links");
 
-</section>
+if (menuBtn && nav) {
+    menuBtn.addEventListener("click", function(){
+        nav.classList.toggle("active");
+    });
+}
+      </script>
     <script src="movie.js"></script>
 <script src="favorite.js"></script>
   </body>
