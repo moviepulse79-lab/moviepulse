@@ -2616,34 +2616,87 @@ movie.backdrop
 : `url(${movie.poster})`;
 }
 
+async function toggleFavorite() {
 
-function toggleFavorite(){
+    // Check if user is logged in
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
 
-    let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    const favoriteButton = document.getElementById("modalFavorite");
 
-    if(favorites.includes(currentMovieId)){
+    // User is NOT logged in
+    if (!user) {
 
-        favorites = favorites.filter(id => id !== currentMovieId);
+        favoriteButton.innerHTML = "🔒 Sign in to add to favorites";
 
-        document.getElementById("modalFavorite").innerHTML =
-        "🤍 Add Favorite";
+        setTimeout(() => {
+            window.location.href = "auth.html";
+        }, 1200);
 
-    }else{
+        return;
+    }
 
-        favorites.push(currentMovieId);
 
-        document.getElementById("modalFavorite").innerHTML =
-        "❤️ Added";
+    // Check if this movie is already a favorite
+    const { data: existingFavorite, error: checkError } =
+        await supabaseClient
+            .from("favorites")
+            .select("id")
+            .eq("user_id", user.id)
+            .eq("movie_id", currentMovieId)
+            .maybeSingle();
+
+    if (checkError) {
+
+        console.error("Favorite check error:", checkError);
+        favoriteButton.innerHTML = "⚠️ Error";
+        return;
 
     }
 
-    localStorage.setItem(
-        "favorites",
-        JSON.stringify(favorites)
-    );
+
+    // Remove favorite
+    if (existingFavorite) {
+
+        const { error } = await supabaseClient
+            .from("favorites")
+            .delete()
+            .eq("id", existingFavorite.id);
+
+        if (error) {
+
+            console.error("Remove favorite error:", error);
+            favoriteButton.innerHTML = "⚠️ Error";
+            return;
+
+        }
+
+        favoriteButton.innerHTML = "🤍 Add Favorite";
+
+        return;
+    }
+
+
+    // Add favorite
+    const { error } = await supabaseClient
+        .from("favorites")
+        .insert({
+            user_id: user.id,
+            movie_id: currentMovieId
+        });
+
+    if (error) {
+
+        console.error("Add favorite error:", error);
+        favoriteButton.innerHTML = "⚠️ Error";
+        return;
+
+    }
+
+    favoriteButton.innerHTML = "❤️ Added";
 
 }
-
 
 function closeMovieModal(){
 
