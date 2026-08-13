@@ -17,6 +17,7 @@ async function loadFavorites() {
         return;
 
     }
+}
 
 
     // User is not logged in
