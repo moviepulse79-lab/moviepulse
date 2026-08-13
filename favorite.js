@@ -14,10 +14,13 @@ async function loadFavorites() {
     if (userError) {
 
         console.error("User error:", userError);
-        return;
 
+        favoritesContainer.innerHTML = `
+            <p>Unable to check your account.</p>
+        `;
+
+        return;
     }
-}
 
 
     // User is not logged in
@@ -35,6 +38,7 @@ async function loadFavorites() {
 
                     <span class="floating-star star-one">✦</span>
                     <span class="floating-star star-two">✦</span>
+
                 </div>
 
                 <h2>Sign in to view your favorites.</h2>
@@ -61,7 +65,7 @@ async function loadFavorites() {
         error
     } = await supabaseClient
         .from("favorites")
-        .select("id, movie_id")
+        .select("id, movie_id, created_at")
         .eq("user_id", user.id)
         .order("created_at", {
             ascending: false
@@ -83,12 +87,18 @@ async function loadFavorites() {
     }
 
 
-    // Find movies from movies.js
+    console.log("Supabase favorites:", favorites);
+
+
+    // Find matching movies
     const favoriteMovies = movies.filter(movie =>
         favorites.some(favorite =>
             Number(favorite.movie_id) === Number(movie.id)
         )
     );
+
+
+    console.log("Favorite movies:", favoriteMovies);
 
 
     // No favorites
@@ -98,7 +108,9 @@ async function loadFavorites() {
             <div class="empty-favorites">
 
                 <div class="favorite-sticker">
+
                     <div class="sticker-heart">♥</div>
+
                     <div class="sticker-film">🎬</div>
 
                     <span class="floating-heart heart-one">♥</span>
@@ -106,6 +118,7 @@ async function loadFavorites() {
 
                     <span class="floating-star star-one">✦</span>
                     <span class="floating-star star-two">✦</span>
+
                 </div>
 
                 <h2>Your favorite movies will appear here when you save them.</h2>
@@ -125,10 +138,11 @@ async function loadFavorites() {
     }
 
 
-    // Display favorites
+    // Clear container
     favoritesContainer.innerHTML = "";
 
 
+    // Display favorites
     favoriteMovies.forEach(movie => {
 
         const favoriteRecord = favorites.find(
@@ -145,16 +159,18 @@ async function loadFavorites() {
 
                     <button
                         class="remove-favorite"
-                        onclick="removeFavorite(${favoriteRecord.id})"
+                        onclick="removeFavorite('${favoriteRecord.id}')"
                     >
                         ❤️
                     </button>
 
                     <a href="trailer.html?id=${movie.id}">
+
                         <img
                             src="${movie.poster}"
                             alt="${movie.title}"
                         >
+
                     </a>
 
                 </div>
@@ -185,8 +201,8 @@ async function removeFavorite(favoriteId) {
     if (!user) {
 
         window.location.href = "auth.html";
-        return;
 
+        return;
     }
 
 
@@ -209,9 +225,11 @@ async function removeFavorite(favoriteId) {
     }
 
 
+    // Reload favorites without refreshing the page
     loadFavorites();
 
 }
 
 
+// Start
 loadFavorites();
