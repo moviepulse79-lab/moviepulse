@@ -65,11 +65,14 @@ authForm.addEventListener("submit", async (e) => {
         } else {
 
             const { data, error } =
-                await supabaseClient.auth.signUp({
-                    email: email,
-                    password: password
-                });
-
+              const { data, error } =
+    await supabaseClient.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+            emailRedirectTo: "https://moviepulse247.netlify.app/auth.html"
+        }
+    });
             if (error) throw error;
 
             authMessage.textContent =
