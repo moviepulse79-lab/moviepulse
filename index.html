@@ -1602,6 +1602,56 @@ padding:20px;
     }
 
 }
+  .user-menu{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+
+.user-icon{
+    background:none;
+    border:none;
+    color:#fff;
+    font-size:22px;
+    cursor:pointer;
+    padding:8px;
+}
+
+.user-dropdown{
+    position:absolute;
+    top:45px;
+    right:0;
+    min-width:160px;
+    background:#111;
+    border:1px solid #333;
+    border-radius:8px;
+    padding:8px 0;
+    display:none;
+    z-index:9999;
+}
+
+.user-menu:hover .user-dropdown{
+    display:block;
+}
+
+.user-dropdown a,
+.user-dropdown button{
+    display:block;
+    width:100%;
+    padding:10px 15px;
+    background:none;
+    border:none;
+    color:#fff;
+    text-decoration:none;
+    text-align:left;
+    font-size:14px;
+    cursor:pointer;
+}
+
+.user-dropdown a:hover,
+.user-dropdown button:hover{
+    background:#e50914;
+}
 </style>
 </head>
 
@@ -1633,13 +1683,36 @@ padding:20px;
 
     <nav>
         <a href="index.html" class="active">Home</a>
-        <a href="poster.html">Movies</a>
-        <a href="shorts.html">Shorts</a>
-        <a href="favorite.html" >Favorites</a>
-        <a href="about.html">About</a>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="contact.html">Contact</a>
-    </nav>
+      <a href="poster.html">Movies</a>
+<a href="shorts.html">Shorts</a>
+<a href="favorite.html">Favorites</a>
+<a href="about.html">About</a>
+<a href="privacy.html">Privacy Policy</a>
+<a href="contact.html">Contact</a>
+
+<div class="user-menu">
+
+    <button id="userIcon" class="user-icon" aria-label="Account">
+        👤
+    </button>
+
+    <div id="userDropdown" class="user-dropdown">
+
+        <a href="auth.html" id="loginLink">
+            Sign In
+        </a>
+
+        <a href="auth.html" id="signupLink">
+            Create Account
+        </a>
+
+        <button id="logoutLink" style="display:none;">
+            Logout
+        </button>
+
+    </div>
+
+</div>
 
 </header>
 
