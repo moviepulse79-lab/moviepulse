@@ -237,8 +237,3 @@ async function removeFavorite(favoriteId) {
     // Reload favorites without refreshing the page
     loadFavorites();
 
-}
-
-
-// Start
-loadFavorites();
