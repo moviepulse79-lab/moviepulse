@@ -48,25 +48,26 @@ authForm.addEventListener("submit", async (e) => {
 
     try {
 
-        if (isLoginMode) {
+      if (isLoginMode) {
 
-            const { data, error } =
-                await supabaseClient.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
+    const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
 
-            if (error) throw error;
+    if (error) throw error;
 
-          authMessage.textContent = "Login successful!";
+    authMessage.textContent = "Login successful!";
 
-console.log("Logged in:", data.user);
+    console.log("Logged in:", data.user);
 
-setTimeout(() => {
-    window.location.href = "index.html";
-}, 1000);
+    setTimeout(() => {
+        window.location.href = "index.html";
+    }, 1000);
 
-        } else {
+}
+        else {
 
             const { data, error } =
               const { data, error } =
