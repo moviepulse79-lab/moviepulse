@@ -1,7 +1,7 @@
 window.movies = [
 
             {
-  id: 88,
+  id: 89,
   title: "The Thomas Crown Affair(2027)",
   poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/sT1TQeAy1PdRfPIb6rrM2DB7DB.jpg",
   rating: 5,
@@ -74,8 +74,71 @@ The Thomas Crown Affair (2027) looks like it has everything needed to become one
 </p>`,
  hype: 9
             },
+            
+            { 
+  id: 88,
+  title: "Crew Girl(2026)",
+  poster: "https://image.tmdb.org/t/p/original/uzwf0Xn1XNmB5IHYBEjYEnVbGuO.jpg",
+  rating: 4,
+  trailer: "https://www.youtube.com/embed/Xs5qsfqp-tA",
+  starring:[
+    "Miku Martineau",
+    "Jessica Paré",
+    "Samuel Braun",
+    "Kyle Clark",
+    "Thomas Cadrot",
+    "Riley Davis",
+    "Olga Petsa"
+ ],
+
+summary:`Crew Girl follows 16-year-old Teagan Tao, a talented competitive rower whose life is turned upside down after a family scandal forces her to start over at an elite prep school. When she discovers there is no girls' rowing team, Teagan becomes the coxswain of an all-boys crew team. As she struggles to earn their respect and lead the troubled team toward victory, she also faces family pressure, fierce competition, friendship challenges, and unexpected romance.`,
+article:`<p><strong>Crew Girl</strong> is shaping up to be one of Netflix’s more interesting teen dramas of 2026. Instead of relying only on the usual high-school romance formula, the series puts competitive rowing, friendship, family problems, ambition, and romance at the center of its story. Netflix describes the series as following 16-year-old Teagan Tao, a talented rower whose future is disrupted by a family scandal and a major change in her life.</p>
+
+<p>The story begins with Teagan as a promising single-sculls rower whose life suddenly changes after a family scandal. She is forced to leave her previous life behind and move to the East Coast, where she enrolls at the prestigious Easton Prep. However, starting over is not easy. Teagan quickly discovers that the school does not have a girls' rowing team, leaving her without the opportunity to continue competing in the sport she loves.</p>
+
+<p>Rather than giving up on rowing, Teagan finds another way back onto the water. She becomes the coxswain for the school's dysfunctional all-boys varsity crew team. Her new position puts her in a difficult situation because she has to lead a group of boys who do not necessarily want her there. The team is already struggling, and Teagan must earn their trust while proving that she belongs in their world.</p>
+
+<p>This creates one of the most interesting parts of <strong>Crew Girl</strong>. Teagan is not simply trying to win races. She is also fighting to be respected. As the coxswain, she has an important responsibility because she must guide and motivate the rowers while dealing with the pressure of competition. Her determination puts her directly against the team's arrogant captain, creating another source of tension within the crew.</p>
+
+<p>At the same time, the series introduces a romantic storyline through Cam Dillinger, a quiet and intensely driven member of the rowing world. Teagan finds herself caught between two very different personalities, while her own ambitions and family problems continue to complicate her new life. The relationship side of the story adds another emotional layer to Teagan's journey.</p>
+
+<p>What makes <strong>Crew Girl</strong> particularly appealing is its combination of sports and coming-of-age drama. Teen sports stories often focus heavily on winning, losing, and competition, but this series appears to be more interested in what happens to a young person when their entire life changes unexpectedly. Teagan has to adapt to a new school, a new team, new relationships, and the consequences of her family's situation.</p>
+
+<p>The rowing setting also gives the series an opportunity to stand apart from more familiar Netflix teen dramas. Crew racing depends heavily on teamwork and synchronization, meaning one person's mistakes can affect the entire boat. That idea fits naturally with Teagan's story because she is trying to bring together a group of people who do not initially see her as part of their team.</p>
+
+<p>The cast includes <strong>Miku Martineau</strong> in the lead role as Teagan Tao, alongside Jessica Paré and other members of the young ensemble. With a story centered on an ambitious teenager trying to rebuild her life, the performances will be important in making the emotional side of the series work.</p>
+
+<p>For viewers who enjoy young-adult dramas, <strong>Crew Girl</strong> could offer a refreshing mixture of competition, friendship, family conflict, and romance. The story has enough sporting tension to attract viewers who enjoy athletic dramas while also giving it the personal relationships and emotional struggles expected from a coming-of-age series.</p>
+
+<p>Another promising aspect is Teagan herself. She is not introduced as someone who simply wants popularity or romance. Her biggest goal is to get back on the water and continue pursuing rowing. That makes her ambition an important part of her character. The conflict comes from having to balance that ambition with a new environment that seems determined to make things difficult for her.</p>
+
+<p>Netflix has officially classified <strong>Crew Girl</strong> as a drama series, with the story focusing on Teagan's struggle to lead the boys' crew team while dealing with her own ambitions, family complications, and developing relationships.</p>
+
+<p>For MoviePulse readers looking for something new to add to their upcoming-watch list, <strong>Crew Girl</strong> is definitely a title worth keeping an eye on. It combines competitive sports with the familiar emotional territory of teenage life, but its rowing-focused setting gives the story a different identity. If Netflix delivers on the potential of its premise, the series could appeal to fans of sports dramas and coming-of-age stories alike.</p>
+
+<p>Overall, <strong>Crew Girl</strong> looks like a promising Netflix series built around a young woman who refuses to let a major setback end her dreams. Teagan's journey from a talented rower to an outsider at an elite prep school, and eventually to the leader of an all-boys crew team, gives the series plenty of room for conflict and character development. With competition, friendship, family pressure, and romance all playing a role, <strong>Crew Girl</strong> has the ingredients for an engaging teen drama.</p>
+
+<p><strong>Verdict:</strong> <strong>Crew Girl</strong> looks like an interesting addition to Netflix's upcoming teen-drama lineup. Its combination of rowing, competition, romance, and personal struggles gives it a distinctive premise, while Teagan's determination to get back on the water provides a strong central story. If you enjoy coming-of-age dramas with sports and romance, this is one Netflix series to keep on your radar.</p>
+Genre: Drama, Romance, Sports<br>
+Director: Vivian Lin<br>
+Release Year: 2026<br>
+Setting: Easton Prep, Massachusetts<br>
+Audience: Teen & Young Adult<br>
+Runtime: 8 Episodes`,
+
+verdict: `
+<p>
+Crew Girl (2026) has the potential to become an engaging coming-of-age series by combining competitive rowing, friendship, family drama, and romance. Teagan Tao's journey as she joins an all-boys crew team creates plenty of opportunities for rivalry, personal growth, and emotional moments. With a fresh sports-focused story and a young cast, the series could appeal to viewers who enjoy teen dramas with strong characters and competitive energy. If it successfully balances the sporting action with Teagan's personal struggles and relationships, Crew Girl could become an interesting addition to Netflix's 2026 lineup.
+</p>
+`,
+
+hype: 9.0
+
+},
 
             {
+ 
+            
   id: 87,
   title: "Violent Night 2(2026)",
   poster: "https://image.tmdb.org/t/p/original/wKgTxSjVZBjtTzK1wEXkLffaWC1.jpg",
