@@ -194,35 +194,44 @@ async function loadFavorites() {
 async function removeFavorite(favoriteId) {
 
     const {
-        data: { user }
+        data: { user },
+        error: userError
     } = await supabaseClient.auth.getUser();
 
-
-    if (!user) {
-
+    if (userError || !user) {
         window.location.href = "auth.html";
-
         return;
     }
 
 
-    const { error } =
-        await supabaseClient
-            .from("favorites")
-            .delete()
-            .eq("id", favoriteId)
-            .eq("user_id", user.id);
+    console.log("Removing favorite:", favoriteId);
+
+
+    const { data, error } = await supabaseClient
+        .from("favorites")
+        .delete()
+        .eq("id", favoriteId)
+        .eq("user_id", user.id)
+        .select();
 
 
     if (error) {
 
-        console.error(
-            "Remove favorite error:",
-            error
-        );
+        console.error("Remove favorite error:", error);
+
+        alert("Could not remove this favorite.");
 
         return;
     }
+
+
+    console.log("Deleted favorite:", data);
+
+
+    // Reload favorites
+    await loadFavorites();
+
+}
 
 
     // Reload favorites without refreshing the page
