@@ -6,21 +6,48 @@ async function loadFavorites() {
 
     // Check logged-in user
     const {
-        data: { user },
-        error: userError
-    } = await supabaseClient.auth.getUser();
+    data: { user },
+    error: userError
+} = await supabaseClient.auth.getUser();
 
 
-    if (userError) {
+// No active session
+if (userError) {
 
-        console.error("User error:", userError);
+    console.log("No active user session.");
 
-        favoritesContainer.innerHTML = `
-            <p>Unable to check your account.</p>
-        `;
+    favoritesContainer.innerHTML = `
+        <div class="empty-favorites">
 
-        return;
-    }
+            <div class="favorite-sticker">
+
+                <div class="sticker-heart">♥</div>
+                <div class="sticker-film">🎬</div>
+
+                <span class="floating-heart heart-one">♥</span>
+                <span class="floating-heart heart-two">♥</span>
+
+                <span class="floating-star star-one">✦</span>
+                <span class="floating-star star-two">✦</span>
+
+            </div>
+
+            <h2>Sign in to create your favorites.</h2>
+
+            <p>
+                Log in or create an account to save your favorite movies
+                and keep them synced across your phone and computer.
+            </p>
+
+            <a href="auth.html" class="explore-favorites">
+                Sign In / Create Account
+            </a>
+
+        </div>
+    `;
+
+    return;
+}
 
 
     // User is not logged in
