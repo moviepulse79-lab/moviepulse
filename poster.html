@@ -2659,26 +2659,30 @@ async function toggleFavorite() {
 
 
     // Remove favorite
-    if (existingFavorite) {
+  if (existingFavorite) {
 
-        const { error } = await supabaseClient
-            .from("favorites")
-            .delete()
-            .eq("id", existingFavorite.id);
+    const { error } = await supabaseClient
+        .from("favorites")
+        .delete()
+        .eq("id", existingFavorite.id)
+        .eq("user_id", user.id);
 
-        if (error) {
+    if (error) {
 
-            console.error("Remove favorite error:", error);
-            favoriteButton.innerHTML = "⚠️ Error";
-            return;
+        console.error(
+            "Remove favorite error:",
+            error
+        );
 
-        }
-
-        favoriteButton.innerHTML = "🤍 Add Favorite";
-
+        favoriteButton.innerHTML = "⚠️ Error";
         return;
+
     }
 
+    favoriteButton.innerHTML = "🤍 Add Favorite";
+
+    return;
+}
 
     // Add favorite
     const { error } = await supabaseClient
