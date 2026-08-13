@@ -1,59 +1,782 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login / Sign Up - MoviePulse</title>
+    <title>MoviePulse - Sign In</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="moviepulse (2).png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #050505;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 650px;
+
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            background: #0d0d0d;
+
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 22px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 30px 80px rgba(0,0,0,0.8),
+                0 0 50px rgba(229,9,20,0.08);
+        }
+
+
+        /* =========================
+           LEFT - AUTH FORM
+        ========================= */
+
+        .auth-form-section {
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 50px;
+            background: #0b0b0b;
+        }
+
+
+        .auth-box {
+
+            width: 100%;
+            max-width: 390px;
+        }
+
+
+        .mobile-logo {
+            display: none;
+        }
+
+
+        .auth-title {
+
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+
+        .auth-subtitle {
+
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+
+        .form-group {
+
+            margin-bottom: 18px;
+        }
+
+
+        .form-group label {
+
+            display: block;
+            margin-bottom: 7px;
+
+            color: #ddd;
+
+            font-size: 13px;
+        }
+
+
+        .form-group input {
+
+            width: 100%;
+
+            padding: 14px 15px;
+
+            background: #151515;
+
+            border: 1px solid #292929;
+
+            border-radius: 9px;
+
+            color: white;
+
+            outline: none;
+
+            font-size: 14px;
+
+            transition: 0.25s;
+        }
+
+
+        .form-group input:focus {
+
+            border-color: #e50914;
+
+            box-shadow: 0 0 0 3px rgba(229,9,20,0.1);
+        }
+
+
+        .password-row {
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+
+        .forgot-password {
+
+            color: #e50914;
+            text-decoration: none;
+
+            font-size: 12px;
+        }
+
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+
+        .auth-button {
+
+            width: 100%;
+
+            border: none;
+
+            padding: 14px;
+
+            border-radius: 9px;
+
+            background: #e50914;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+
+        .auth-button:hover {
+
+            background: #ff1e1e;
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 8px 25px rgba(229,9,20,0.25);
+        }
+
+
+        .divider {
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            margin: 25px 0;
+
+            color: #666;
+
+            font-size: 12px;
+        }
+
+
+        .divider::before,
+        .divider::after {
+
+            content: "";
+
+            height: 1px;
+
+            flex: 1;
+
+            background: #292929;
+        }
+
+
+        .github-button {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border-radius: 9px;
+
+            border: 1px solid #303030;
+
+            background: #151515;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            transition: 0.3s;
+        }
+
+
+        .github-button:hover {
+
+            background: #202020;
+
+            border-color: #555;
+        }
+
+
+        .switch-text {
+
+            text-align: center;
+
+            color: #888;
+
+            font-size: 13px;
+
+            margin-top: 25px;
+        }
+
+
+        .switch-text button {
+
+            background: none;
+
+            border: none;
+
+            color: #e50914;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            font-size: 13px;
+        }
+
+
+        .switch-text button:hover {
+            text-decoration: underline;
+        }
+
+
+        .message {
+
+            margin-top: 15px;
+
+            text-align: center;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           RIGHT - MOVIEPULSE
+        ========================= */
+
+        .visual-section {
+
+            position: relative;
+
+            overflow: hidden;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(229,9,20,0.15),
+                    transparent 55%
+                ),
+                #080808;
+        }
+
+
+        .visual-section::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 450px;
+            height: 450px;
+
+            border-radius: 50%;
+
+            background: rgba(229,9,20,0.08);
+
+            filter: blur(80px);
+        }
+
+
+        .moviepulse-logo {
+
+            position: relative;
+
+            z-index: 3;
+
+            width: 190px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .poster-stack {
+
+            position: relative;
+
+            width: 360px;
+            height: 360px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+
+        .poster {
+
+            position: absolute;
+
+            width: 170px;
+            height: 255px;
+
+            object-fit: cover;
+
+            border-radius: 12px;
+
+            border: 2px solid rgba(255,255,255,0.12);
+
+            box-shadow:
+                0 20px 45px rgba(0,0,0,0.7);
+
+            transition: 0.5s ease;
+        }
+
+
+        .poster.one {
+
+            transform:
+                translateX(-110px)
+                rotate(-13deg);
+
+            z-index: 1;
+        }
+
+
+        .poster.two {
+
+            transform:
+                translateY(-5px);
+
+            z-index: 3;
+        }
+
+
+        .poster.three {
+
+            transform:
+                translateX(110px)
+                rotate(13deg);
+
+            z-index: 2;
+        }
+
+
+        .poster-stack:hover .poster.one {
+
+            transform:
+                translateX(-125px)
+                rotate(-18deg)
+                translateY(-10px);
+        }
+
+
+        .poster-stack:hover .poster.three {
+
+            transform:
+                translateX(125px)
+                rotate(18deg)
+                translateY(-10px);
+        }
+
+
+        .visual-title {
+
+            position: relative;
+
+            margin-top: 15px;
+
+            font-size: 18px;
+
+            font-weight: 600;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        .visual-text {
+
+            position: relative;
+
+            margin-top: 7px;
+
+            color: #888;
+
+            font-size: 13px;
+
+            text-align: center;
+        }
+
+
+        /* =========================
+           SIGNUP MODE
+        ========================= */
+
+        .signup-mode .auth-title::after {
+
+            content: "Create your MoviePulse account";
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 800px) {
+
+            body {
+                padding: 15px;
+            }
+
+
+            .auth-wrapper {
+
+                grid-template-columns: 1fr;
+
+                max-width: 500px;
+
+                min-height: auto;
+            }
+
+
+            .visual-section {
+
+                order: -1;
+
+                min-height: 400px;
+
+                padding: 35px 20px;
+            }
+
+
+            .auth-form-section {
+
+                padding: 35px 25px;
+            }
+
+
+            .moviepulse-logo {
+                width: 160px;
+            }
+
+
+            .poster-stack {
+
+                transform: scale(0.75);
+
+                margin: -30px 0;
+            }
+
+
+            .auth-title {
+                font-size: 28px;
+            }
+
+        }
+
+
+        @media (max-width: 450px) {
+
+            body {
+                padding: 0;
+            }
+
+
+            .auth-wrapper {
+
+                border-radius: 0;
+
+                border: none;
+
+                min-height: 100vh;
+            }
+
+
+            .visual-section {
+
+                min-height: 350px;
+            }
+
+
+            .poster-stack {
+                transform: scale(0.65);
+            }
+
+
+            .auth-form-section {
+
+                padding: 30px 20px;
+            }
+
+        }
+
+    </style>
 </head>
+
 
 <body>
 
-    <div class="auth-container">
 
-        <h1>MoviePulse</h1>
-        <p class="auth-subtitle">Sign in to save your favorite movies</p>
+<div class="auth-wrapper">
+
+
+    <!-- =========================
+         LEFT SIDE - FORM
+    ========================== -->
+
+    <section class="auth-form-section">
 
         <div class="auth-box">
 
-            <div class="auth-tabs">
-                <button id="loginTab" class="active">Login</button>
-                <button id="signupTab">Sign Up</button>
+            <div class="mobile-logo">
+
+                <img
+                    src="ChatGPT Image Jul 7, 2026, 09_00_03 AM.png"
+                    alt="MoviePulse"
+                >
+
             </div>
+
+
+            <h1 class="auth-title" id="authTitle">
+                Welcome Back
+            </h1>
+
+
+            <p class="auth-subtitle" id="authSubtitle">
+                Sign in to continue to MoviePulse
+            </p>
+
 
             <form id="authForm">
 
-                <input
-                    type="email"
-                    id="email"
-                    placeholder="Email address"
-                    required
-                >
 
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="Password"
-                    required
-                >
+                <div class="form-group">
 
-                <button type="submit" id="authButton">
-                    Login
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="password-row">
+
+                    <span></span>
+
+                    <a
+                        href="#"
+                        class="forgot-password"
+                        id="forgotPassword"
+                    >
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="auth-button"
+                    id="authButton"
+                >
+                    Sign In
                 </button>
+
 
             </form>
 
-            <p id="authMessage"></p>
+
+            <div class="divider">
+                OR
+            </div>
+
+
+            <button
+                class="github-button"
+                id="githubButton"
+            >
+                Continue with GitHub
+            </button>
+
+
+            <p class="switch-text">
+
+                <span id="switchQuestion">
+                    Don't have an account?
+                </span>
+
+                <button
+                    type="button"
+                    id="switchAuth"
+                >
+                    Create Account
+                </button>
+
+            </p>
+
+
+            <div
+                class="message"
+                id="authMessage">
+            </div>
+
 
         </div>
 
-    </div>
+    </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase.js"></script>
-    <script src="auth.js"></script>
+
+
+    <!-- =========================
+         RIGHT SIDE - MOVIES
+    ========================== -->
+
+    <section class="visual-section">
+
+
+        <img
+            class="moviepulse-logo"
+            src="ChatGPT Image Jul 7, 2026, 09_00_03 AM.png"
+            alt="MoviePulse Logo"
+        >
+
+
+        <div class="poster-stack">
+
+
+            <img
+                class="poster one"
+                src="movie1.jpg"
+                alt="Movie poster"
+            >
+
+
+            <img
+                class="poster two"
+                src="movie2.jpg"
+                alt="Movie poster"
+            >
+
+
+            <img
+                class="poster three"
+                src="movie3.jpg"
+                alt="Movie poster"
+            >
+
+
+        </div>
+
+
+        <h2 class="visual-title">
+            Your Movie World
+        </h2>
+
+
+        <p class="visual-text">
+            Discover movies. Save favorites. Watch trailers.
+        </p>
+
+
+    </section>
+
+
+</div>
+
+
+<!-- Supabase -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase.js"></script>
+
+<script src="auth.js"></script>
 
 </body>
+
 </html>
+```
