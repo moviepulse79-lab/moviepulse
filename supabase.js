@@ -5,3 +5,4 @@ const supabaseClient = supabase.createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
 );
+console.log("MoviePulse Supabase connected:", supabaseClient);
