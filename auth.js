@@ -58,9 +58,13 @@ authForm.addEventListener("submit", async (e) => {
 
             if (error) throw error;
 
-            authMessage.textContent = "Login successful!";
+          authMessage.textContent = "Login successful!";
 
-            console.log("Logged in:", data.user);
+console.log("Logged in:", data.user);
+
+setTimeout(() => {
+    window.location.href = "index.html";
+}, 1000);
 
         } else {
 
