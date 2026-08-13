@@ -196,3 +196,68 @@ authForm.addEventListener("submit", async (e) => {
     }
 
 });
+// ===============================
+// FORGOT PASSWORD
+// ===============================
+
+const forgotPassword =
+    document.getElementById("forgotPassword");
+
+
+forgotPassword.addEventListener("click", async (e) => {
+
+    e.preventDefault();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+
+    if (!email) {
+
+        authMessage.textContent =
+            "Enter your email address first.";
+
+        document.getElementById("email").focus();
+
+        return;
+    }
+
+
+    authMessage.textContent =
+        "Sending password reset email...";
+
+
+    try {
+
+        const { error } =
+            await supabaseClient.auth.resetPasswordForEmail(
+                email,
+                {
+                    redirectTo:
+                        "https://moviepulse247.netlify.app/reset-password.html"
+                }
+            );
+
+
+        if (error) throw error;
+
+
+        authMessage.textContent =
+            "Password reset email sent! Check your inbox.";
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Password reset error:",
+            error
+        );
+
+        authMessage.textContent =
+            error.message;
+
+    }
+
+});
