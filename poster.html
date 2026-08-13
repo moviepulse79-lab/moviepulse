@@ -2583,9 +2583,11 @@ function openMovieModal(id){
         return;
     }
       
-  currentMovieId = movie.id;
+currentMovieId = movie.id;
 
-  document.getElementById("modalPoster").src = optimizePoster(movie.poster);
+updateFavoriteButton();
+
+document.getElementById("modalPoster").src = optimizePoster(movie.poster);
 
     document.getElementById("modalTitle").textContent = movie.title;
 
@@ -2695,6 +2697,61 @@ async function toggleFavorite() {
     }
 
     favoriteButton.innerHTML = "❤️ Added";
+
+}
+      async function updateFavoriteButton() {
+
+    const favoriteButton =
+        document.getElementById("modalFavorite");
+
+    if (!favoriteButton) return;
+
+
+    // Check logged-in user
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+
+    // Not logged in
+    if (!user) {
+
+        favoriteButton.innerHTML = "🤍 Add Favorite";
+
+        return;
+    }
+
+
+    // Check if movie is already in favorites
+    const { data, error } =
+        await supabaseClient
+            .from("favorites")
+            .select("id")
+            .eq("user_id", user.id)
+            .eq("movie_id", currentMovieId)
+            .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "Favorite status error:",
+            error
+        );
+
+        return;
+    }
+
+
+    if (data) {
+
+        favoriteButton.innerHTML = "❤️ Added";
+
+    } else {
+
+        favoriteButton.innerHTML = "🤍 Add Favorite";
+
+    }
 
 }
 
