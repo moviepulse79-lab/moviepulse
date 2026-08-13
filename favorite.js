@@ -24,40 +24,40 @@ async function loadFavorites() {
 
 
     // User is not logged in
-    if (!user) {
+ if (!user) {
 
-        favoritesContainer.innerHTML = `
-            <div class="empty-favorites">
+    favoritesContainer.innerHTML = `
+        <div class="empty-favorites">
 
-                <div class="favorite-sticker">
-                    <div class="sticker-heart">♥</div>
-                    <div class="sticker-film">🎬</div>
+            <div class="favorite-sticker">
 
-                    <span class="floating-heart heart-one">♥</span>
-                    <span class="floating-heart heart-two">♥</span>
+                <div class="sticker-heart">♥</div>
+                <div class="sticker-film">🎬</div>
 
-                    <span class="floating-star star-one">✦</span>
-                    <span class="floating-star star-two">✦</span>
+                <span class="floating-heart heart-one">♥</span>
+                <span class="floating-heart heart-two">♥</span>
 
-                </div>
-
-                <h2>Sign in to view your favorites.</h2>
-
-                <p>
-                    Log in to keep your favorite movies synced
-                    across your phone and computer.
-                </p>
-
-                <a href="auth.html" class="explore-favorites">
-                    Sign In
-                </a>
+                <span class="floating-star star-one">✦</span>
+                <span class="floating-star star-two">✦</span>
 
             </div>
-        `;
 
-        return;
-    }
+            <h2>Sign in to create your favorites.</h2>
 
+            <p>
+                Log in or create an account to save your favorite movies
+                and keep them synced across your phone and computer.
+            </p>
+
+            <a href="auth.html" class="explore-favorites">
+                Sign In / Create Account
+            </a>
+
+        </div>
+    `;
+
+    return;
+}
 
     // Get favorites from Supabase
     const {
