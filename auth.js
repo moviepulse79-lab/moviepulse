@@ -69,7 +69,6 @@ authForm.addEventListener("submit", async (e) => {
 }
         else {
 
-            const { data, error } =
               const { data, error } =
     await supabaseClient.auth.signUp({
         email: email,
