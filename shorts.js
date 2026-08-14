@@ -5,89 +5,6 @@
 // ===============================
 
 const shortsGrid = document.getElementById("shortsGrid");
-const featuredVideo = document.getElementById("featuredVideo");
-
-
-// ===============================
-// SUPABASE STORAGE BUCKET
-// ===============================
-
-const SHORTS_BUCKET = "shorts";
-
-
-// ===============================
-// GET PUBLIC VIDEO URL
-// ===============================
-
-function getShortUrl(filename) {
-
-    const {
-        data
-    } = supabaseClient
-        .storage
-        .from(SHORTS_BUCKET)
-        .getPublicUrl(filename);
-
-    return data.publicUrl;
-}
-
-
-// ===============================
-// LOAD SHORTS
-// ===============================
-
-function loadShorts() {
-
-    const videoUrl = getShortUrl("0811.mp4");
-
-
-    // =========================
-    // FEATURED VIDEO
-    // =========================
-
-    if (featuredVideo) {
-
-        featuredVideo.src = videoUrl;
-
-    }
-
-
-    // =========================
-    // LATEST SHORT
-    // =========================
-
-    if (shortsGrid) {
-
-        shortsGrid.innerHTML = "";
-
-
-        const shortCard = document.createElement("article");
-
-        shortCard.className = "short-card";
-
-
-        shortCard.innerHTML = `
-
-            <div class="short-video">
-
-                <video
-                    src="${videoUrl}"
-                    controls
-                    playsinline
-                    preload="metadata">
-                </video>
-
-            </div>
-
-        `;
-
-
-        shortsGrid.appendChild(shortCard);
-
-    }
-
-}
-
 
 
 // ===============================
@@ -96,13 +13,17 @@ function loadShorts() {
 
 async function loadShorts() {
 
-    if (!shortsGrid) return;
+    if (!shortsGrid) {
+        console.error("shortsGrid not found.");
+        return;
+    }
 
     shortsGrid.innerHTML = `
         <p style="
             color:#777;
-            text-align:center;
             width:100%;
+            text-align:center;
+            padding:30px;
         ">
             Loading Shorts...
         </p>
@@ -111,8 +32,11 @@ async function loadShorts() {
 
     try {
 
+        console.log("Loading Shorts from Supabase...");
+
+
         const {
-            data,
+            data: files,
             error
         } = await supabaseClient
             .storage
@@ -126,18 +50,39 @@ async function loadShorts() {
             });
 
 
+        // ===============================
+        // CHECK SUPABASE ERROR
+        // ===============================
+
         if (error) {
+
+            console.error(
+                "Supabase Storage error:",
+                error
+            );
+
             throw error;
         }
 
 
-        if (!data || data.length === 0) {
+        console.log(
+            "Files found in shorts bucket:",
+            files
+        );
+
+
+        // ===============================
+        // NO FILES
+        // ===============================
+
+        if (!files || files.length === 0) {
 
             shortsGrid.innerHTML = `
                 <p style="
                     color:#777;
-                    text-align:center;
                     width:100%;
+                    text-align:center;
+                    padding:30px;
                 ">
                     No Shorts available yet.
                 </p>
@@ -147,16 +92,24 @@ async function loadShorts() {
         }
 
 
+        // Clear loading message
+
         shortsGrid.innerHTML = "";
 
 
-        data.forEach(file => {
+        // ===============================
+        // CREATE SHORT CARDS
+        // ===============================
+
+        files.forEach(file => {
 
             // Ignore folders
+
             if (!file.name) return;
 
 
-            // Only allow video files
+            // Only videos
+
             const isVideo =
                 /\.(mp4|webm|mov|m4v)$/i
                 .test(file.name);
@@ -165,14 +118,21 @@ async function loadShorts() {
             if (!isVideo) return;
 
 
-            const {
-                data: publicUrl
-            } =
-                supabaseClient
-                    .storage
-                    .from("shorts")
-                    .getPublicUrl(file.name);
+            // Get public URL
 
+            const {
+                data: publicData
+            } = supabaseClient
+                .storage
+                .from("shorts")
+                .getPublicUrl(file.name);
+
+
+            const videoUrl =
+                publicData.publicUrl;
+
+
+            // Create card
 
             const card =
                 document.createElement("article");
@@ -191,11 +151,12 @@ async function loadShorts() {
                         preload="metadata">
 
                         <source
-                            src="${publicUrl.publicUrl}"
+                            src="${videoUrl}"
                             type="video/mp4">
 
                         Your browser does not support
                         this video.
+
                     </video>
 
                 </div>
@@ -208,10 +169,30 @@ async function loadShorts() {
         });
 
 
+        // ===============================
+        // CHECK IF NO VIDEO FILES
+        // ===============================
+
+        if (shortsGrid.children.length === 0) {
+
+            shortsGrid.innerHTML = `
+                <p style="
+                    color:#777;
+                    width:100%;
+                    text-align:center;
+                    padding:30px;
+                ">
+                    No video files found in the Shorts bucket.
+                </p>
+            `;
+
+        }
+
+
     } catch (error) {
 
         console.error(
-            "Error loading Shorts:",
+            "ERROR LOADING SHORTS:",
             error
         );
 
@@ -219,8 +200,9 @@ async function loadShorts() {
         shortsGrid.innerHTML = `
             <p style="
                 color:#e50914;
-                text-align:center;
                 width:100%;
+                text-align:center;
+                padding:30px;
             ">
                 Unable to load Shorts.
             </p>
@@ -229,14 +211,6 @@ async function loadShorts() {
     }
 
 }
-
-
-// ===============================
-// START
-// ===============================
-
-loadShorts();
-
 
 
 // ===============================
