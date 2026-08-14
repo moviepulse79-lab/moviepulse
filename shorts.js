@@ -285,7 +285,7 @@ video.addEventListener("click", () => {
         }
 
 
-    } catch (error) {
+     catch (error) {
 
         console.error(
             "ERROR LOADING SHORTS:",
