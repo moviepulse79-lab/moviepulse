@@ -35,20 +35,20 @@ async function loadShorts() {
         console.log("Loading Shorts from Supabase...");
 
 
-        const {
-            data: files,
-            error
-        } = await supabaseClient
-            .storage
-            .from("shorts")
-            .list("", {
-                limit: 100,
-                sortBy: {
-                    column: "created_at",
-                    order: "desc"
-                }
-            });
+     const {
+    data: files,
+    error
+} = await supabaseClient
+    .storage
+    .from("shorts")
+    .list("", {
+        limit: 100
+    });
 
+console.log("RAW STORAGE RESPONSE:", {
+    files,
+    error
+});
 
         // ===============================
         // CHECK SUPABASE ERROR
