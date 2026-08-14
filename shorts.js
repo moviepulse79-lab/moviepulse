@@ -88,13 +88,6 @@ function loadShorts() {
 
 }
 
-// ===============================
-// MOVIEPULSE SHORTS
-// SUPABASE STORAGE LOADER
-// ===============================
-
-const shortsGrid =
-    document.getElementById("shortsGrid");
 
 
 // ===============================
