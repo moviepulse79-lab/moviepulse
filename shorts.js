@@ -46,13 +46,7 @@ console.log("SHORTS FROM RPC:", {
     error
 });
 
-
-console.log("RAW STORAGE RESPONSE:", {
-    files,
-    error
-});
-
-        // ===============================
+  // ===============================
         // CHECK SUPABASE ERROR
         // ===============================
 
@@ -103,90 +97,140 @@ console.log("RAW STORAGE RESPONSE:", {
         // CREATE SHORT CARDS
         // ===============================
 
-        files.forEach(file => {
+     files.forEach(file => {
 
-            // Ignore folders
+    if (!file.name) return;
 
-            if (!file.name) return;
+    const isVideo =
+        /\.(mp4|webm|mov|m4v)$/i.test(file.name);
 
-
-            // Only videos
-
-            const isVideo =
-                /\.(mp4|webm|mov|m4v)$/i
-                .test(file.name);
+    if (!isVideo) return;
 
 
-            if (!isVideo) return;
+    const { data: publicData } =
+        supabaseClient
+            .storage
+            .from("shorts")
+            .getPublicUrl(file.name);
+
+    const videoUrl =
+        publicData.publicUrl;
 
 
-            // Get public URL
+    // CREATE CARD
 
-            const {
-                data: publicData
-            } = supabaseClient
-                .storage
-                .from("shorts")
-                .getPublicUrl(file.name);
+    const card =
+        document.createElement("article");
 
-
-            const videoUrl =
-                publicData.publicUrl;
+    card.className =
+        "short-card";
 
 
-            // Create card
+    // CARD HTML
 
-            const card =
-                document.createElement("article");
+    card.innerHTML = `
 
-            card.className =
-                "short-card";
+        <div class="short-video">
 
+            <video
+                playsinline
+                preload="metadata"
+                muted>
 
-card.innerHTML = `
+                <source
+                    src="${videoUrl}"
+                    type="video/mp4">
 
-    <div class="short-video">
+            </video>
 
-        <video
-            playsinline
-            preload="metadata"
-            muted>
+            <button
+                class="short-play"
+                type="button"
+                aria-label="Play Short">
 
-            <source
-                src="${videoUrl}"
-                type="video/mp4">
+                ▶
 
-            Your browser does not support this video.
+            </button>
 
-        </video>
+            <span class="short-badge">
+                SHORT
+            </span>
 
+        </div>
 
-        <!-- MOVIEPULSE PLAY BUTTON -->
-
-        <button
-            class="short-play"
-            type="button"
-            aria-label="Play Short">
-
-            ▶
-
-        </button>
+    `;
 
 
-        <!-- SHORT BADGE -->
+    // ADD CARD TO PAGE
 
-        <span class="short-badge">
-            SHORT
-        </span>
-
-    </div>
-
-`;
+    shortsGrid.appendChild(card);
 
 
-            shortsGrid.appendChild(card);
+    // =========================
+    // CUSTOM PLAY BUTTON
+    // =========================
 
-        });
+    const video =
+        card.querySelector("video");
+
+    const playButton =
+        card.querySelector(".short-play");
+
+
+    playButton.addEventListener("click", (event) => {
+
+        event.stopPropagation();
+
+        if (video.paused) {
+
+            video.play();
+
+        } else {
+
+            video.pause();
+
+        }
+
+    });
+
+
+    // =========================
+    // VIDEO STATE
+    // =========================
+
+    video.addEventListener("play", () => {
+
+        playButton.textContent = "⏸";
+
+    });
+
+
+    video.addEventListener("pause", () => {
+
+        playButton.textContent = "▶";
+
+    });
+
+
+    // =========================
+    // CLICK VIDEO
+    // =========================
+
+    video.addEventListener("click", () => {
+
+        if (video.paused) {
+
+            video.play();
+
+        } else {
+
+            video.pause();
+
+        }
+
+    });
+
+});
 
 
         // ===============================
