@@ -143,27 +143,45 @@ console.log("RAW STORAGE RESPONSE:", {
                 "short-card";
 
 
-            card.innerHTML = `
+card.innerHTML = `
 
-                <div class="short-video">
+    <div class="short-video">
 
-                    <video
-                        controls
-                        playsinline
-                        preload="metadata">
+        <video
+            playsinline
+            preload="metadata"
+            muted>
 
-                        <source
-                            src="${videoUrl}"
-                            type="video/mp4">
+            <source
+                src="${videoUrl}"
+                type="video/mp4">
 
-                        Your browser does not support
-                        this video.
+            Your browser does not support this video.
 
-                    </video>
+        </video>
 
-                </div>
 
-            `;
+        <!-- MOVIEPULSE PLAY BUTTON -->
+
+        <button
+            class="short-play"
+            type="button"
+            aria-label="Play Short">
+
+            ▶
+
+        </button>
+
+
+        <!-- SHORT BADGE -->
+
+        <span class="short-badge">
+            SHORT
+        </span>
+
+    </div>
+
+`;
 
 
             shortsGrid.appendChild(card);
