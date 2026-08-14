@@ -600,28 +600,37 @@ nav a.active{
    SHORT VIDEO
 ========================= */
 
-.short-video{
+.short-video {
 
-    width:100%;
+    width: 100%;
 
-    aspect-ratio:9 / 16;
+    aspect-ratio: 9 / 16;
 
-    background:#000;
+    background: #000;
 
-    overflow:hidden;
+    overflow: hidden;
 }
 
-.short-video video{
 
-    width:100%;
+.short-video video {
 
-    height:100%;
+    width: 100%;
 
-    display:block;
+    height: 100%;
 
-    object-fit:cover;
+    display: block;
+
+    object-fit: cover;
+
+    background: #000;
 }
 
+
+/* Remove old iframe styling */
+
+.short-video iframe {
+    display: none;
+}
 
 /* =========================
    MOBILE
