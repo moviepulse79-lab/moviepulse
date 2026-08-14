@@ -1,508 +1,720 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>shorts</title>
-    <link rel="icon" type="image/png" href="moviepulse (2).png">
- <meta name="description" content="Watch latest movie trailers, reviews, cast details and updates on MoviePulse.">
-<meta name="keywords" content="movies, trailers, film reviews, MoviePulse, cinema updates">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MoviePulse - Shorts</title>
+
+<link rel="icon" type="image/png" href="moviepulse (2).png">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-       body {
-        margin: 0;
-        font-family: 'Poppins', sans-serif;
-        background: black;
-        color: white;
-    }
-        header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 40px;
-        background: rgba(0,0,0,0.85);
-        border-bottom: 1px solid red;
-    }
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#050505;
+    color:white;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+
+/* =========================
+   NAVBAR
+========================= */
+
+header{
+    width:100%;
+    padding:18px 6%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    background:rgba(0,0,0,.92);
+    backdrop-filter:blur(12px);
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo img{
+    width:130px;
+    display:block;
+}
+
+nav{
+    display:flex;
+    align-items:center;
+    gap:28px;
+}
+
+nav a{
+    color:#ddd;
+    text-decoration:none;
+    font-size:14px;
+    transition:.3s;
+}
+
+nav a:hover,
+nav a.active{
+    color:#e50914;
+}
+
 .menu-btn{
     display:none;
-    font-size:30px;
-    color:#fff;
+    font-size:28px;
     cursor:pointer;
 }
 
-    .navbar ul {
-        list-style: none;
-        display: flex;
-        gap: 25px;
-        margin: 0;
-        padding: 0;
-    }
-    .navbar ul li a {
-        color: white;
-        text-decoration: none;
-        font-size: 16px;
-    }
-    .navbar ul li a:hover,
-    .navbar ul li a.active {
-        color: red;
-        border-bottom: 2px solid red;
-        padding-bottom: 2px;
-    }.logo img {
-    width: 160px;
-    height: auto;
-    display: block;
-    object-fit: contain;
-    max-height: 60px;
-  cursor: pointer;
-  border-radius: 14px;
 
-    animation: logoFloat 3s ease-in-out infinite;
+/* =========================
+   PAGE
+========================= */
 
-    transition: 
-        transform 0.4s ease,
-        filter 0.4s ease;
-}
-  .logo img:hover {
-    border-radius:10px;
-  }
-
-.shorts-page {
-     padding: 70px 4% 40px;
-    background: #000;
-    min-height: 100vh;
-}
-
-
-.shorts-title {
-    text-align: center;
-    margin-bottom: 18px;
-}
-
-
-.shorts-title p {
-    color: #aaa;
-    font-size: 18px;
-     margin-top: 10px;
-}
-
-
-.shorts-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    padding: 20px 0;
-}
-    @media(max-width: 900px){
-
-    .shorts-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-}
-
-
-@media(max-width: 600px){
-
-    .shorts-container {
-        grid-template-columns: 1fr;
-    }
-
-}
-
-
-.shorts-container::-webkit-scrollbar {
-    height: 8px;
-}
-
-
-.shorts-container::-webkit-scrollbar-thumb {
-    background: #e50914;
-    border-radius: 10px;
-}
-
-
-.short-card {
-    min-width: 300px;
-    max-width: 300px;
-    background: #111;
-    border-radius: 15px;
-    overflow: hidden;
-    border: 1px solid #222;
-    padding: 10px;
-}
-
-
-.short-card:hover {
-    transform: translateY(-8px);
-    border-color: #e50914;
-}
-
-
-.short-card iframe {
-    width: 100%;
-    height: 190px;
-    border: none;
-}
-    .short-card .tiktok-embed {
-    width: 100% !important;
-    max-height: 520px;
-    overflow: hidden;
-}
-
-
-.short-card h3 {
-    color: white;
-    font-size: 18px;
-    margin: 15px 10px 5px;
-}
-
-
-
-.short-card p {
-    color: #aaa;
-    font-size: 14px;
-    margin: 0 10px 15px;
-}
-    @media(max-width:768px){
-
-    .short-card {
-        min-width: 280px;
-        max-width: 280px;
-    }
-
-}
-    .watch-movie-btn{
-    display:block;
-    width:90%;
-    margin:15px auto 20px;
-    text-align:center;
-    background:#E50914;
-    color:#fff;
-    text-decoration:none;
-    padding:12px;
-    border-radius:8px;
-    font-weight:600;
-    transition:.3s;
-}
-
-.watch-movie-btn:hover{
-    background:#ff2b2b;
-    transform:translateY(-2px);
-    box-shadow:0 0 18px rgba(229,9,20,.5);
-}
-.shorts-filter {
-    text-align:center;
-    margin:30px 0;
-}
-
-
-.shorts-filter button {
-
-    background:#111;
-    color:white;
-    border:1px solid #e50914;
-    padding:10px 20px;
-    margin:5px;
-    border-radius:20px;
-    cursor:pointer;
-    transition:.3s;
-
-}
-
-
-.shorts-filter button:hover {
-
-    background:#e50914;
-
-}
-
-
-/* Active category */
-.shorts-filter button.active-filter {
-
-    background:#e50914;
-    color:white;
-    box-shadow:0 0 15px rgba(229,9,20,0.7);
-
-}
-.shorts-search {
-    display:flex;
-    justify-content:center;
-    margin:35px 0;
-}
-
-
-.search-box {
-    position:relative;
-    width:75%;
-    max-width:700px;
-}
-
-
-.search-box input {
-
+.shorts-page{
     width:100%;
-    padding:18px 60px 18px 25px;
-
-    background:#111;
-    color:white;
-
-    border:1px solid #333;
-    border-radius:35px;
-
-    font-size:18px;
-
-    outline:none;
-
+    max-width:1250px;
+    margin:auto;
+    padding:55px 25px 80px;
 }
 
-
-.search-box input:focus {
-
-    border-color:#e50914;
-    box-shadow:0 0 18px rgba(229,9,20,0.5);
-
+.page-heading{
+    margin-bottom:35px;
 }
 
-
-.search-box input::placeholder {
-
-    color:#888;
-
-}
-
-
-.search-box input{
-    width:100%;
-    padding:18px 60px 18px 25px;
-}
-
-.search-icon{
-    position:absolute;
-    right:15px;
-    top:50%;
-    transform:translateY(-50%);
-    background:none;
-    border:none;
+.page-heading span{
     color:#e50914;
-    font-size:22px;
-    cursor:pointer;
-}
-    /* ================================
-   MOBILE NAVIGATION
-================================ */
-
-.menu-btn {
-    display: none;
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:2px;
 }
 
-@media (max-width: 768px) {
+.page-heading h1{
+    font-size:42px;
+    margin:6px 0 8px;
+}
 
-    .mobile-header {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        padding: 12px 20px;
+.page-heading p{
+    color:#888;
+    max-width:650px;
+    line-height:1.7;
+    font-size:14px;
+}
+
+
+/* =========================
+   FEATURED SHORT
+========================= */
+
+.featured-short{
+    position:relative;
+
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+
+    min-height:500px;
+
+    border-radius:22px;
+    overflow:hidden;
+
+    background:#101010;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.55);
+
+    margin-bottom:55px;
+}
+
+.featured-short::before{
+    content:"";
+
+    position:absolute;
+
+    width:500px;
+    height:500px;
+
+    background:rgba(229,9,20,.13);
+
+    filter:blur(100px);
+
+    right:-150px;
+    top:-150px;
+
+    pointer-events:none;
+}
+
+
+/* =========================
+   FEATURED VIDEO
+========================= */
+
+.featured-video{
+    position:relative;
+
+    min-height:500px;
+
+    background:#000;
+
+    overflow:hidden;
+}
+
+.featured-video video{
+    width:100%;
+    height:100%;
+
+    min-height:500px;
+
+    display:block;
+
+    object-fit:cover;
+}
+
+
+/* =========================
+   FEATURED INFO
+========================= */
+
+.featured-info{
+    position:relative;
+
+    z-index:2;
+
+    padding:55px 45px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.featured-label{
+    display:inline-flex;
+    width:max-content;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+    background:#e50914;
+
+    color:white;
+
+    font-size:11px;
+    font-weight:600;
+
+    text-transform:uppercase;
+    letter-spacing:1px;
+
+    margin-bottom:20px;
+}
+
+.featured-info h2{
+    font-size:32px;
+    line-height:1.2;
+
+    margin-bottom:15px;
+}
+
+.featured-info p{
+    color:#999;
+
+    font-size:14px;
+    line-height:1.8;
+
+    margin-bottom:25px;
+}
+
+.watch-button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    width:max-content;
+
+    padding:12px 20px;
+
+    background:#e50914;
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:8px;
+
+    font-size:13px;
+    font-weight:600;
+
+    transition:.3s;
+}
+
+.watch-button:hover{
+    background:#ff1e1e;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 8px 25px rgba(229,9,20,.25);
+}
+
+
+/* =========================
+   SECTION TITLE
+========================= */
+
+.section-title{
+    display:flex;
+
+    align-items:end;
+
+    justify-content:space-between;
+
+    margin-bottom:25px;
+}
+
+.section-title h2{
+    font-size:25px;
+}
+
+.section-title p{
+    color:#777;
+    font-size:12px;
+}
+
+
+/* =========================
+   SHORTS GRID
+========================= */
+
+.shorts-grid{
+
+    width:100%;
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:22px;
+
+    justify-content:flex-start;
+}
+
+
+/* =========================
+   SHORT CARD
+========================= */
+
+.short-card{
+
+    width:230px;
+
+    flex:0 0 230px;
+
+    background:#101010;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:.3s;
+}
+
+.short-card:hover{
+
+    transform:translateY(-6px);
+
+    border-color:rgba(229,9,20,.5);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.5);
+}
+
+
+/* =========================
+   SHORT VIDEO
+========================= */
+
+.short-video{
+
+    width:100%;
+
+    aspect-ratio:9 / 16;
+
+    background:#000;
+
+    overflow:hidden;
+}
+
+.short-video video{
+
+    width:100%;
+
+    height:100%;
+
+    display:block;
+
+    object-fit:cover;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:900px){
+
+    .featured-short{
+        grid-template-columns:1fr;
     }
 
-    .menu-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        width: 45px;
-        height: 45px;
-
-        border: 1px solid rgba(255,255,255,.12);
-        border-radius: 10px;
-
-        background: #111;
-        color: #fff;
-
-        font-size: 25px;
-        cursor: pointer;
-
-        transition: .25s;
+    .featured-video{
+        min-height:550px;
     }
 
-    .menu-btn:hover {
-        background: #e50914;
+    .featured-video video{
+        min-height:550px;
     }
 
-    .navbar {
-        display: none;
-
-        width: 100%;
-
-        background: #111;
-
-        border-top: 1px solid #222;
-        border-bottom: 1px solid #222;
-
-        z-index: 9999;
-    }
-
-    .navbar.active {
-        display: block;
-    }
-
-    .navbar ul {
-        display: flex;
-
-        flex-direction: column;
-
-        width: 100%;
-
-        margin: 0;
-        padding: 0;
-
-        list-style: none;
-    }
-
-    .navbar ul li {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    .navbar ul li a {
-        display: block;
-
-        width: 100%;
-
-        padding: 17px 20px;
-
-        text-align: center;
-
-        color: #ddd;
-
-        text-decoration: none;
-
-        border-bottom: 1px solid rgba(255,255,255,.08);
-
-        transition:
-            background .25s ease,
-            color .25s ease;
-    }
-
-    .navbar ul li a:hover,
-    .navbar ul li a.active {
-        background: #e50914;
-        color: #fff;
+    .featured-info{
+        padding:35px;
     }
 
 }
+
+
+@media(max-width:700px){
+
+    header{
+        padding:16px 5%;
+    }
+
+    .menu-btn{
+        display:block;
+    }
+
+    nav{
+        display:none;
+
+        position:absolute;
+
+        top:70px;
+        left:0;
+
+        width:100%;
+
+        background:#0b0b0b;
+
+        flex-direction:column;
+
+        gap:0;
+    }
+
+    nav.active{
+        display:flex;
+    }
+
+    nav a{
+        width:100%;
+
+        text-align:center;
+
+        padding:16px;
+
+        border-bottom:1px solid rgba(255,255,255,.07);
+    }
+
+    .shorts-page{
+        padding:40px 15px 60px;
+    }
+
+    .page-heading h1{
+        font-size:32px;
+    }
+
+    .featured-short{
+        border-radius:16px;
+    }
+
+    .featured-video{
+        min-height:470px;
+    }
+
+    .featured-video video{
+        min-height:470px;
+    }
+
+    .featured-info{
+        padding:28px 22px;
+    }
+
+    .featured-info h2{
+        font-size:25px;
+    }
+
+    .short-card{
+
+        width:calc(50% - 7px);
+
+        flex:0 0 calc(50% - 7px);
+
+    }
+
+    .shorts-grid{
+        gap:14px;
+    }
+
+}
+
+
+@media(max-width:430px){
+
+    .short-card{
+
+        width:100%;
+
+        flex:0 0 100%;
+
+    }
+
+    .page-heading{
+        margin-bottom:25px;
+    }
+
+    .section-title h2{
+        font-size:20px;
+    }
+
+    .section-title p{
+        display:none;
+    }
+
+}
+
 </style>
 </head>
+
+
 <body>
-    <header>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<header>
+
     <div class="logo">
+
         <a href="index.html">
-            <img src="ChatGPT Image Jul 7, 2026, 09_00_03 AM.png" alt="MoviePulse Logo">
+
+            <img
+                src="ChatGPT Image Jul 7, 2026, 09_00_03 AM.png"
+                alt="MoviePulse"
+            >
+
         </a>
+
     </div>
 
-   <div class="mobile-header">
 
-    <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+    <div class="menu-btn" id="menuBtn">
         ☰
-    </button>
+    </div>
 
-</div>
 
-<nav class="navbar" id="mainNav">
+    <nav id="nav">
 
-    <ul id="menu">
+        <a href="index.html">
+            Home
+        </a>
 
-        <li>
-            <a href="index.html">Home</a>
-        </li>
+        <a href="poster.html">
+            Movies
+        </a>
 
-        <li>
-            <a href="poster.html">Movies</a>
-        </li>
+        <a href="shorts.html" class="active">
+            Shorts
+        </a>
 
-        <li>
-            <a href="shorts.html" class="active">Shorts</a>
-        </li>
+        <a href="favorites.html">
+            Favorites
+        </a>
 
-        <li>
-            <a href="favorite.html">Favorites</a>
-        </li>
+        <a href="about.html">
+            About
+        </a>
 
-        <li>
-            <a href="about.html">About</a>
-        </li>
+        <a href="privacy.html">
+            Privacy
+        </a>
 
-        <li>
-            <a href="privacy.html">Privacy Policy</a>
-        </li>
+        <a href="contact.html">
+            Contact
+        </a>
 
-        <li>
-            <a href="contact.html">Contact</a>
-        </li>
+    </nav>
 
-    </ul>
-
-</nav>
 </header>
 
-<section class="shorts-page">
 
-    <div class="shorts-title">
-        <p>Watch the latest movie moments, trailers and cinematic clips.</p>
+<main class="shorts-page">
+
+
+<!-- =========================
+     INTRO
+========================= -->
+
+<section class="page-heading">
+
+    <span>
+        MoviePulse Originals
+    </span>
+
+    <h1>
+        Shorts
+    </h1>
+
+    <p>
+        Discover quick movie moments, trailers,
+        recommendations and cinematic content from MoviePulse.
+    </p>
+
+</section>
+
+
+<!-- =========================
+     FEATURED SHORT
+========================= -->
+
+<section class="featured-short">
+
+
+    <div class="featured-video">
+
+        <video
+            id="featuredVideo"
+            controls
+            playsinline
+            preload="metadata">
+        </video>
+
     </div>
-    
-<div class="shorts-search">
 
-<div class="search-box">
 
-    <input
-        type="text"
-        id="short-search"
-        placeholder="Search Shorts...">
+    <div class="featured-info">
 
-    <button type="button" class="search-icon" onclick="searchShorts()">
-        🔍
-    </button>
+        <span class="featured-label">
+            Featured Short
+        </span>
 
-</div>
+        <h2>
+            Discover What's Coming Next
+        </h2>
 
-</div>
-    <div class="shorts-filter">
+        <p>
+            Get a quick look at the movies everyone is
+            talking about. Watch the latest MoviePulse
+            Shorts and discover something worth watching.
+        </p>
 
-    <button onclick="filterShorts('All')">All</button>
-    <button onclick="filterShorts('Action')">Action</button>
-    <button onclick="filterShorts('Horror')">Horror</button>
-    <button onclick="filterShorts('Romance')">Romance</button>
-    <button onclick="filterShorts('Superhero')">Superhero</button>
-    <button onclick="filterShorts('Drama')">Drama</button>
+        <a
+            href="#latest"
+            class="watch-button">
+            Explore Shorts
+        </a>
 
-</div>
-
-<div class="shorts-container" id="shorts-container"></div>
+    </div>
 
 
 </section>
 
-<script>
-const menuBtn = document.getElementById("menuBtn");
-const mainNav = document.getElementById("mainNav");
 
-if (menuBtn && mainNav) {
+<!-- =========================
+     LATEST SHORTS
+========================= -->
 
-    menuBtn.addEventListener("click", function () {
+<section id="latest">
 
-        mainNav.classList.toggle("active");
+    <div class="section-title">
 
-    });
+        <h2>
+            Latest Shorts
+        </h2>
 
-}
-</script>
-    
+        <p>
+            Fresh from MoviePulse
+        </p>
+
+    </div>
+
+
+    <div
+        class="shorts-grid"
+        id="shortsGrid">
+
+        <!-- Shorts will be loaded from Supabase -->
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- =========================
+     SUPABASE
+========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase.js"></script>
+
 <script src="shorts.js"></script>
-<script src="shorts-display.js"></script>
-<script async src="https://www.tiktok.com/embed.js"></script>
+
+
+<!-- =========================
+     MOBILE MENU
+========================= -->
+
+<script>
+
+const menuBtn =
+    document.getElementById("menuBtn");
+
+const nav =
+    document.getElementById("nav");
+
+
+menuBtn.addEventListener("click", () => {
+
+    nav.classList.toggle("active");
+
+});
+
+</script>
+
+
 </body>
+
 </html>
+```
