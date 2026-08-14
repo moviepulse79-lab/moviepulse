@@ -12,6 +12,9 @@ const authSubtitle = document.getElementById("authSubtitle");
 const password = document.getElementById("password");
 const togglePassword = document.getElementById("togglePassword");
 
+const usernameGroup = document.getElementById("usernameGroup");
+const usernameInput = document.getElementById("username");
+
 togglePassword.addEventListener("click", () => {
 
     if (password.type === "password") {
@@ -37,43 +40,50 @@ switchAuth.addEventListener("click", () => {
 
     authMessage.textContent = "";
 
-    if (isLoginMode) {
+if (isLoginMode) {
 
-        // LOGIN MODE
+    // LOGIN MODE
 
-        authTitle.textContent = "Welcome Back";
+    usernameGroup.style.display = "none";
+    usernameInput.required = false;
 
-        authSubtitle.textContent =
-            "Sign in to continue to MoviePulse";
+    authTitle.textContent = "Welcome Back";
 
-        authButton.textContent = "Sign In";
+    authSubtitle.textContent =
+        "Sign in to continue to MoviePulse";
 
-        switchQuestion.textContent =
-            "Don't have an account?";
+    authButton.textContent = "Sign In";
 
-        switchAuth.textContent =
-            "Create Account";
+    switchQuestion.textContent =
+        "Don't have an account?";
 
-    } else {
+    switchAuth.textContent =
+        "Create Account";
 
-        // CREATE ACCOUNT MODE
 
-        authTitle.textContent =
-            "Create Your Account";
+} else {
 
-        authSubtitle.textContent =
-            "Join MoviePulse and save your favorite movies";
+    // CREATE ACCOUNT MODE
 
-        authButton.textContent =
-            "Create Account";
+    usernameGroup.style.display = "block";
+    usernameInput.required = true;
 
-        switchQuestion.textContent =
-            "Already have an account?";
+    authTitle.textContent =
+        "Create Your Account";
 
-        switchAuth.textContent =
-            "Sign In";
+    authSubtitle.textContent =
+        "Join MoviePulse and save your favorite movies";
 
-    }
+    authButton.textContent =
+        "Create Account";
+
+    switchQuestion.textContent =
+        "Already have an account?";
+
+    switchAuth.textContent =
+        "Sign In";
+
+}
 
 });
 
