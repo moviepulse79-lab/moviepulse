@@ -156,29 +156,68 @@ nav a.active{
 }
 
 
+```css id="5c72gd"
 /* =========================
-   FEATURED VIDEO
+   FEATURED SHORT
 ========================= */
 
-.featured-video {
+.featured-short {
 
     position: relative;
 
     width: 100%;
 
-    aspect-ratio: 9 / 16;
+    display: grid;
 
-    max-height: 560px;
+    grid-template-columns: 320px 1fr;
 
-    background: #000;
+    align-items: center;
+
+    gap: 55px;
+
+    padding: 40px;
+
+    margin-bottom: 55px;
+
+    background: #101010;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 22px;
 
     overflow: hidden;
 
-    border-radius: 14px;
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.55);
 }
 
 
-.featured-video video {
+/* =========================
+   POSTER
+========================= */
+
+.featured-poster {
+
+    position: relative;
+
+    width: 320px;
+
+    aspect-ratio: 9 / 16;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    background: #050505;
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.7);
+}
+
+
+/* Poster image */
+
+.featured-poster img {
 
     width: 100%;
 
@@ -190,31 +229,169 @@ nav a.active{
 }
 
 
+/* Dark overlay */
+
+.featured-poster::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            transparent 55%,
+            rgba(0,0,0,.8)
+        );
+
+    pointer-events: none;
+}
+
+
+/* =========================
+   PLAY BUTTON
+========================= */
+
+.featured-play {
+
+    position: absolute;
+
+    top: 50%;
+
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: 65px;
+
+    height: 65px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #e50914;
+
+    color: white;
+
+    font-size: 23px;
+
+    padding-left: 4px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.6);
+
+    z-index: 3;
+
+    cursor: pointer;
+
+    transition: .3s;
+}
+
+
+.featured-play:hover {
+
+    transform:
+        translate(-50%, -50%)
+        scale(1.1);
+
+    background: #ff1e1e;
+}
+
+
+/* =========================
+   SOCIAL STYLE ICONS
+========================= */
+
+.featured-social {
+
+    position: absolute;
+
+    bottom: 18px;
+
+    right: 15px;
+
+    z-index: 4;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 9px;
+}
+
+
+.featured-social span {
+
+    width: 32px;
+
+    height: 32px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(0,0,0,.65);
+
+    backdrop-filter: blur(8px);
+
+    font-size: 14px;
+
+    color: white;
+}
+
+
+/* =========================
+   SHORT BADGE
+========================= */
+
+.short-badge {
+
+    position: absolute;
+
+    top: 15px;
+
+    left: 15px;
+
+    z-index: 4;
+
+    padding: 5px 10px;
+
+    background: #e50914;
+
+    border-radius: 6px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+
 /* =========================
    FEATURED INFO
 ========================= */
 
 .featured-info {
 
-    position: relative;
-
-    z-index: 2;
-
-    padding: 20px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
+    max-width: 550px;
 }
 
 
 .featured-label {
 
     display: inline-flex;
-
-    width: max-content;
 
     padding: 6px 12px;
 
@@ -232,13 +409,13 @@ nav a.active{
 
     letter-spacing: 1px;
 
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 
 .featured-info h2 {
 
-    font-size: 32px;
+    font-size: 34px;
 
     line-height: 1.2;
 
@@ -258,37 +435,127 @@ nav a.active{
 }
 
 
+/* =========================
+   WATCH BUTTON
+========================= */
 
-.watch-button{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
+.watch-button {
 
-    width:max-content;
+    display: inline-flex;
 
-    padding:12px 20px;
+    align-items: center;
 
-    background:#e50914;
-    color:white;
+    justify-content: center;
 
-    text-decoration:none;
+    padding: 12px 22px;
 
-    border-radius:8px;
+    background: #e50914;
 
-    font-size:13px;
-    font-weight:600;
+    color: white;
 
-    transition:.3s;
+    text-decoration: none;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition: .3s;
 }
 
-.watch-button:hover{
-    background:#ff1e1e;
 
-    transform:translateY(-2px);
+.watch-button:hover {
+
+    background: #ff1e1e;
+
+    transform: translateY(-2px);
 
     box-shadow:
         0 8px 25px rgba(229,9,20,.25);
 }
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media(max-width:900px) {
+
+    .featured-short {
+
+        grid-template-columns: 270px 1fr;
+
+        gap: 35px;
+
+        padding: 30px;
+
+    }
+
+    .featured-poster {
+
+        width: 270px;
+
+    }
+
+    .featured-info h2 {
+
+        font-size: 28px;
+
+    }
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:700px) {
+
+    .featured-short {
+
+        grid-template-columns: 1fr;
+
+        justify-items: center;
+
+        gap: 25px;
+
+        padding: 25px 18px 30px;
+
+    }
+
+    .featured-poster {
+
+        width: 280px;
+
+    }
+
+    .featured-info {
+
+        text-align: center;
+
+    }
+
+    .featured-info h2 {
+
+        font-size: 25px;
+
+    }
+
+}
+
+
+@media(max-width:430px) {
+
+    .featured-poster {
+
+        width: 250px;
+
+    }
+
+}
+
 
 
 /* =========================
@@ -396,25 +663,7 @@ nav a.active{
    MOBILE
 ========================= */
 
-@media(max-width:900px){
 
-    .featured-short{
-        grid-template-columns:1fr;
-    }
-
-    .featured-video{
-        min-height:550px;
-    }
-
-    .featured-video video{
-        min-height:550px;
-    }
-
-    .featured-info{
-        padding:35px;
-    }
-
-}
 
 
 @media(max-width:700px){
@@ -617,24 +866,50 @@ nav a.active{
 </section>
 
 
+
 <!-- =========================
      FEATURED SHORT
 ========================= -->
 
 <section class="featured-short">
 
+    <!-- POSTER -->
 
-    <div class="featured-video">
+    <div class="featured-poster">
 
-        <video
-            id="featuredVideo"
-            controls
-            playsinline
-            preload="metadata">
-        </video>
+        <img
+            src="featured-short.jpg"
+            alt="Featured MoviePulse Short"
+        >
+
+        <!-- Play Button -->
+
+        <div class="featured-play">
+            ▶
+        </div>
+
+
+        <!-- Social Style Icons -->
+
+        <div class="featured-social">
+
+            <span>♥</span>
+            <span>💬</span>
+            <span>↗</span>
+
+        </div>
+
+
+        <!-- Short Label -->
+
+        <div class="short-badge">
+            SHORT
+        </div>
 
     </div>
 
+
+    <!-- FEATURED INFORMATION -->
 
     <div class="featured-info">
 
@@ -642,9 +917,11 @@ nav a.active{
             Featured Short
         </span>
 
+
         <h2>
             Discover What's Coming Next
         </h2>
+
 
         <p>
             Get a quick look at the movies everyone is
@@ -652,16 +929,19 @@ nav a.active{
             Shorts and discover something worth watching.
         </p>
 
+
         <a
             href="#latest"
             class="watch-button">
-            Explore Shorts
+
+            Watch Short
+
         </a>
 
     </div>
 
-
 </section>
+
 
 
 <!-- =========================
