@@ -134,8 +134,7 @@ console.log("SHORTS FROM RPC:", {
 
             <video
                 playsinline
-                preload="metadata"
-                muted>
+                preload="metadata">
 
                 <source
                     src="${videoUrl}"
@@ -166,71 +165,104 @@ console.log("SHORTS FROM RPC:", {
     shortsGrid.appendChild(card);
 
 
-    // =========================
-    // CUSTOM PLAY BUTTON
-    // =========================
 
-    const video =
-        card.querySelector("video");
+// =========================
+// CUSTOM PLAY BUTTON
+// =========================
 
-    const playButton =
-        card.querySelector(".short-play");
+const video =
+    card.querySelector("video");
 
-
-    playButton.addEventListener("click", (event) => {
-
-        event.stopPropagation();
-
-        if (video.paused) {
-
-            video.play();
-
-        } else {
-
-            video.pause();
-
-        }
-
-    });
+const playButton =
+    card.querySelector(".short-play");
 
 
-    // =========================
-    // VIDEO STATE
-    // =========================
+// =========================
+// PLAY / PAUSE
+// =========================
 
-    video.addEventListener("play", () => {
+playButton.addEventListener("click", (event) => {
 
-        playButton.textContent = "⏸";
-
-    });
+    event.stopPropagation();
 
 
-    video.addEventListener("pause", () => {
+    if (video.paused) {
 
-        playButton.textContent = "▶";
+        // Stop every other Short
+        document
+            .querySelectorAll(".short-video video")
+            .forEach(otherVideo => {
 
-    });
+                if (otherVideo !== video) {
+
+                    otherVideo.pause();
+
+                }
+
+            });
 
 
-    // =========================
-    // CLICK VIDEO
-    // =========================
+        video.play();
 
-    video.addEventListener("click", () => {
+    } else {
 
-        if (video.paused) {
+        video.pause();
 
-            video.play();
-
-        } else {
-
-            video.pause();
-
-        }
-
-    });
+    }
 
 });
+
+
+// =========================
+// VIDEO STATE
+// =========================
+
+video.addEventListener("play", () => {
+
+    // Stop other videos
+    document
+        .querySelectorAll(".short-video video")
+        .forEach(otherVideo => {
+
+            if (otherVideo !== video) {
+
+                otherVideo.pause();
+
+            }
+
+        });
+
+
+    playButton.textContent = "⏸";
+
+});
+
+
+video.addEventListener("pause", () => {
+
+    playButton.textContent = "▶";
+
+});
+
+
+// =========================
+// CLICK VIDEO
+// =========================
+
+video.addEventListener("click", () => {
+
+    if (video.paused) {
+
+        video.play();
+
+    } else {
+
+        video.pause();
+
+    }
+
+});
+
 
 
         // ===============================
