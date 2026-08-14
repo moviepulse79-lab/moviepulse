@@ -88,6 +88,163 @@ function loadShorts() {
 
 }
 
+// ===============================
+// MOVIEPULSE SHORTS
+// SUPABASE STORAGE LOADER
+// ===============================
+
+const shortsGrid =
+    document.getElementById("shortsGrid");
+
+
+// ===============================
+// LOAD SHORTS
+// ===============================
+
+async function loadShorts() {
+
+    if (!shortsGrid) return;
+
+    shortsGrid.innerHTML = `
+        <p style="
+            color:#777;
+            text-align:center;
+            width:100%;
+        ">
+            Loading Shorts...
+        </p>
+    `;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .storage
+            .from("shorts")
+            .list("", {
+                limit: 100,
+                sortBy: {
+                    column: "created_at",
+                    order: "desc"
+                }
+            });
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        if (!data || data.length === 0) {
+
+            shortsGrid.innerHTML = `
+                <p style="
+                    color:#777;
+                    text-align:center;
+                    width:100%;
+                ">
+                    No Shorts available yet.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        shortsGrid.innerHTML = "";
+
+
+        data.forEach(file => {
+
+            // Ignore folders
+            if (!file.name) return;
+
+
+            // Only allow video files
+            const isVideo =
+                /\.(mp4|webm|mov|m4v)$/i
+                .test(file.name);
+
+
+            if (!isVideo) return;
+
+
+            const {
+                data: publicUrl
+            } =
+                supabaseClient
+                    .storage
+                    .from("shorts")
+                    .getPublicUrl(file.name);
+
+
+            const card =
+                document.createElement("article");
+
+            card.className =
+                "short-card";
+
+
+            card.innerHTML = `
+
+                <div class="short-video">
+
+                    <video
+                        controls
+                        playsinline
+                        preload="metadata">
+
+                        <source
+                            src="${publicUrl.publicUrl}"
+                            type="video/mp4">
+
+                        Your browser does not support
+                        this video.
+                    </video>
+
+                </div>
+
+            `;
+
+
+            shortsGrid.appendChild(card);
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Error loading Shorts:",
+            error
+        );
+
+
+        shortsGrid.innerHTML = `
+            <p style="
+                color:#e50914;
+                text-align:center;
+                width:100%;
+            ">
+                Unable to load Shorts.
+            </p>
+        `;
+
+    }
+
+}
+
+
+// ===============================
+// START
+// ===============================
+
+loadShorts();
+
+
 
 // ===============================
 // START
