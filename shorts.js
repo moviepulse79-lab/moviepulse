@@ -4,7 +4,8 @@
 // SUPABASE STORAGE
 // ===============================
 
-const shortsGrid = document.getElementById("shortsGrid");
+const shortsGrid =
+    document.getElementById("shortsGrid");
 
 
 // ===============================
@@ -14,9 +15,14 @@ const shortsGrid = document.getElementById("shortsGrid");
 async function loadShorts() {
 
     if (!shortsGrid) {
-        console.error("shortsGrid not found.");
+
+        console.error(
+            "shortsGrid not found."
+        );
+
         return;
     }
+
 
     shortsGrid.innerHTML = `
         <p style="
@@ -32,39 +38,44 @@ async function loadShorts() {
 
     try {
 
-        console.log("Loading Shorts from Supabase...");
+        console.log(
+            "Loading Shorts from Supabase..."
+        );
 
 
-const {
-    data: files,
-    error
-} = await supabaseClient
-    .rpc("get_moviepulse_shorts");
+        // ===============================
+        // GET SHORTS FROM RPC
+        // ===============================
 
-console.log("SHORTS FROM RPC:", {
-    files,
-    error
-});
+        const {
+            data: files,
+            error
+        } = await supabaseClient
+            .rpc("get_moviepulse_shorts");
 
-  // ===============================
-        // CHECK SUPABASE ERROR
+
+        console.log(
+            "SHORTS FROM RPC:",
+            {
+                files,
+                error
+            }
+        );
+
+
+        // ===============================
+        // CHECK ERROR
         // ===============================
 
         if (error) {
 
             console.error(
-                "Supabase Storage error:",
+                "Supabase error:",
                 error
             );
 
             throw error;
         }
-
-
-        console.log(
-            "Files found in shorts bucket:",
-            files
-        );
 
 
         // ===============================
@@ -88,7 +99,9 @@ console.log("SHORTS FROM RPC:", {
         }
 
 
-        // Clear loading message
+        // ===============================
+        // CLEAR LOADING
+        // ===============================
 
         shortsGrid.innerHTML = "";
 
@@ -97,179 +110,240 @@ console.log("SHORTS FROM RPC:", {
         // CREATE SHORT CARDS
         // ===============================
 
-     files.forEach(file => {
+        files.forEach(file => {
 
-    if (!file.name) return;
-
-    const isVideo =
-        /\.(mp4|webm|mov|m4v)$/i.test(file.name);
-
-    if (!isVideo) return;
+            if (!file.name) return;
 
 
-    const { data: publicData } =
-        supabaseClient
-            .storage
-            .from("shorts")
-            .getPublicUrl(file.name);
+            // Only video files
 
-    const videoUrl =
-        publicData.publicUrl;
+            const isVideo =
+                /\.(mp4|webm|mov|m4v)$/i
+                .test(file.name);
 
 
-    // CREATE CARD
-
-    const card =
-        document.createElement("article");
-
-    card.className =
-        "short-card";
+            if (!isVideo) return;
 
 
-    // CARD HTML
+            // ===============================
+            // PUBLIC VIDEO URL
+            // ===============================
 
-    card.innerHTML = `
-
-        <div class="short-video">
-
-            <video
-                playsinline
-                preload="metadata">
-
-                <source
-                    src="${videoUrl}"
-                    type="video/mp4">
-
-            </video>
-
-            <button
-                class="short-play"
-                type="button"
-                aria-label="Play Short">
-
-                ▶
-
-            </button>
-
-            <span class="short-badge">
-                SHORT
-            </span>
-
-        </div>
-
-    `;
+            const {
+                data: publicData
+            } = supabaseClient
+                .storage
+                .from("shorts")
+                .getPublicUrl(file.name);
 
 
-    // ADD CARD TO PAGE
-
-    shortsGrid.appendChild(card);
-
+            const videoUrl =
+                publicData.publicUrl;
 
 
-// =========================
-// CUSTOM PLAY BUTTON
-// =========================
+            // ===============================
+            // CREATE CARD
+            // ===============================
 
-const video =
-    card.querySelector("video");
+            const card =
+                document.createElement("article");
 
-const playButton =
-    card.querySelector(".short-play");
-
-
-// =========================
-// PLAY / PAUSE
-// =========================
-
-playButton.addEventListener("click", (event) => {
-
-    event.stopPropagation();
+            card.className =
+                "short-card";
 
 
-    if (video.paused) {
+            card.innerHTML = `
 
-        // Stop every other Short
-        document
-            .querySelectorAll(".short-video video")
-            .forEach(otherVideo => {
+                <div class="short-video">
 
-                if (otherVideo !== video) {
+                    <video
+                        playsinline
+                        preload="metadata">
 
-                    otherVideo.pause();
+                        <source
+                            src="${videoUrl}"
+                            type="video/mp4">
+
+                        Your browser does not
+                        support this video.
+
+                    </video>
+
+
+                    <!-- MOVIEPULSE PLAY BUTTON -->
+
+                    <button
+                        class="short-play"
+                        type="button"
+                        aria-label="Play Short">
+
+                        ▶
+
+                    </button>
+
+
+                    <!-- SHORT BADGE -->
+
+                    <span class="short-badge">
+
+                        SHORT
+
+                    </span>
+
+                </div>
+
+            `;
+
+
+            // ===============================
+            // ADD CARD
+            // ===============================
+
+            shortsGrid.appendChild(card);
+
+
+            // ===============================
+            // GET VIDEO + BUTTON
+            // ===============================
+
+            const video =
+                card.querySelector("video");
+
+            const playButton =
+                card.querySelector(".short-play");
+
+
+            // ===============================
+            // PLAY BUTTON
+            // ===============================
+
+            playButton.addEventListener(
+                "click",
+                (event) => {
+
+                    event.stopPropagation();
+
+
+                    if (video.paused) {
+
+                        // Stop all other Shorts
+
+                        document
+                            .querySelectorAll(
+                                ".short-video video"
+                            )
+                            .forEach(
+                                otherVideo => {
+
+                                    if (
+                                        otherVideo !==
+                                        video
+                                    ) {
+
+                                        otherVideo.pause();
+
+                                    }
+
+                                }
+                            );
+
+
+                        video.play();
+
+                    } else {
+
+                        video.pause();
+
+                    }
 
                 }
-
-            });
-
-
-        video.play();
-
-    } else {
-
-        video.pause();
-
-    }
-
-});
+            );
 
 
-// =========================
-// VIDEO STATE
-// =========================
+            // ===============================
+            // VIDEO PLAY EVENT
+            // ===============================
 
-video.addEventListener("play", () => {
+            video.addEventListener(
+                "play",
+                () => {
 
-    // Stop other videos
-    document
-        .querySelectorAll(".short-video video")
-        .forEach(otherVideo => {
 
-            if (otherVideo !== video) {
+                    // Stop all other Shorts
 
-                otherVideo.pause();
+                    document
+                        .querySelectorAll(
+                            ".short-video video"
+                        )
+                        .forEach(
+                            otherVideo => {
 
-            }
+                                if (
+                                    otherVideo !==
+                                    video
+                                ) {
+
+                                    otherVideo.pause();
+
+                                }
+
+                            }
+                        );
+
+
+                    playButton.textContent =
+                        "⏸";
+
+                }
+            );
+
+
+            // ===============================
+            // VIDEO PAUSE EVENT
+            // ===============================
+
+            video.addEventListener(
+                "pause",
+                () => {
+
+                    playButton.textContent =
+                        "▶";
+
+                }
+            );
+
+
+            // ===============================
+            // CLICK VIDEO
+            // ===============================
+
+            video.addEventListener(
+                "click",
+                () => {
+
+                    if (video.paused) {
+
+                        video.play();
+
+                    } else {
+
+                        video.pause();
+
+                    }
+
+                }
+            );
 
         });
 
 
-    playButton.textContent = "⏸";
-
-});
-
-
-video.addEventListener("pause", () => {
-
-    playButton.textContent = "▶";
-
-});
-
-
-// =========================
-// CLICK VIDEO
-// =========================
-
-video.addEventListener("click", () => {
-
-    if (video.paused) {
-
-        video.play();
-
-    } else {
-
-        video.pause();
-
-    }
-
-});
-
-
-
         // ===============================
-        // CHECK IF NO VIDEO FILES
+        // CHECK VIDEO FILES
         // ===============================
 
-        if (shortsGrid.children.length === 0) {
+        if (
+            shortsGrid.children.length === 0
+        ) {
 
             shortsGrid.innerHTML = `
                 <p style="
@@ -278,14 +352,15 @@ video.addEventListener("click", () => {
                     text-align:center;
                     padding:30px;
                 ">
-                    No video files found in the Shorts bucket.
+                    No video files found
+                    in the Shorts bucket.
                 </p>
             `;
 
         }
 
 
-     catch (error) {
+    } catch (error) {
 
         console.error(
             "ERROR LOADING SHORTS:",
@@ -314,3 +389,4 @@ video.addEventListener("click", () => {
 // ===============================
 
 loadShorts();
+
