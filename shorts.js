@@ -35,15 +35,17 @@ async function loadShorts() {
         console.log("Loading Shorts from Supabase...");
 
 
-     const {
+const {
     data: files,
     error
 } = await supabaseClient
-    .storage
-    .from("shorts")
-    .list("", {
-        limit: 100
-    });
+    .rpc("get_moviepulse_shorts");
+
+console.log("SHORTS FROM RPC:", {
+    files,
+    error
+});
+
 
 console.log("RAW STORAGE RESPONSE:", {
     files,
