@@ -1,4 +1,4 @@
-```javascript
+
 // ===============================
 // MOVIEPULSE SHORTS
 // SUPABASE STORAGE
@@ -94,4 +94,3 @@ function loadShorts() {
 // ===============================
 
 loadShorts();
-```
