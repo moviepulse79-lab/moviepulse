@@ -213,105 +213,73 @@ async function loadShorts() {
                 card.querySelector(".short-play");
 
 
-            // ===============================
-            // PLAY BUTTON
-            // ===============================
+       // ===============================
+// PLAY BUTTON
+// ===============================
 
-            playButton.addEventListener(
-                "click",
-                (event) => {
+playButton.addEventListener("click", (event) => {
 
-                    event.stopPropagation();
+    event.stopPropagation();
 
+    if (video.paused) {
 
-                    if (video.paused) {
+        // Stop all other Shorts
+        document
+            .querySelectorAll(".short-video video")
+            .forEach(otherVideo => {
 
-                        // Stop all other Shorts
-
-                        document
-                            .querySelectorAll(
-                                ".short-video video"
-                            )
-                            .forEach(
-                                otherVideo => {
-
-                                    if (
-                                        otherVideo !==
-                                        video
-                                    ) {
-
-                                        otherVideo.pause();
-
-                                    }
-
-                                }
-                            );
-
-
-                        video.play();
-
-                    } else {
-
-                        video.pause();
-
-                    }
-
+                if (otherVideo !== video) {
+                    otherVideo.pause();
                 }
-            );
+
+            });
+
+        video.play();
+
+    } else {
+
+        video.pause();
+
+    }
+
+});
 
 
-            // ===============================
-            // VIDEO PLAY EVENT
-            // ===============================
+// ===============================
+// VIDEO PLAY EVENT
+// ===============================
 
-            video.addEventListener(
-                "play",
-                () => {
+video.addEventListener("play", () => {
 
+    // Stop all other Shorts
+    document
+        .querySelectorAll(".short-video video")
+        .forEach(otherVideo => {
 
-                    // Stop all other Shorts
+            if (otherVideo !== video) {
+                otherVideo.pause();
+            }
 
-                    document
-                        .querySelectorAll(
-                            ".short-video video"
-                        )
-                        .forEach(
-                            otherVideo => {
+        });
 
-                                if (
-                                    otherVideo !==
-                                    video
-                                ) {
+    // Hide our play button while playing
+    playButton.style.opacity = "0";
+    playButton.style.pointerEvents = "none";
 
-                                    otherVideo.pause();
-
-                                }
-
-                            }
-                        );
+});
 
 
-                    playButton.textContent =
-                        "⏸";
+// ===============================
+// VIDEO PAUSE EVENT
+// ===============================
 
-                }
-            );
+video.addEventListener("pause", () => {
 
+    // Show play button again
+    playButton.style.opacity = "1";
+    playButton.style.pointerEvents = "auto";
 
-            // ===============================
-            // VIDEO PAUSE EVENT
-            // ===============================
-
-            video.addEventListener(
-                "pause",
-                () => {
-
-                    playButton.textContent =
-                        "▶";
-
-                }
-            );
-
+});
 
             // ===============================
             // CLICK VIDEO
