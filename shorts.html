@@ -645,65 +645,34 @@ nav a.active{
 }
 
 
-.short-video video {
 
-    width: 100%;
-
-    height: 100%;
-
-    display: block;
-
-    object-fit: cover;
-
-    background: #000;
-}
 
 
 /* =========================
    CUSTOM PLAY BUTTON
 ========================= */
 
-.short-play {
+.short-play{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
 
-    position: absolute;
+    width:55px;
+    height:55px;
 
-    top: 50%;
+    border:none;
+    border-radius:50%;
 
-    left: 50%;
+    background:rgba(229,9,20,.9);
+    color:white;
 
-    transform: translate(-50%, -50%);
+    font-size:22px;
+    cursor:pointer;
 
-    width: 62px;
-
-    height: 62px;
-
-    border-radius: 50%;
-
-    border: 2px solid rgba(255,255,255,.8);
-
-    background: rgba(0,0,0,.65);
-
-    backdrop-filter: blur(8px);
-
-    color: white;
-
-    font-size: 23px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    cursor: pointer;
-
-    z-index: 5;
-
-    transition: .25s ease;
-
-    padding-left: 4px;
+    transition:opacity .3s ease;
+    z-index:5;
 }
-
 
 .short-play:hover {
 
