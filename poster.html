@@ -1304,96 +1304,188 @@ transition:0.35s ease;
     }
 
 }
-    
 /* =========================================
-   FINAL MOBILE MOVIE LAYOUT
+   MOVIEPULSE - FINAL MOBILE MOVIE LAYOUT
 ========================================= */
 
 @media (max-width: 600px) {
 
-    /* Hide ALL filter buttons */
+    /* -----------------------------------------
+       HIDE FILTER BAR COMPLETELY
+    ----------------------------------------- */
+
     .filter-bar,
     .filter-container,
     .filters {
         display: none !important;
     }
 
-    /* Hide normal movie grid */
+
+    /* -----------------------------------------
+       HIDE DESKTOP MOVIE GRID
+    ----------------------------------------- */
+
     #postersRow {
         display: none !important;
     }
 
-    /* Show mobile genre container */
+
+    /* -----------------------------------------
+       SHOW MOBILE GENRE CONTAINER
+    ----------------------------------------- */
+
     #mobileGenreContainer {
         display: block !important;
-        width: 100%;
-        max-width: 100%;
-        overflow: hidden;
+
+        width: 100% !important;
+        max-width: 100% !important;
+
+        overflow: hidden !important;
+
+        padding: 0 !important;
+        margin: 0 !important;
     }
 
-    /* Genre section */
-    .mobile-genre-section {
-        width: 100%;
-        margin: 12px 0 20px;
-        padding: 0 12px;
+
+    /* -----------------------------------------
+       EACH GENRE SECTION
+    ----------------------------------------- */
+
+    #mobileGenreContainer .mobile-genre-section {
+
+        display: block !important;
+
+        width: 100% !important;
+
+        margin: 15px 0 22px !important;
+
+        padding: 0 12px !important;
+
         box-sizing: border-box;
     }
 
-    /* Genre heading */
-    .mobile-genre-title {
-        display: flex;
+
+    /* -----------------------------------------
+       GENRE TITLE
+    ----------------------------------------- */
+
+    #mobileGenreContainer .mobile-genre-title {
+
+        display: flex !important;
+
         align-items: center;
+
         justify-content: space-between;
+
+        width: 100%;
+
         margin-bottom: 8px;
     }
 
-    .mobile-genre-title h2 {
+
+    #mobileGenreContainer .mobile-genre-title h2 {
+
         margin: 0;
-        color: white;
+
+        color: #fff;
+
         font-size: 17px;
+
+        font-weight: 600;
     }
 
-    .mobile-genre-title span {
+
+    #mobileGenreContainer .mobile-genre-title span {
+
         color: #ff1e1e;
+
         font-size: 11px;
     }
 
-    /* Horizontal row */
-    .mobile-genre-row {
+
+    /* -----------------------------------------
+       HORIZONTAL GENRE ROW
+    ----------------------------------------- */
+
+    #mobileGenreContainer .mobile-genre-row {
+
         display: flex !important;
+
         flex-direction: row !important;
+
         flex-wrap: nowrap !important;
 
-        width: 100%;
+        align-items: flex-start;
+
+        justify-content: flex-start;
+
         gap: 9px;
 
+        width: 100% !important;
+
+        max-width: 100% !important;
+
         overflow-x: auto !important;
-        overflow-y: hidden;
+
+        overflow-y: hidden !important;
+
+        padding: 0 0 5px !important;
+
+        margin: 0 !important;
 
         scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
 
-        padding: 0 0 5px;
+        -webkit-overflow-scrolling: touch;
     }
 
-    .mobile-genre-row::-webkit-scrollbar {
+
+    /* Hide scrollbar */
+    #mobileGenreContainer .mobile-genre-row::-webkit-scrollbar {
         display: none;
     }
 
-    /* Movie cards */
-    .mobile-genre-row .card {
-        display: block;
+
+    /* -----------------------------------------
+       MOVIE CARDS
+    ----------------------------------------- */
+
+    #mobileGenreContainer .mobile-genre-row .card {
+
+        display: block !important;
+
         flex: 0 0 120px !important;
+
         width: 120px !important;
+
         min-width: 120px !important;
+
+        max-width: 120px !important;
+
+        margin: 0 !important;
     }
 
-    .mobile-genre-row .card img {
-        display: block;
+
+    /* -----------------------------------------
+       MOVIE POSTERS
+    ----------------------------------------- */
+
+    #mobileGenreContainer .mobile-genre-row .card img {
+
+        display: block !important;
+
         width: 120px !important;
+
         height: 175px !important;
+
+        min-height: 175px !important;
+
+        max-height: 175px !important;
+
         object-fit: cover;
+
+        aspect-ratio: 2 / 3;
     }
+
 }
 </style>
 </head>
