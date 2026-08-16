@@ -13,19 +13,19 @@
 <style>
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
 }
 
 body{
-    background:#080808;
+    margin:0;
+    width:100%;
+    background:black;
     color:white;
-    font-family:Poppins,Arial,sans-serif;
 }
 
-
-/* NAVBAR */
 
 header {
     position: sticky;
@@ -49,51 +49,39 @@ header {
 
     border-bottom: 1px solid rgba(255,255,255,0.08);
 }
-
-
-.navbar{
-    max-width:1200px;
-    margin:auto;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:20px;
+  .menu-btn{
+    display:none;
 }
 
-
-.logo{
-    font-size:28px;
-    font-weight:700;
-    color:white;
-    text-decoration:none;
+.logo img{
+    width:130px;
+    height:auto;
+    object-fit:contain;
+    display:block;
+    transition:.3s ease;
 }
 
-
-.logo span{
-    color:#ff1e1e;
+.logo img:hover{
+    transform:scale(1.05);
 }
-
 
 nav{
-    display:flex;
-    gap:25px;
+  display:flex;
+  gap:25px;
 }
-
 
 nav a{
-    color:white;
-    text-decoration:none;
-    font-size:15px;
-    position:relative;
+  color:#ddd;
+  text-decoration:none;
+}
+
+nav a:hover,
+nav a.active{
+    color:#ff1f1f;
 }
 
 
-nav a:hover{
-    color:#ff1e1e;
-}
-
-
-nav a::after{
+/*nav a::after{
     content:"";
     position:absolute;
     left:0;
@@ -123,7 +111,8 @@ nav a.active::after{
 nav a:hover::after{
     width:100%;
 }
-
+*/
+    
 
 /* CONTENT */
 
@@ -251,7 +240,37 @@ justify-content:center;
 }
 
 }
+  @media(max-width:768px){
 
+    .menu-btn{
+        display:block;
+        font-size:30px;
+        color:white;
+        cursor:pointer;
+    }
+
+    nav{
+        display:none;
+        position:absolute;
+        top:75px;
+        left:0;
+        width:100%;
+        background:#111;
+        flex-direction:column;
+    }
+
+    nav.active{
+        display:flex;
+    }
+
+    nav a{
+        display:block;
+        width:100%;
+        padding:18px;
+        text-align:center;
+        border-bottom:1px solid rgba(255,255,255,.1);
+    }
+}
 </style>
 
 </head>
@@ -261,31 +280,27 @@ justify-content:center;
 
 
 <header>
-
-<div class="navbar">
-
-<a href="index.html" class="logo">
-Movie<span>Pulse</span>
-</a>
-
-
-<nav>
-
-<a href="index.html">Home</a>
-<a href="poster.html">Movies</a>
-<a href="about.html">About</a>
- <a href="privacy.html">privacy policy</a> 
-<a href="contact.html">Contact</a>
-  <a href="terms.html" class="active">Terms & condition</a>
+  
+ <div class="logo">
+    <a href='/'>
+        <img src="ChatGPT Image Jul 7, 2026, 09_00_03 AM.png" alt="MoviePulse Logo">
+    </a>
+</div>
+    <div class="menu-btn" id="menuBtn">
+        ☰
+    </div>
+  <nav>
+    <a href='/'>Home</a>
+    <a class='active' href='/poster'>movies</a>
+     <a href='/shorts'>Shorts</a>
+    <a href='/favorite'>Favorites</a>
+    <a href='/about'>About</a>
+    <a href='/contact'>Contact</a>
+     <a href='/terms'>Terms &  Conditions</a>
     <a href="auth.html" class="login-icon" aria-label="Sign In">
     👤
 </a>
-
-</nav>
-
-
-</div>
-
+  </nav>
 </header>
 
 
