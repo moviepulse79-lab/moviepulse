@@ -187,14 +187,14 @@ nav a.active::after{
       .links{
             background: transparent;
       }
-  /* posters row */
-  .posters-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 40px;
-  justify-content: center;
-  overflow-x: hidden;
+.posters-row,
+#postersRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 40px;
+    justify-content: center;
+    overflow-x: hidden;
 }
       .poster-box{
   position:relative;
@@ -240,11 +240,13 @@ nav a.active::after{
    PROFESSIONAL MOVIE CARD EFFECTS
 ================================= */
 
-.posters-row {
+.posters-row,
+#postersRow {
     transition: opacity .25s ease;
 }
 
-.posters-row.loading {
+.posters-row.loading,
+#postersRow.loading {
     opacity: .65;
 }
 
@@ -956,12 +958,9 @@ transition:0.35s ease;
         font-size: 12px;
     }
 }
-      /* =========================================
+   /* =========================================
    MOBILE GENRE MOVIE ROWS
-   DESKTOP: HIDDEN
-========================================= */
-
-}
+   ========================================= */
 
 #mobileGenreContainer {
     display: none;
@@ -969,14 +968,14 @@ transition:0.35s ease;
 
 @media (max-width: 600px) {
 
-    /* Desktop grid completely hidden */
+    /* Hide normal movie grid on phones */
     #postersRow {
         display: none !important;
     }
 
-    /* Mobile genre system */
+    /* Show genre rows on phones */
     #mobileGenreContainer {
-        display: block;
+        display: block !important;
         width: 100%;
         overflow: hidden;
     }
@@ -997,6 +996,7 @@ transition:0.35s ease;
 
     .mobile-genre-title h2 {
         margin: 0;
+        color: white;
         font-size: 18px;
     }
 
@@ -1011,7 +1011,6 @@ transition:0.35s ease;
         gap: 9px;
 
         width: 100%;
-
         overflow-x: auto;
         overflow-y: hidden;
 
@@ -1034,47 +1033,13 @@ transition:0.35s ease;
         height: 175px;
         object-fit: cover;
     }
-}
-   
 
-/* =========================================
-   TABLET
-========================================= */
-
-@media (max-width: 900px) and (min-width: 601px) {
-
-    #postersRow {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 18px;
-        padding: 15px;
-    }
-}
-
-
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 600px) {
-
-    /* Hide desktop grid */
-    #postersRow {
-        display: none !important;
-    }
-
-    /* Mobile genre rows */
-    #mobileGenreContainer {
-        display: block;
-    }
-}
-      @media (max-width: 600px) {
-
+    /* Filter buttons */
     .filter-bar {
         display: flex;
         flex-wrap: nowrap;
         overflow-x: auto;
         gap: 8px;
-
         padding: 8px 12px 12px;
 
         scrollbar-width: none;
