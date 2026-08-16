@@ -966,6 +966,71 @@ transition:0.35s ease;
     display: none;
 }
 
+@media (max-width: 600px) {
+
+    #postersRow {
+        display: none !important;
+    }
+
+    #mobileGenreContainer {
+        display: block !important;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .mobile-genre-section {
+        width: 100%;
+        margin: 15px 0 22px;
+        padding: 0 12px;
+        box-sizing: border-box;
+    }
+
+    .mobile-genre-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .mobile-genre-title h2 {
+        margin: 0;
+        color: white;
+        font-size: 18px;
+    }
+
+    .mobile-genre-title span {
+        color: #ff1e1e;
+        font-size: 11px;
+    }
+
+    .mobile-genre-row {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 9px;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-genre-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-genre-row .card {
+        flex: 0 0 120px;
+        width: 120px;
+        min-width: 120px;
+    }
+
+    .mobile-genre-row .card img {
+        width: 120px;
+        height: 175px;
+        object-fit: cover;
+    }
+}
+
 
 </style>
 </head>
