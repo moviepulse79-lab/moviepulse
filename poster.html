@@ -458,69 +458,7 @@ transition:0.35s ease;
     font-weight:600;
 }
       
-/* =========================
-   MOBILE NAVIGATION
-========================= */
 
-.menu-btn {
-    display: none;
-}
-
-@media (max-width: 768px) {
-
-    .menu-btn {
-        display: block;
-        color: white;
-        font-size: 28px;
-        cursor: pointer;
-        z-index: 100001;
-    }
-
-    .links {
-        display: none;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        width: 100%;
-        background: #111;
-        z-index: 100000;
-    }
-
-    .links.active {
-        display: block;
-    }
-
-    .links ul {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        gap: 0;
-        margin: 0;
-        padding: 0;
-    }
-
-    .links ul li {
-        display: block;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    .links ul li a {
-        display: block;
-        width: 100%;
-        padding: 16px 20px;
-        text-align: center;
-        color: white;
-        text-decoration: none;
-        border-bottom: 1px solid rgba(255,255,255,.1);
-    }
-
-    .links ul li a:hover {
-        background: #e50914;
-        color: white;
-    }
-}
 @media(max-width:768px){
 
 .search-container{
@@ -1154,58 +1092,85 @@ transition:0.35s ease;
         display: none !important;
     }
 }
-/* =================================
-   MOBILE NAV - FULL BLOCK LINKS
-================================= */
+
+
+/* =========================================
+   MOVIEPULSE MOBILE MENU
+========================================= */
+
+.menu-btn {
+    display: none;
+/* =========================================
+   MOBILE NAVIGATION
+========================================= */
 
 @media (max-width: 768px) {
 
-    nav.links {
+    .menu-btn {
         display: block;
+        color: white;
+        font-size: 28px;
+        cursor: pointer;
+        z-index: 100001;
+    }
+
+    header .links {
+        display: none;
+
         position: absolute;
         top: 70px;
         left: 0;
+
         width: 100%;
+
         background: #111;
-        padding: 0;
-        margin: 0;
+
+        z-index: 100000;
     }
 
-    nav.links ul {
+    header .links.active {
         display: block;
-        width: 100%;
-        padding: 0;
-        margin: 0;
-        list-style: none;
     }
 
-    nav.links ul li {
+    /* EACH DIRECT <a> BECOMES A BLOCK */
+    header .links > a {
         display: block;
-        width: 100%;
-        padding: 0;
-        margin: 0;
-    }
 
-    nav.links ul li a {
-        display: block;
         width: 100%;
+
         padding: 17px 20px;
 
-        color: #fff;
+        box-sizing: border-box;
+
+        color: white;
+        background: #111;
+
         text-align: center;
         text-decoration: none;
 
         border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    header .links > a:hover {
+        background: #e50914;
+        color: white;
+    }
+
+    /* LOGIN ICON */
+    header .links > a.login-icon {
+        width: 100%;
+        height: auto;
+
+        padding: 17px 20px;
+
+        border-radius: 0;
+        border: none;
+
         background: #111;
     }
 
-    nav.links ul li a:hover {
+    header .links > a.login-icon:hover {
         background: #e50914;
-        color: #fff;
-    }
-
-    nav.links:not(.active) {
-        display: none;
     }
 }
 </style>
