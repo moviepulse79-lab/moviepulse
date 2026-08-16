@@ -1304,6 +1304,130 @@ transition:0.35s ease;
     }
 
 }
+      /* =========================================
+   MOBILE MOVIE GENRES - FINAL
+========================================= */
+
+@media (max-width: 600px) {
+
+    /* NEVER SHOW FILTER BAR ON MOBILE */
+    .filter-bar {
+        display: none !important;
+    }
+
+
+    /* HIDE NORMAL DESKTOP MOVIE GRID */
+    #postersRow {
+        display: none !important;
+    }
+
+
+    /* SHOW MOBILE GENRE CONTAINER */
+    #mobileGenreContainer {
+        display: block !important;
+        width: 100%;
+        overflow: hidden;
+    }
+
+
+    /* EACH GENRE */
+    .mobile-genre-section {
+        width: 100%;
+        margin: 15px 0 24px;
+        padding: 0 12px;
+        box-sizing: border-box;
+    }
+
+
+    /* GENRE TITLE */
+    .mobile-genre-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: 8px;
+    }
+
+
+    .mobile-genre-title h2 {
+        margin: 0;
+
+        color: #fff;
+
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+
+    .mobile-genre-title span {
+        color: #ff1e1e;
+        font-size: 11px;
+    }
+
+
+    /* =====================================
+       HORIZONTAL MOVIE ROW
+    ===================================== */
+
+    .mobile-genre-row {
+
+        display: flex;
+
+        flex-wrap: nowrap;
+
+        gap: 9px;
+
+        width: 100%;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        scrollbar-width: none;
+
+        -webkit-overflow-scrolling: touch;
+
+        scroll-snap-type: x proximity;
+
+        padding-bottom: 4px;
+    }
+
+
+    /* REMOVE SCROLLBAR */
+    .mobile-genre-row::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    /* =====================================
+       MOVIE CARDS
+    ===================================== */
+
+    .mobile-genre-row .card {
+
+        flex: 0 0 120px;
+
+        width: 120px;
+
+        min-width: 120px;
+
+        scroll-snap-align: start;
+    }
+
+
+    /* POSTER */
+    .mobile-genre-row .card img {
+
+        display: block;
+
+        width: 120px;
+
+        height: 175px;
+
+        object-fit: cover;
+
+        aspect-ratio: 2 / 3;
+    }
+}
 </style>
 </head>
 <body>
