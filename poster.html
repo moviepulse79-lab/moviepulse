@@ -1173,6 +1173,96 @@ transition:0.35s ease;
         background: #e50914;
     }
 }
+      /* =========================================
+   MOBILE HEADER + HAMBURGER
+========================================= */
+
+@media (max-width: 768px) {
+
+    header.nav {
+        height: 70px;
+        padding: 0 15px;
+        position: sticky;
+        top: 0;
+        z-index: 99999;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* HAMBURGER */
+    header.nav .menu-btn {
+        display: block !important;
+
+        color: #fff;
+        font-size: 30px;
+        line-height: 1;
+
+        cursor: pointer;
+
+        width: 40px;
+        height: 40px;
+
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* MENU CLOSED */
+    header.nav .links {
+        display: none !important;
+
+        position: absolute;
+        top: 70px;
+        left: 0;
+
+        width: 100%;
+
+        background: #111;
+
+        z-index: 99998;
+    }
+
+    /* MENU OPEN */
+    header.nav .links.active {
+        display: block !important;
+    }
+
+    /* LINKS */
+    header.nav .links > a {
+        display: block;
+
+        width: 100%;
+
+        padding: 17px 20px;
+
+        box-sizing: border-box;
+
+        color: #fff;
+        background: #111;
+
+        text-align: center;
+        text-decoration: none;
+
+        border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    header.nav .links > a:hover {
+        background: #e50914;
+        color: #fff;
+    }
+
+    /* LOGIN */
+    header.nav .links > a.login-icon {
+        width: 100%;
+        height: auto;
+        padding: 17px 20px;
+
+        border-radius: 0;
+        border: none;
+    }
+}
 </style>
 </head>
 <body>
