@@ -726,39 +726,8 @@ transition:0.35s ease;
         opacity:1;
     }
 }
-      @media (max-width:768px){
-
-    .movie-modal-content{
-        flex-direction: column;
-        width: 95%;
-        max-height: 90vh;
-    }
-
-    .modal-poster img{
-        width: 220px;
-        margin: auto;
-        display: block;
-    }
-
-}
-      @media(max-width:768px){
-
-    .movie-modal-content{
-        flex-direction:column;
-        width:95%;
-    }
-
-    .modal-poster img{
-        width:220px;
-        height:auto;
-        margin:auto;
-    }
-
-    .modal-actions{
-        flex-direction:column;
-    }
-
-}
+     
+     
       #modalFavorite{
 
     background:#111;
@@ -868,7 +837,142 @@ transition:0.35s ease;
     }
 
 }
+/* =========================================
+   COMPACT MOVIE MODAL - MOBILE ONLY
+========================================= */
 
+@media (max-width: 600px) {
+
+    .movie-modal {
+        padding: 10px;
+        align-items: center;
+    }
+
+    .movie-modal-content {
+        width: 92%;
+        max-width: 380px;
+        max-height: 88vh;
+
+        padding: 15px;
+        gap: 12px;
+
+        border-radius: 14px;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .modal-poster img {
+        width: 130px;
+        height: 195px;
+
+        display: block;
+        margin: 0 auto;
+
+        border-radius: 9px;
+    }
+
+    .modal-info h2 {
+        font-size: 21px;
+        line-height: 1.2;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+
+    #modalGenre {
+        font-size: 12px;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+
+    #modalSummary {
+        font-size: 12px;
+        line-height: 1.45;
+        margin-bottom: 10px;
+    }
+
+    .modal-info h4 {
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    #modalCast {
+        gap: 5px;
+        margin: 8px 0 12px;
+    }
+
+    #modalCast li {
+        padding: 5px 8px;
+        font-size: 10px;
+    }
+
+    .modal-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        margin-top: 10px;
+    }
+
+    .modal-actions a,
+    #modalFavorite {
+        width: 100%;
+        padding: 9px 12px;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .close-modal {
+        width: 32px;
+        height: 32px;
+
+        top: 8px;
+        right: 8px;
+
+        font-size: 15px;
+    }
+}
+      @media (max-width: 380px) {
+
+    .movie-modal {
+        padding: 7px;
+    }
+
+    .movie-modal-content {
+        width: 94%;
+        max-height: 90vh;
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .modal-poster img {
+        width: 110px;
+        height: 165px;
+    }
+
+    .modal-info h2 {
+        font-size: 18px;
+    }
+
+    #modalGenre {
+        font-size: 11px;
+    }
+
+    #modalSummary {
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    #modalCast li {
+        padding: 4px 7px;
+        font-size: 9px;
+    }
+
+    .modal-actions a,
+    #modalFavorite {
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+}
 /* =========================
    PHONE
    ========================= */
