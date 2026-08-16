@@ -1,7 +1,7 @@
 window.movies = [
 
             {
-  id: 89,
+  id: 90,
   title: "The Thomas Crown Affair(2027)",
   poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/sT1TQeAy1PdRfPIb6rrM2DB7DB.jpg",
   rating: 5,
@@ -74,7 +74,76 @@ The Thomas Crown Affair (2027) looks like it has everything needed to become one
 </p>`,
  hype: 9
             },
-            
+
+            {
+    id: 89,
+    title: "VisionQuest",
+    poster: "https://cdn.marvel.com/content/2x/visionquest_d23_poster.webp",
+    rating: 0,
+    trailer:  "https://www.youtube.com/embed/oSVTAUKyrL8",
+
+    starring: [
+        "Paul Bettany",
+        "James Spader",
+        "T'Nia Miller"
+    ],
+
+    summary: "VisionQuest follows White Vision as he searches for answers about his identity, memories, and place in the Marvel Cinematic Universe. The upcoming Disney+ series continues the story of Vision and brings new challenges as his past begins to catch up with him.",
+
+    article: `
+    <p>
+        <strong>VisionQuest</strong> brings Paul Bettany back as Vision for another chapter in the Marvel Cinematic Universe. Following the events surrounding White Vision, the series explores what happens when a powerful artificial being is left searching for answers about who he really is and what his restored memories mean.
+    </p>
+
+    <p>
+        The return of Vision gives Marvel an opportunity to explore a character whose story has always been closely connected to questions of identity, humanity, memory, and emotion. After everything he has experienced, White Vision's journey promises to take the character into a very different part of the MCU.
+    </p>
+
+    <p>
+        One of the biggest attractions surrounding the series is the return of <strong>Paul Bettany</strong>. Bettany has played Vision since the early MCU films and later led the critically acclaimed <strong>WandaVision</strong>. His return makes VisionQuest an important continuation of that storyline.
+    </p>
+
+    <p>
+        The series is also notable for the return of <strong>James Spader</strong> as Ultron. The character's return adds another major connection to Vision's history and raises plenty of questions about how their complicated relationship will develop this time.
+    </p>
+
+    <p>
+        Rather than simply being another superhero adventure, VisionQuest has the potential to focus heavily on identity and the consequences of the past. Vision's journey has always been about more than his powers, and this new chapter could explore what it means for him to discover who he has become after everything that happened to him.
+    </p>
+
+    <p>
+        With its connection to <strong>WandaVision</strong> and the wider MCU, VisionQuest is one of Marvel's upcoming Disney+ projects worth watching. Fans who have followed Vision's story from his first appearance will have plenty of reasons to be curious about where the character goes next.
+    </p>
+
+    <p>
+        <strong>VisionQuest</strong> is scheduled to premiere on Disney+ on October 14, 2026. The series is expected to expand Vision's story while bringing back familiar characters and introducing new developments to the MCU.
+    </p>
+
+    <br>
+
+    <strong>Genre:</strong> Superhero, Sci-Fi, Drama<br>
+
+    <strong>Director:</strong> To Be Announced<br>
+
+    <strong>Release Year:</strong> 2026<br>
+
+    <strong>Setting:</strong> Marvel Cinematic Universe<br>
+
+    <strong>Audience:</strong> To Be Announced<br>
+
+    <p><strong>Runtime:</strong> To Be Announced</p>
+    `,
+
+    verdictTitle: "A Promising New Chapter for Vision",
+
+    verdict: `
+    <p>
+        VisionQuest could become an important chapter in Vision's MCU journey. Paul Bettany's return, combined with James Spader's return as Ultron, gives the series plenty of potential for an emotional and mysterious story. If Marvel balances the superhero elements with the deeper questions surrounding Vision's identity and memories, this could be one of the more interesting upcoming Disney+ projects for MCU fans.
+    </p>
+    `,
+
+    hype: 9
+},
             { 
   id: 88,
   title: "Crew Girl(2026)",
