@@ -961,28 +961,29 @@ transition:0.35s ease;
    DESKTOP: HIDDEN
 ========================================= */
 
+}
+
 #mobileGenreContainer {
     display: none;
 }
 
 @media (max-width: 600px) {
 
-    /* Hide your normal movie grid on mobile */
-    #movieContainer {
+    /* Desktop grid completely hidden */
+    #postersRow {
         display: none !important;
     }
 
-    /* Show the new mobile genre layout */
+    /* Mobile genre system */
     #mobileGenreContainer {
         display: block;
         width: 100%;
         overflow: hidden;
-        box-sizing: border-box;
     }
 
     .mobile-genre-section {
         width: 100%;
-        margin: 18px 0 24px;
+        margin: 15px 0 22px;
         padding: 0 12px;
         box-sizing: border-box;
     }
@@ -991,34 +992,28 @@ transition:0.35s ease;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
 
     .mobile-genre-title h2 {
         margin: 0;
-        font-size: 19px;
-        font-weight: 600;
+        font-size: 18px;
     }
 
     .mobile-genre-title span {
         color: #ff1e1e;
-        font-size: 12px;
+        font-size: 11px;
     }
 
-    /* Horizontal movie row */
     .mobile-genre-row {
         display: flex;
-        flex-direction: row;
         flex-wrap: nowrap;
-
-        gap: 10px;
+        gap: 9px;
 
         width: 100%;
 
         overflow-x: auto;
         overflow-y: hidden;
-
-        padding-bottom: 6px;
 
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
@@ -1028,39 +1023,16 @@ transition:0.35s ease;
         display: none;
     }
 
-    /* Movie cards inside horizontal row */
-    .mobile-genre-row .movie-card {
-        flex: 0 0 125px;
-        width: 125px;
-        min-width: 125px;
-    }
-}
-
-
-/* VERY SMALL PHONES */
-@media (max-width: 380px) {
-
-    .mobile-genre-section {
-        padding: 0 10px;
-        margin-bottom: 20px;
+    .mobile-genre-row .card {
+        flex: 0 0 120px;
+        width: 120px;
+        min-width: 120px;
     }
 
-    .mobile-genre-title h2 {
-        font-size: 17px;
-    }
-
-    .mobile-genre-title span {
-        font-size: 11px;
-    }
-
-    .mobile-genre-row {
-        gap: 8px;
-    }
-
-    .mobile-genre-row .movie-card {
-        flex: 0 0 115px;
-        width: 115px;
-        min-width: 115px;
+    .mobile-genre-row .card img {
+        width: 120px;
+        height: 175px;
+        object-fit: cover;
     }
 }
 </style>
@@ -2694,7 +2666,6 @@ function movieCardHTML(m) {
 /* =========================================
    MOBILE GENRE ROWS
    ========================================= */
-
 function renderMobileGenreRows(list) {
 
     const container =
@@ -2715,45 +2686,47 @@ function renderMobileGenreRows(list) {
 
     genres.forEach(genre => {
 
-        const genreMovies = list.filter(movie =>
-            movie.genre &&
-            movie.genre.some(g =>
+        const seen = new Set();
+
+        const genreMovies = list.filter(movie => {
+
+            if (!movie.genre) return false;
+
+            const match = movie.genre.some(g =>
                 g.toLowerCase() === genre.toLowerCase()
-            )
-        );
+            );
 
-        if (!genreMovies.length) return;
+            if (!match) return false;
 
-        const section =
-            document.createElement("section");
+            if (seen.has(movie.id)) return false;
 
-        section.className =
-            "mobile-genre-section";
+            seen.add(movie.id);
+
+            return true;
+        });
+
+        if (genreMovies.length === 0) return;
+
+        const section = document.createElement("section");
+
+        section.className = "mobile-genre-section";
 
         section.innerHTML = `
-
             <div class="mobile-genre-title">
-
                 <h2>${genre}</h2>
-
                 <span>Swipe →</span>
-
             </div>
 
             <div class="mobile-genre-row">
-
                 ${genreMovies
                     .map(movie => movieCardHTML(movie))
                     .join("")}
-
             </div>
-
         `;
 
         container.appendChild(section);
     });
 }
-
 
 /* =========================================
    RENDER MOVIES - OPTIMIZED
@@ -2764,7 +2737,6 @@ function renderMovies(list) {
 
     const newIds = list.map(m => m.id).join(",");
 
-    // Don't rebuild the entire grid if nothing changed
     if (newIds === lastRenderedIds) return;
 
     lastRenderedIds = newIds;
@@ -2802,7 +2774,7 @@ function showAll(){
 /////////////////////////////
 // FILTER BY GENRE (NEW 🔥)
 /////////////////////////////
-function showGenre(genre){
+function showGenre(genre) {
 
     const filtered = movies.filter(movie =>
         movie.genre &&
@@ -2815,6 +2787,7 @@ function showGenre(genre){
 
     renderMobileGenreRows(filtered);
 }
+
 /////////////////////////////
 // PROFESSIONAL SEARCH
 /////////////////////////////
