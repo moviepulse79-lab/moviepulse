@@ -1035,6 +1035,84 @@ transition:0.35s ease;
         object-fit: cover;
     }
 }
+      /* =========================================
+   DESKTOP MOVIE GRID
+========================================= */
+
+#postersRow {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+
+    gap: 25px;
+
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#postersRow .card {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 900px) and (min-width: 601px) {
+
+    #postersRow {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        padding: 15px;
+    }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    /* Hide desktop grid */
+    #postersRow {
+        display: none !important;
+    }
+
+    /* Mobile genre rows */
+    #mobileGenreContainer {
+        display: block;
+    }
+}
+      @media (max-width: 600px) {
+
+    .filter-bar {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 8px;
+
+        padding: 8px 12px 12px;
+
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .filter-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-bar button {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+}
 </style>
 </head>
 <body>
