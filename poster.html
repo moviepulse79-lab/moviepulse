@@ -1096,124 +1096,83 @@ transition:0.35s ease;
 
 /* =========================================
    MOVIEPULSE MOBILE MENU
+   FINAL VERSION
 ========================================= */
 
+/* Hamburger hidden on desktop */
 .menu-btn {
     display: none;
-/* =========================================
-   MOBILE NAVIGATION
-========================================= */
-
-@media (max-width: 768px) {
-
-    .menu-btn {
-        display: block;
-        color: white;
-        font-size: 28px;
-        cursor: pointer;
-        z-index: 100001;
-    }
-
-    header .links {
-        display: none;
-
-        position: absolute;
-        top: 70px;
-        left: 0;
-
-        width: 100%;
-
-        background: #111;
-
-        z-index: 100000;
-    }
-
-    header .links.active {
-        display: block;
-    }
-
-    /* EACH DIRECT <a> BECOMES A BLOCK */
-    header .links > a {
-        display: block;
-
-        width: 100%;
-
-        padding: 17px 20px;
-
-        box-sizing: border-box;
-
-        color: white;
-        background: #111;
-
-        text-align: center;
-        text-decoration: none;
-
-        border-bottom: 1px solid rgba(255,255,255,.1);
-    }
-
-    header .links > a:hover {
-        background: #e50914;
-        color: white;
-    }
-
-    /* LOGIN ICON */
-    header .links > a.login-icon {
-        width: 100%;
-        height: auto;
-
-        padding: 17px 20px;
-
-        border-radius: 0;
-        border: none;
-
-        background: #111;
-    }
-
-    header .links > a.login-icon:hover {
-        background: #e50914;
-    }
 }
-      /* =========================================
-   MOBILE HEADER + HAMBURGER
+
+
+/* =========================================
+   MOBILE ONLY
 ========================================= */
 
 @media (max-width: 768px) {
 
+    /* HEADER */
     header.nav {
         height: 70px;
+        width: 100%;
         padding: 0 15px;
-        position: sticky;
-        top: 0;
-        z-index: 99999;
 
         display: flex;
         align-items: center;
         justify-content: space-between;
+
+        position: sticky;
+        top: 0;
+
+        background: #000;
+        z-index: 99999;
     }
 
-    /* HAMBURGER */
+
+    /* LOGO */
+    header.nav .logo img {
+        width: 115px;
+        height: auto;
+    }
+
+
+    /* =====================================
+       THREE LINE BUTTON
+    ===================================== */
+
     header.nav .menu-btn {
-        display: block !important;
+
+        display: flex !important;
+
+        width: 42px;
+        height: 42px;
+
+        align-items: center;
+        justify-content: center;
 
         color: #fff;
+
         font-size: 30px;
         line-height: 1;
 
         cursor: pointer;
 
-        width: 40px;
-        height: 40px;
+        background: transparent;
 
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
+        z-index: 100001;
     }
 
-    /* MENU CLOSED */
+
+    /* =====================================
+       MENU CLOSED
+    ===================================== */
+
     header.nav .links {
+
         display: none !important;
 
         position: absolute;
+
         top: 70px;
         left: 0;
 
@@ -1221,47 +1180,129 @@ transition:0.35s ease;
 
         background: #111;
 
-        z-index: 99998;
+        padding: 0;
+        margin: 0;
+
+        flex-direction: column;
+
+        z-index: 100000;
+
+        border-top: 1px solid rgba(255,255,255,.08);
     }
 
-    /* MENU OPEN */
+
+    /* =====================================
+       MENU OPEN
+    ===================================== */
+
     header.nav .links.active {
-        display: block !important;
+
+        display: flex !important;
+
+        flex-direction: column;
+
+        width: 100%;
     }
 
-    /* LINKS */
+
+    /* =====================================
+       EACH NAV LINK
+    ===================================== */
+
     header.nav .links > a {
-        display: block;
+
+        display: flex !important;
 
         width: 100%;
 
-        padding: 17px 20px;
+        min-height: 52px;
+
+        padding: 15px 20px;
+
+        align-items: center;
+        justify-content: center;
 
         box-sizing: border-box;
 
         color: #fff;
+
         background: #111;
 
         text-align: center;
+
         text-decoration: none;
 
+        font-size: 15px;
+
         border-bottom: 1px solid rgba(255,255,255,.1);
+
+        transition: background .2s ease,
+                    color .2s ease;
     }
 
+
+    /* HOVER */
     header.nav .links > a:hover {
+
         background: #e50914;
+
         color: #fff;
     }
 
-    /* LOGIN */
+
+    /* ACTIVE PAGE */
+    header.nav .links > a.active {
+
+        background: #181818;
+
+        color: #ff1f1f;
+    }
+
+
+    /* ACTIVE + HOVER */
+    header.nav .links > a.active:hover {
+
+        background: #e50914;
+
+        color: #fff;
+    }
+
+
+    /* =====================================
+       LOGIN LINK
+    ===================================== */
+
     header.nav .links > a.login-icon {
+
+        display: flex !important;
+
         width: 100%;
-        height: auto;
-        padding: 17px 20px;
+
+        height: 52px;
+
+        min-height: 52px;
+
+        padding: 15px 20px;
+
+        margin: 0;
+
+        border: none;
 
         border-radius: 0;
-        border: none;
+
+        background: #111;
+
+        color: #fff;
     }
+
+
+    header.nav .links > a.login-icon:hover {
+
+        background: #e50914;
+
+        color: #fff;
+    }
+
 }
 </style>
 </head>
