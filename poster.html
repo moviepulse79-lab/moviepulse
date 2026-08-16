@@ -956,6 +956,113 @@ transition:0.35s ease;
         font-size: 12px;
     }
 }
+      /* =========================================
+   MOBILE GENRE MOVIE ROWS
+   DESKTOP: HIDDEN
+========================================= */
+
+#mobileGenreContainer {
+    display: none;
+}
+
+@media (max-width: 600px) {
+
+    /* Hide your normal movie grid on mobile */
+    #movieContainer {
+        display: none !important;
+    }
+
+    /* Show the new mobile genre layout */
+    #mobileGenreContainer {
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    .mobile-genre-section {
+        width: 100%;
+        margin: 18px 0 24px;
+        padding: 0 12px;
+        box-sizing: border-box;
+    }
+
+    .mobile-genre-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .mobile-genre-title h2 {
+        margin: 0;
+        font-size: 19px;
+        font-weight: 600;
+    }
+
+    .mobile-genre-title span {
+        color: #ff1e1e;
+        font-size: 12px;
+    }
+
+    /* Horizontal movie row */
+    .mobile-genre-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+
+        gap: 10px;
+
+        width: 100%;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        padding-bottom: 6px;
+
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-genre-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Movie cards inside horizontal row */
+    .mobile-genre-row .movie-card {
+        flex: 0 0 125px;
+        width: 125px;
+        min-width: 125px;
+    }
+}
+
+
+/* VERY SMALL PHONES */
+@media (max-width: 380px) {
+
+    .mobile-genre-section {
+        padding: 0 10px;
+        margin-bottom: 20px;
+    }
+
+    .mobile-genre-title h2 {
+        font-size: 17px;
+    }
+
+    .mobile-genre-title span {
+        font-size: 11px;
+    }
+
+    .mobile-genre-row {
+        gap: 8px;
+    }
+
+    .mobile-genre-row .movie-card {
+        flex: 0 0 115px;
+        width: 115px;
+        min-width: 115px;
+    }
+}
 </style>
 </head>
 <body>
@@ -1017,7 +1124,7 @@ transition:0.35s ease;
       <button onclick="setFilter(this);showGenre('Romance')">Romance</button>
 </div>
 
-
+<div id="mobileGenreContainer"></div>
 <main>
   <section class="posters-row" id="postersRow" aria-live="polite">
     <!-- JS will inject poster cards -->
@@ -2529,6 +2636,130 @@ const suggestBox = document.getElementById("suggestBox");
 
 let lastRenderedIds = "";
 
+
+/* =========================================
+   CREATE ONE MOVIE CARD
+   ========================================= */
+
+function movieCardHTML(m) {
+
+    return `
+
+        <div class="card">
+
+            <div class="poster-link" onclick="openMovieModal(${m.id})">
+
+                <img
+                    src="${optimizePoster(m.poster)}"
+                    alt="${m.title}"
+                    loading="lazy"
+                    decoding="async"
+                    onload="this.classList.add('loaded')"
+                >
+
+            </div>
+
+            <div class="meta">
+
+                <h3>${m.title}</h3>
+
+                <div class="year">
+                    ${m.date || ""}
+                </div>
+
+                <div class="stars">
+                    ${"★".repeat(Math.round(m.rating || 0))}
+                </div>
+
+                <div class="genre-tag">
+                    ${m.genre ? m.genre[0] : ""}
+                </div>
+
+            </div>
+
+            <div class="hover-buttons">
+
+                <a class="btn" href="trailer.html?id=${m.id}">
+                    ▶ View More
+                </a>
+
+            </div>
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================
+   MOBILE GENRE ROWS
+   ========================================= */
+
+function renderMobileGenreRows(list) {
+
+    const container =
+        document.getElementById("mobileGenreContainer");
+
+    if (!container) return;
+
+    const genres = [
+        "Action",
+        "Horror",
+        "Animation",
+        "Sci-Fi",
+        "Superhero",
+        "Romance"
+    ];
+
+    container.innerHTML = "";
+
+    genres.forEach(genre => {
+
+        const genreMovies = list.filter(movie =>
+            movie.genre &&
+            movie.genre.some(g =>
+                g.toLowerCase() === genre.toLowerCase()
+            )
+        );
+
+        if (!genreMovies.length) return;
+
+        const section =
+            document.createElement("section");
+
+        section.className =
+            "mobile-genre-section";
+
+        section.innerHTML = `
+
+            <div class="mobile-genre-title">
+
+                <h2>${genre}</h2>
+
+                <span>Swipe →</span>
+
+            </div>
+
+            <div class="mobile-genre-row">
+
+                ${genreMovies
+                    .map(movie => movieCardHTML(movie))
+                    .join("")}
+
+            </div>
+
+        `;
+
+        container.appendChild(section);
+    });
+}
+
+
+/* =========================================
+   RENDER MOVIES - OPTIMIZED
+   ========================================= */
+
+
 function renderMovies(list) {
 
     const newIds = list.map(m => m.id).join(",");
@@ -2538,8 +2769,17 @@ function renderMovies(list) {
 
     lastRenderedIds = newIds;
 
-    // Professional loading state
     postersRow.classList.add("loading");
+
+    requestAnimationFrame(() => {
+
+        postersRow.innerHTML =
+            list.map(movie => movieCardHTML(movie)).join("");
+
+        postersRow.classList.remove("loading");
+
+    });
+}
 
     requestAnimationFrame(() => {
 
@@ -2596,15 +2836,18 @@ function renderMovies(list) {
 /////////////////////////////
 // INITIAL LOAD
 /////////////////////////////
-
 renderMovies(movies);
+renderMobileGenreRows(movies);
 
 /////////////////////////////
 // SHOW ALL
 /////////////////////////////
 
 function showAll(){
-  renderMovies(movies);
+
+    renderMovies(movies);
+
+    renderMobileGenreRows(movies);
 }
 
 /////////////////////////////
@@ -2614,12 +2857,15 @@ function showGenre(genre){
 
     const filtered = movies.filter(movie =>
         movie.genre &&
-        movie.genre.some(g => g.toLowerCase() === genre.toLowerCase())
+        movie.genre.some(g =>
+            g.toLowerCase() === genre.toLowerCase()
+        )
     );
 
     renderMovies(filtered);
-}
 
+    renderMobileGenreRows(filtered);
+}
 /////////////////////////////
 // PROFESSIONAL SEARCH
 /////////////////////////////
@@ -2634,17 +2880,22 @@ searchInput.addEventListener("input", () => {
 
         const q = searchInput.value.trim().toLowerCase();
 
-        if (!q) {
-            suggestBox.style.display = "none";
-            renderMovies(movies);
-            return;
-        }
+       if (!q) {
+
+    suggestBox.style.display = "none";
+
+    renderMovies(movies);
+    renderMobileGenreRows(movies);
+
+    return;
+}
 
         const filtered = movies.filter(m =>
             m.title.toLowerCase().includes(q)
         );
 
-        renderMovies(filtered);
+      renderMovies(filtered);
+renderMobileGenreRows(filtered);
 
         const top = filtered.slice(0, 5);
 
