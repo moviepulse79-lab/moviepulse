@@ -1093,10 +1093,9 @@ transition:0.35s ease;
     }
 }
 
-
 /* =========================================
    MOVIEPULSE MOBILE MENU
-   FINAL VERSION
+   RIGHT SIDE DRAWER
 ========================================= */
 
 /* Hamburger hidden on desktop */
@@ -1141,7 +1140,6 @@ transition:0.35s ease;
     ===================================== */
 
     header.nav .menu-btn {
-
         display: flex !important;
 
         width: 42px;
@@ -1159,49 +1157,56 @@ transition:0.35s ease;
 
         background: transparent;
 
-        z-index: 100001;
+        z-index: 100002;
     }
 
 
     /* =====================================
-       MENU CLOSED
+       MOBILE MENU
+       CLOSED
     ===================================== */
 
     header.nav .links {
+        display: flex !important;
+        flex-direction: column;
 
-        display: none !important;
-
-        position: absolute;
+        position: fixed;
 
         top: 70px;
-        left: 0;
+        right: 0;
+        left: auto;
 
-        width: 100%;
+        width: 72%;
+        max-width: 320px;
+
+        height: calc(100vh - 70px);
 
         background: #111;
 
         padding: 0;
         margin: 0;
 
-        flex-direction: column;
+        overflow-y: auto;
 
-        z-index: 100000;
+        z-index: 100001;
 
-        border-top: 1px solid rgba(255,255,255,.08);
+        border-left: 1px solid rgba(255,255,255,.08);
+
+        box-shadow: -8px 0 30px rgba(0,0,0,.5);
+
+        transform: translateX(100%);
+
+        transition: transform .3s ease;
     }
 
 
     /* =====================================
-       MENU OPEN
+       MOBILE MENU
+       OPEN
     ===================================== */
 
     header.nav .links.active {
-
-        display: flex !important;
-
-        flex-direction: column;
-
-        width: 100%;
+        transform: translateX(0);
     }
 
 
@@ -1220,7 +1225,7 @@ transition:0.35s ease;
         padding: 15px 20px;
 
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
 
         box-sizing: border-box;
 
@@ -1228,7 +1233,7 @@ transition:0.35s ease;
 
         background: #111;
 
-        text-align: center;
+        text-align: left;
 
         text-decoration: none;
 
@@ -1236,34 +1241,29 @@ transition:0.35s ease;
 
         border-bottom: 1px solid rgba(255,255,255,.1);
 
-        transition: background .2s ease,
-                    color .2s ease;
+        transition:
+            background .2s ease,
+            color .2s ease;
     }
 
 
     /* HOVER */
     header.nav .links > a:hover {
-
         background: #e50914;
-
         color: #fff;
     }
 
 
     /* ACTIVE PAGE */
     header.nav .links > a.active {
-
         background: #181818;
-
         color: #ff1f1f;
     }
 
 
     /* ACTIVE + HOVER */
     header.nav .links > a.active:hover {
-
         background: #e50914;
-
         color: #fff;
     }
 
@@ -1293,13 +1293,13 @@ transition:0.35s ease;
         background: #111;
 
         color: #fff;
+
+        justify-content: flex-start;
     }
 
 
     header.nav .links > a.login-icon:hover {
-
         background: #e50914;
-
         color: #fff;
     }
 
