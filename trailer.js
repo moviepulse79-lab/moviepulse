@@ -205,15 +205,13 @@ User Rating:
     ${movie.title} Official Trailer
   </h2>
 
-  <iframe
+ <iframe
     class="video-frame"
     src="${movie.trailer || ""}"
     title="${movie.title} Official Trailer"
-    loading="lazy"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     allowfullscreen>
-  </iframe>
-
+</iframe>
 </div>
     
 <div class="comments-box">
