@@ -5,7 +5,7 @@ window.movies = [
   title: "Avengers: Secret Wars",
   poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/f0YBuh4hyiAheXhh4JnJWoKi9g5.jpg",
   rating: 5,
-  trailer: "",
+  trailer: "https://www.youtube.com/embed/CenysnhhWPM",
   starring: [
     "Robert Downey Jr.",
     "Pedro Pascal",
@@ -84,7 +84,7 @@ Ultimately, <strong>Avengers: Secret Wars</strong> has the opportunity to serve 
   title: "The Lord of the Rings: The Hunt for Gollum",
   poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/aRtIVdlgVNtvcqFUnuhR3V1RQ7o.jpg",
   rating: 5,
-  trailer: "",
+  trailer: "https://www.youtube.com/embed/tFYCR1G2n9k",
   starring: [
     "Andy Serkis",
     "Ian McKellen",
@@ -161,7 +161,7 @@ The greatest strength of the project may be its ability to combine familiar myth
   title: "Frozen 3",
   poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/qzVuYNqRX7rBBuUdobS2SWEni5R.jpg",
   rating: 5,
-  trailer: "",
+  trailer: "https://www.youtube.com/embed/yrjGHJjmJGA",
   starring: [
     "Kristen Bell",
     "Idina Menzel",
@@ -230,8 +230,8 @@ Another interesting aspect of the third film is how it can show the characters e
   title: "Gremlins 3",
   poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/i23drDYlMobxkRLRstynrfVkPqL.jpg",
   rating: 5,
-  trailer: "",
-  starring: [],
+  trailer:"not yet",
+  starring: ["not yet mentioned"],
   summary: "The mischievous creatures that once turned a quiet town upside down are preparing to return. As another encounter with the mysterious Mogwai threatens to unleash a new generation of chaos, the line between harmless curiosity and complete disaster quickly disappears, bringing the dark comedy and creature horror of Gremlins into a new era.",
   article: `
 <p>
@@ -294,7 +294,7 @@ The darker side of the franchise also gives Gremlins 3 room to surprise audience
   title: "The Mummy",
   poster: "https://m.media-amazon.com/images/M/MV5BYTYwMmVkYjQtYzczZS00MzhmLThlMmEtMjE4MjVjMDI2NzhlXkEyXkFqcGc@._V1_FMjpg_UX942_.jpg",
   rating: 5,
-  trailer: "",
+  trailer: "https://www.imdb.com/video/vi2062338841/?playlistId=tt22408968&ref_=ext_shr_lnk",
   starring: [
     "Brendan Fraser",
     "Rachel Weisz",
