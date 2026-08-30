@@ -1,5 +1,369 @@
 window.movies = [
 
+
+            {
+  id: 95,
+  title: "Avengers: Secret Wars",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/placeholder.jpg",
+  rating: 5,
+  trailer: "",
+  starring: [
+    "Robert Downey Jr.",
+    "Pedro Pascal",
+    "Vanessa Kirby",
+    "Joseph Quinn",
+    "Ebon Moss-Bachrach",
+    "Wyatt Russell",
+    "Florence Pugh",
+    "Anthony Mackie",
+    "Simu Liu",
+    "Hailee Steinfeld"
+  ],
+  summary: "The Marvel Universe reaches a breaking point as realities collide and the boundaries separating heroes, worlds, and timelines begin to disappear. With Doctor Doom rising as an unprecedented threat, heroes from across the multiverse are forced into an uneasy alliance where survival may require impossible sacrifices. As familiar faces return and new alliances are formed, the battle moves beyond a single universe and toward a conflict capable of reshaping existence itself.",
+  article: `
+<p>
+<strong>Avengers: Secret Wars</strong> is shaping up to be one of the most ambitious chapters in the Marvel Cinematic Universe, bringing the Multiverse Saga toward a massive confrontation where the future of countless realities hangs in the balance. Rather than telling a simple story about heroes fighting one villain, the film has the opportunity to bring together characters and worlds that previously existed separately, creating a cinematic event unlike anything Marvel has attempted before.
+</p>
+
+<p>
+At the center of the conflict is Doctor Doom, a character whose intelligence, ambition, and willingness to control forces beyond human understanding make him a dangerous opponent. Robert Downey Jr.'s return to the Marvel universe in a completely different role adds another layer of intrigue. His presence immediately creates questions about identity, destiny, and how the heroes will react to someone who carries the face of a figure they once trusted.
+</p>
+
+<p>
+The film also brings together members of the Fantastic Four and other major Marvel heroes as the multiverse reaches its breaking point. Characters who may have spent years fighting separate battles are suddenly forced to understand that their individual worlds are connected. This creates opportunities for unexpected friendships, rivalries, sacrifices, and emotional reunions.
+</p>
+
+<p>
+One of the most exciting possibilities is the scale of the worlds involved. Secret Wars can move beyond the traditional boundaries of the Marvel universe and explore strange realities shaped by completely different rules. This gives the filmmakers freedom to create environments that feel unfamiliar while still connecting them to stories audiences already know.
+</p>
+
+<p>
+The emotional side of the movie could become just as important as its spectacle. When multiple realities are threatened, saving everyone may no longer be possible. Heroes may have to choose between protecting the people they love and preserving existence itself. Those choices could give the enormous action sequences a much stronger emotional foundation.
+</p>
+
+<p>
+The Fantastic Four are particularly important to the story because their arrival introduces another powerful group into Marvel's expanding cinematic universe. Pedro Pascal, Vanessa Kirby, Joseph Quinn, and Ebon Moss-Bachrach bring a new family dynamic to the franchise, and their connection to the larger multiverse could make them central figures in the coming conflict.
+</p>
+
+<p>
+What makes Secret Wars especially interesting is the uncertainty surrounding its story. Marvel has kept many details hidden, allowing speculation to become part of the experience. The lack of a fully revealed plot means audiences can still be surprised when the film finally reaches theaters, especially if familiar characters appear in unexpected ways.
+</p>
+
+<p>
+Visually, the movie has the potential to become one of Marvel's largest productions. Massive battles, collapsing realities, alternate versions of familiar locations, and clashes between characters from different corners of the franchise could create a scale rarely seen in superhero cinema.
+</p>
+
+<p>
+Ultimately, <strong>Avengers: Secret Wars</strong> has the opportunity to serve as both a conclusion and a new beginning. It can bring years of multiverse storytelling toward a major payoff while creating the foundation for a different era of Marvel stories. If the filmmakers successfully balance spectacle with character-driven emotion, this could become one of the defining superhero events of the decade.
+</p><br>
+
+<strong>Genre:</strong> Action, Adventure, Sci-Fi<br>
+
+<strong>Director:</strong> Anthony Russo, Joe Russo<br>
+
+<strong>Release Year:</strong> 2027<br>
+
+<strong>Setting:</strong> Multiple interconnected realities across the Marvel multiverse.<br>
+
+<strong>Audience:</strong> Not Yet Rated<br>
+
+<p><strong>Runtime:</strong> To Be Announced</p>`,
+
+  verdictTitle: "A Multiverse Battle of Unprecedented Scale",
+
+  verdict: `
+<p>
+<strong>Avengers: Secret Wars</strong> has the potential to become one of Marvel's biggest cinematic events. The combination of the Russo brothers, a massive ensemble, Doctor Doom, the Fantastic Four, and the continuing multiverse storyline creates enormous expectations. If Marvel can give the spectacle genuine emotional weight, Secret Wars could deliver a powerful conclusion to the Multiverse Saga while opening the door to an entirely new chapter.
+</p>`,
+
+  hype: 10
+},
+
+
+{
+  id: 94,
+  title: "The Lord of the Rings: The Hunt for Gollum",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/placeholder.jpg",
+  rating: 5,
+  trailer: "",
+  starring: [
+    "Andy Serkis",
+    "Ian McKellen",
+    "Elijah Wood",
+    "Kate Winslet",
+    "Jamie Dornan",
+    "Leo Woodall",
+    "Lee Pace",
+    "Anya Taylor-Joy"
+  ],
+  summary: "Long before the final journey of the Fellowship, Gandalf becomes determined to discover what Gollum knows about the One Ring. His search leads to Aragorn, whose skills as a ranger make him the perfect tracker for the dangerous creature. Their pursuit takes them across the darker corners of Middle-earth, where every discovery brings them closer to a secret capable of changing the fate of the entire world.",
+  article: `
+<p>
+<strong>The Lord of the Rings: The Hunt for Gollum</strong> returns audiences to Middle-earth for a story set before the events of the original trilogy. Instead of following the Fellowship, this new chapter focuses on one of the most mysterious figures in Tolkien's world and the dangerous information he carries about the One Ring.
+</p>
+
+<p>
+Andy Serkis takes on a unique challenge by returning as Gollum while also directing the film. His understanding of the character gives the story an important connection to the earlier movies, while his work behind the camera allows him to explore Gollum from a perspective that can feel darker and more intimate.
+</p>
+
+<p>
+The story also brings Aragorn into the center of the adventure. Before becoming the king audiences know from the original trilogy, he is a skilled but wandering ranger operating in the shadows. His mission to locate Gollum places him in a dangerous world where tracking one creature could mean protecting all of Middle-earth.
+</p>
+
+<p>
+Gandalf's involvement adds another important dimension. The wizard understands that Gollum may possess knowledge that could eventually lead enemies toward the Ring. His concern transforms what might appear to be a simple search into a much larger mission connected to the future of Middle-earth.
+</p>
+
+<p>
+The film has the opportunity to explore parts of Middle-earth that were only briefly mentioned in previous stories. Forests, mountains, remote settlements, and dangerous wilderness areas can become major parts of the journey, giving the movie a sense of adventure while maintaining the atmosphere that made the original trilogy so memorable.
+</p>
+
+<p>
+Gollum himself remains the emotional center of the story. His divided personality, obsession with the Ring, and struggle between Sméagol and Gollum make him far more complicated than a conventional villain. By placing him at the heart of the narrative, the film can explore the tragic journey that turned him into one of Middle-earth's most recognizable characters.
+</p>
+
+<p>
+The returning cast also creates a bridge between generations of Middle-earth stories. Ian McKellen and Elijah Wood return as Gandalf and Frodo, while new performers including Jamie Dornan, Kate Winslet, Leo Woodall, and Anya Taylor-Joy expand the world with fresh characters.
+</p>
+
+<p>
+The greatest strength of the project may be its ability to combine familiar mythology with a story audiences have never fully experienced on screen. Fans already know where the larger story eventually leads, but the journey toward those events remains filled with unanswered questions.
+</p>
+
+<p>
+<strong>The Lord of the Rings: The Hunt for Gollum</strong> therefore has the chance to feel both familiar and new. It returns to the landscapes, mythology, and characters that defined one of cinema's greatest fantasy franchises while placing the spotlight on a smaller, more mysterious adventure.
+</p><br>
+
+<strong>Genre:</strong> Fantasy, Adventure, Action, Drama<br>
+
+<strong>Director:</strong> Andy Serkis<br>
+
+<strong>Release Year:</strong> 2027<br>
+
+<strong>Setting:</strong> Middle-earth, between the events of The Hobbit and The Lord of the Rings trilogy.<br>
+
+<strong>Audience:</strong> Not Yet Rated<br>
+
+<p><strong>Runtime:</strong> To Be Announced</p>`,
+
+  verdictTitle: "A Darker Journey Through Middle-earth",
+
+  verdict: `
+<p>
+<strong>The Lord of the Rings: The Hunt for Gollum</strong> has a strong advantage in its connection to the original Middle-earth films while telling a story that has never been fully explored on screen. Andy Serkis returning as Gollum and directing the film makes the project especially intriguing. If it captures the atmosphere, scale, and emotional depth of the earlier films, this could become an exciting new chapter for longtime Tolkien fans.
+</p>`,
+
+  hype: 9
+},
+
+
+{
+  id: 93,
+  title: "Frozen 3",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/placeholder.jpg",
+  rating: 5,
+  trailer: "",
+  starring: [
+    "Kristen Bell",
+    "Idina Menzel",
+    "Josh Gad",
+    "Jonathan Groff"
+  ],
+  summary: "Anna, Elsa, Kristoff, Olaf, and Sven return for another adventure in Arendelle as their lives continue to evolve after the events of Frozen II. With new challenges waiting beyond the kingdom and relationships entering a new chapter, the sisters must once again rely on each other while discovering what the future holds for their extraordinary family.",
+  article: `
+<p>
+<strong>Frozen 3</strong> brings Anna, Elsa, Olaf, Kristoff, and Sven back for another chapter in one of Disney's most successful animated worlds. After the discoveries and emotional changes of Frozen II, the characters are no longer simply trying to understand the past. They are beginning to build a future, and that future promises to introduce new challenges for the people of Arendelle.
+</p>
+
+<p>
+Anna and Elsa remain at the heart of the story. Their relationship has always been the emotional foundation of the franchise, and the third film gives Disney another opportunity to explore how their bond changes as they take on greater responsibilities. Elsa continues to understand the nature of her powers, while Anna embraces her role as a leader.
+</p>
+
+<p>
+The movie also has plenty of room for the lighter characters to shine. Olaf remains one of the franchise's most recognizable sources of comedy, while Kristoff and Sven bring their own energy to the group. Their relationships have developed considerably since the first film, allowing the story to explore new forms of friendship, love, and family.
+</p>
+
+<p>
+Frozen has always been about more than magical powers. At its core, the franchise focuses on identity, courage, belonging, and the complicated relationship between change and tradition. Frozen 3 can continue those themes while introducing a new conflict that challenges what the characters believe they know about their world.
+</p>
+
+<p>
+The animation is also expected to be a major attraction. Disney's modern animation technology allows Arendelle and its surrounding landscapes to become increasingly detailed, from icy environments to colorful villages and magical locations. A new musical adventure could give the film another collection of memorable moments without simply repeating what came before.
+</p>
+
+<p>
+The return of Kristen Bell, Idina Menzel, Josh Gad, and Jonathan Groff keeps the central voice cast connected to the characters audiences have followed for more than a decade. Their performances have become an important part of the franchise's identity, particularly through the songs and humor that helped make the previous movies global successes.
+</p>
+
+<p>
+Another interesting aspect of the third film is how it can show the characters entering a more mature stage of their lives. Anna and Kristoff's relationship has developed, Elsa's responsibilities have changed, and Olaf continues to discover what it means to understand the world around him.
+</p>
+
+<p>
+<strong>Frozen 3</strong> does not need to recreate the original movie's magic because the franchise already has a world audiences recognize. Its biggest opportunity is to expand that world while giving its characters meaningful reasons to grow. A new adventure, new music, and another emotional journey could make this a strong continuation of the series.
+</p><br>
+
+<strong>Genre:</strong> Animation, Adventure, Family, Fantasy, Musical<br>
+
+<strong>Director:</strong> Jennifer Lee, Trent Correy<br>
+
+<strong>Release Year:</strong> 2027<br>
+
+<strong>Setting:</strong> Arendelle and the magical world surrounding Elsa and Anna.<br>
+
+<strong>Audience:</strong> Not Yet Rated<br>
+
+<p><strong>Runtime:</strong> To Be Announced</p>`,
+
+  verdictTitle: "Another Magical Chapter for Arendelle",
+
+  verdict: `
+<p>
+<strong>Frozen 3</strong> has the ingredients needed to continue the franchise's emotional and musical appeal. With the original voice cast returning and Anna and Elsa entering a new stage of their lives, the film can expand the story without abandoning what made the first two movies special. If Disney delivers another strong soundtrack and a meaningful adventure, Frozen 3 could become another major family favorite.
+</p>`,
+
+  hype: 9
+},
+
+
+{
+  id: 92,
+  title: "Gremlins 3",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/placeholder.jpg",
+  rating: 5,
+  trailer: "",
+  starring: [],
+  summary: "The mischievous creatures that once turned a quiet town upside down are preparing to return. As another encounter with the mysterious Mogwai threatens to unleash a new generation of chaos, the line between harmless curiosity and complete disaster quickly disappears, bringing the dark comedy and creature horror of Gremlins into a new era.",
+  article: `
+<p>
+<strong>Gremlins 3</strong> brings one of cinema's most recognizable creature franchises back to the big screen. The series has always balanced adorable creatures with outrageous horror and comedy, creating a tone that feels completely different from traditional family entertainment. The third installment has the opportunity to bring that unusual combination into a modern setting without losing the strange charm of the original.
+</p>
+
+<p>
+The central concept remains wonderfully simple. Mogwai may look harmless, but the rules surrounding them are incredibly important. Break those rules and an innocent situation can quickly become a nightmare. That contrast between cuteness and chaos is one of the main reasons the Gremlins concept has remained popular for decades.
+</p>
+
+<p>
+Chris Columbus returns as director, giving the new film a direct connection to the original franchise. His involvement is particularly exciting because the first Gremlins established the strange mixture of humor, suspense, creature effects, and darker themes that made the series unique.
+</p>
+
+<p>
+A modern Gremlins story also has the chance to explore how technology and contemporary life could interact with the creatures. A Mogwai appearing in today's world could create completely different problems, especially when information spreads instantly and small mistakes can become major disasters within seconds.
+</p>
+
+<p>
+The film's biggest challenge will be preserving the personality of the franchise. Gremlins was never simply a monster movie. It was a strange combination of comedy, horror, fantasy, and social satire. The best continuation would understand that balance rather than turning the creatures into ordinary digital monsters.
+</p>
+
+<p>
+The creature design will naturally be one of the film's biggest attractions. Practical effects helped give the original movies their distinctive personality, and audiences will be watching closely to see how the new production handles the Mogwai and Gremlins themselves.
+</p>
+
+<p>
+The darker side of the franchise also gives Gremlins 3 room to surprise audiences. The creatures can be funny one moment and genuinely threatening the next. That unpredictability is exactly what makes them different from conventional animated or family characters.
+</p>
+
+<p>
+<strong>Gremlins 3</strong> therefore has a unique opportunity. It can introduce the franchise to a younger generation while respecting the fans who grew up with Gizmo and the original movies. With Chris Columbus back at the helm, the film has a creative connection to its roots that could help make the return feel authentic.
+</p><br>
+
+<strong>Genre:</strong> Horror, Comedy, Fantasy, Sci-Fi, Thriller<br>
+
+<strong>Director:</strong> Chris Columbus<br>
+
+<strong>Release Year:</strong> 2027<br>
+
+<strong>Setting:</strong> A contemporary world where a new encounter with Mogwai leads to unexpected chaos.<br>
+
+<strong>Audience:</strong> Not Yet Rated<br>
+
+<p><strong>Runtime:</strong> To Be Announced</p>`,
+
+  verdictTitle: "The Mogwai Are Coming Back",
+
+  verdict: `
+<p>
+<strong>Gremlins 3</strong> could be one of the most interesting franchise returns of 2027 because the series has a tone that few modern movies can replicate. The combination of horror, comedy, fantasy, and practical creature work gives it a distinctive identity. With Chris Columbus returning as director, fans have plenty of reason to hope that the new movie captures the mischievous spirit that made the original Gremlins unforgettable.
+</p>`,
+
+  hype: 8
+},
+
+
+{
+  id: 91,
+  title: "The Mummy",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/placeholder.jpg",
+  rating: 5,
+  trailer: "",
+  starring: [
+    "Brendan Fraser",
+    "Rachel Weisz",
+    "John Hannah",
+    "Oded Fehr",
+    "Kevin J. O'Connor",
+    "Numan Acar",
+    "Michael Johnston"
+  ],
+  summary: "Rick O'Connell and Evelyn Carnahan return for another dangerous encounter with the ancient world. Their latest adventure brings them face to face with a mystery buried for generations, forcing the reunited explorers to confront forces that should have remained forgotten while racing to protect their family from a new supernatural threat.",
+  article: `
+<p>
+<strong>The Mummy</strong> marks the highly anticipated return of Brendan Fraser and Rachel Weisz as Rick and Evelyn O'Connell. More than two decades after audiences first followed the adventurous pair into ancient tombs and supernatural mysteries, the characters are set to return for another chapter in the franchise.
+</p>
+
+<p>
+The biggest attraction is the reunion itself. Fraser and Weisz created one of the most memorable adventure pairings of their era, combining action, humor, romance, and genuine chemistry. Bringing them back together gives the new film an immediate connection to the movies that made the franchise famous.
+</p>
+
+<p>
+Details about the story remain tightly guarded, but the return of the O'Connells suggests another journey into the unknown. The Mummy franchise has always worked best when ancient mythology collides with modern adventure, creating situations where archaeological discoveries quickly become life-threatening.
+</p>
+
+<p>
+The supporting cast also strengthens the connection to the earlier films. John Hannah returns as Jonathan Carnahan, while Oded Fehr and Kevin J. O'Connor are also returning to their familiar roles. Their presence adds another layer of nostalgia while allowing the new story to reconnect with characters fans remember.
+</p>
+
+<p>
+Matt Bettinelli-Olpin and Tyler Gillett are directing the film, bringing experience from modern horror and suspense projects. Their involvement could give the franchise a slightly darker edge while preserving the adventurous spirit that defined the earlier movies.
+</p>
+
+<p>
+The new film also arrives at an interesting time for the franchise. Rather than simply rebooting the concept with completely new characters, Universal is bringing back the central pair that audiences already know. This makes the project feel more like a continuation of an established adventure than a complete restart.
+</p>
+
+<p>
+The visual possibilities are enormous. Ancient ruins, hidden chambers, forgotten civilizations, supernatural forces, and large-scale action can all contribute to the atmosphere. If the production combines practical environments with modern visual effects, the result could deliver the kind of theatrical adventure that the franchise is known for.
+</p>
+
+<p>
+What makes the project particularly exciting is the possibility of seeing Rick and Evelyn as older, more experienced adventurers. Their relationship and family history have changed, and the new story can use that history to create stakes that feel more personal than the earlier adventures.
+</p>
+
+<p>
+<strong>The Mummy</strong> has a difficult task ahead because the original films remain beloved by fans. However, the return of Fraser and Weisz gives this new chapter a strong emotional foundation. If the filmmakers can combine the chemistry of the original cast with a fresh supernatural mystery, the franchise could make a powerful comeback.
+</p><br>
+
+<strong>Genre:</strong> Action, Adventure, Fantasy<br>
+
+<strong>Director:</strong> Matt Bettinelli-Olpin, Tyler Gillett<br>
+
+<strong>Release Year:</strong> 2027<br>
+
+<strong>Setting:</strong> Modern locations connected to ancient mysteries and supernatural forces.<br>
+
+<strong>Audience:</strong> Not Yet Rated<br>
+
+<p><strong>Runtime:</strong> To Be Announced</p>`,
+
+  verdictTitle: "The O'Connells Are Back",
+
+  verdict: `
+<p>
+<strong>The Mummy</strong> has one of the strongest nostalgia factors among upcoming adventure films. Brendan Fraser and Rachel Weisz returning as Rick and Evelyn gives longtime fans a reason to be excited, while the new directing team can bring a modern approach to the franchise. If the movie delivers strong chemistry, exciting exploration, and a memorable supernatural threat, it could become one of 2027's most entertaining adventure releases.
+</p>`,
+
+  hype: 9
+},
             {
   id: 90,
   title: "The Thomas Crown Affair(2027)",
