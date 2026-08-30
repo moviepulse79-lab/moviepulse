@@ -1,6 +1,5 @@
 window.movies = [
 
-
             {
   id: 95,
   title: "Avengers: Secret Wars",
@@ -364,6 +363,7 @@ What makes the project particularly exciting is the possibility of seeing Rick a
 
   hype: 9
 },
+            
             {
   id: 90,
   title: "The Thomas Crown Affair(2027)",
