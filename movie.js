@@ -3,7 +3,7 @@ window.movies = [
             {
   id: 95,
   title: "Avengers: Secret Wars",
-  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/placeholder.jpg",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/f0YBuh4hyiAheXhh4JnJWoKi9g5.jpg",
   rating: 5,
   trailer: "",
   starring: [
@@ -82,7 +82,7 @@ Ultimately, <strong>Avengers: Secret Wars</strong> has the opportunity to serve 
 {
   id: 94,
   title: "The Lord of the Rings: The Hunt for Gollum",
-  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/placeholder.jpg",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/aRtIVdlgVNtvcqFUnuhR3V1RQ7o.jpg",
   rating: 5,
   trailer: "",
   starring: [
@@ -159,7 +159,7 @@ The greatest strength of the project may be its ability to combine familiar myth
 {
   id: 93,
   title: "Frozen 3",
-  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/placeholder.jpg",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/qzVuYNqRX7rBBuUdobS2SWEni5R.jpg",
   rating: 5,
   trailer: "",
   starring: [
@@ -228,7 +228,7 @@ Another interesting aspect of the third film is how it can show the characters e
 {
   id: 92,
   title: "Gremlins 3",
-  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/placeholder.jpg",
+  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/i23drDYlMobxkRLRstynrfVkPqL.jpg",
   rating: 5,
   trailer: "",
   starring: [],
@@ -292,7 +292,7 @@ The darker side of the franchise also gives Gremlins 3 room to surprise audience
 {
   id: 91,
   title: "The Mummy",
-  poster: "https://www.themoviedb.org/t/p/w600_and_h900_face/placeholder.jpg",
+  poster: "https://m.media-amazon.com/images/M/MV5BYTYwMmVkYjQtYzczZS00MzhmLThlMmEtMjE4MjVjMDI2NzhlXkEyXkFqcGc@._V1_FMjpg_UX942_.jpg",
   rating: 5,
   trailer: "",
   starring: [
