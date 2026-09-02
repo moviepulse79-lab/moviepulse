@@ -120,417 +120,6 @@ function getRecommendations(currentMovie) {
 
 
 // =====================================================
-// INTERNET ARCHIVE PLAYER
-// =====================================================
-
-async function loadInternetArchivePlayer(movie) {
-
-  const container =
-    document.getElementById("internetArchivePlayer");
-
-  if (!container) return;
-
-
-  // ---------------------------------------------------
-  // No Internet Archive ID
-  // ---------------------------------------------------
-
-  if (!movie.archiveId) {
-
-    container.innerHTML = `
-
-      <div class="archive-unavailable">
-
-        <h3>🎬 Watch Movie</h3>
-
-        <p>
-          Full movie streaming is not currently available
-          for this title on MoviePulse.
-        </p>
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  // ---------------------------------------------------
-  // Loading
-  // ---------------------------------------------------
-
-  container.innerHTML = `
-
-    <div class="archive-loading">
-
-      <div class="archive-spinner"></div>
-
-      <p>
-        Loading movie player...
-      </p>
-
-    </div>
-
-  `;
-
-
-  try {
-
-    // Internet Archive Metadata API
-    const response = await fetch(
-      `https://archive.org/metadata/${encodeURIComponent(movie.archiveId)}`
-    );
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        `Internet Archive returned ${response.status}`
-      );
-
-    }
-
-
-    const data = await response.json();
-
-
-    // -------------------------------------------------
-    // Check API response
-    // -------------------------------------------------
-
-    if (!data || !Array.isArray(data.files)) {
-
-      throw new Error(
-        "No files were returned by Internet Archive."
-      );
-
-    }
-
-
-    // -------------------------------------------------
-    // Find playable video files
-    // -------------------------------------------------
-
-    const playableFiles = data.files.filter(file => {
-
-      if (!file || !file.name) return false;
-
-
-      const name =
-        file.name.toLowerCase();
-
-
-      // Ignore metadata / thumbnails / torrents
-      if (
-        name.includes("_meta") ||
-        name.includes("_files") ||
-        name.includes("thumb") ||
-        name.endsWith(".torrent") ||
-        name.endsWith(".xml") ||
-        name.endsWith(".json") ||
-        name.endsWith(".jpg") ||
-        name.endsWith(".jpeg") ||
-        name.endsWith(".png") ||
-        name.endsWith(".gif")
-      ) {
-
-        return false;
-
-      }
-
-
-      // Supported browser video formats
-      return (
-        name.endsWith(".mp4") ||
-        name.endsWith(".webm") ||
-        name.endsWith(".ogv") ||
-        name.endsWith(".ogg")
-      );
-
-    });
-
-
-    // -------------------------------------------------
-    // No playable file
-    // -------------------------------------------------
-
-    if (playableFiles.length === 0) {
-
-      throw new Error(
-        "No browser-compatible video file was found."
-      );
-
-    }
-
-
-    // -------------------------------------------------
-    // Choose best file
-    // -------------------------------------------------
-
-    const selectedFile =
-      chooseBestVideoFile(playableFiles);
-
-
-    // -------------------------------------------------
-    // Build Internet Archive video URL
-    // -------------------------------------------------
-
-    const videoURL =
-      `https://archive.org/download/` +
-      `${encodeURIComponent(movie.archiveId)}/` +
-      `${encodeURIComponent(selectedFile.name)}`;
-
-
-    // -------------------------------------------------
-    // Determine MIME type
-    // -------------------------------------------------
-
-    const mimeType =
-      getVideoMimeType(selectedFile.name);
-
-
-    // -------------------------------------------------
-    // Render player
-    // -------------------------------------------------
-
-    container.innerHTML = `
-
-      <div class="archive-player-box">
-
-        <h2 class="section-title">
-          🎬 Watch ${escapeHTML(movie.title)}
-        </h2>
-
-        <div class="archive-video-wrapper">
-
-          <video
-            class="archive-video"
-            controls
-            playsinline
-            preload="metadata"
-            poster="${escapeHTML(movie.poster || "")}"
-          >
-
-            <source
-              src="${videoURL}"
-              type="${mimeType}"
-            >
-
-            Your browser does not support HTML5 video.
-
-          </video>
-
-        </div>
-
-        <div class="archive-info">
-
-          <span>
-            📚 Source: Internet Archive
-          </span>
-
-          <a
-            href="https://archive.org/details/${encodeURIComponent(movie.archiveId)}"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View Archive Item
-          </a>
-
-        </div>
-
-      </div>
-
-    `;
-
-
-    // -------------------------------------------------
-    // Handle video errors
-    // -------------------------------------------------
-
-    const video =
-      container.querySelector(".archive-video");
-
-
-    if (video) {
-
-      video.addEventListener("error", () => {
-
-        console.error(
-          "Internet Archive video could not be played:",
-          videoURL
-        );
-
-
-        container.insertAdjacentHTML(
-          "beforeend",
-          `
-
-          <div class="archive-error">
-
-            ⚠️ This video could not be played
-            in your browser.
-
-            <br>
-
-            <a
-              href="${videoURL}"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Open video file
-            </a>
-
-          </div>
-
-          `
-        );
-
-      });
-
-    }
-
-
-  } catch (error) {
-
-    console.error(
-      "Internet Archive error:",
-      error
-    );
-
-
-    container.innerHTML = `
-
-      <div class="archive-unavailable">
-
-        <h3>🎬 Watch Movie</h3>
-
-        <p>
-          The full movie could not be loaded right now.
-        </p>
-
-        <small>
-          ${escapeHTML(error.message)}
-        </small>
-
-      </div>
-
-    `;
-
-  }
-
-}
-
-
-// =====================================================
-// CHOOSE BEST VIDEO FILE
-// =====================================================
-
-function chooseBestVideoFile(files) {
-
-  const mp4Files =
-    files.filter(file =>
-      file.name.toLowerCase().endsWith(".mp4")
-    );
-
-
-  const webmFiles =
-    files.filter(file =>
-      file.name.toLowerCase().endsWith(".webm")
-    );
-
-
-  const ogvFiles =
-    files.filter(file =>
-      file.name.toLowerCase().endsWith(".ogv") ||
-      file.name.toLowerCase().endsWith(".ogg")
-    );
-
-
-  // Prefer MP4 because browser/device compatibility
-  // is generally better.
-
-  if (mp4Files.length > 0) {
-
-    return chooseLargestReasonableFile(mp4Files);
-
-  }
-
-
-  if (webmFiles.length > 0) {
-
-    return chooseLargestReasonableFile(webmFiles);
-
-  }
-
-
-  return chooseLargestReasonableFile(ogvFiles);
-
-}
-
-
-// =====================================================
-// CHOOSE VIDEO QUALITY
-// =====================================================
-
-function chooseLargestReasonableFile(files) {
-
-  return [...files].sort((a, b) => {
-
-    const sizeA =
-      Number(a.size || 0);
-
-    const sizeB =
-      Number(b.size || 0);
-
-    return sizeB - sizeA;
-
-  })[0];
-
-}
-
-
-// =====================================================
-// MIME TYPE
-// =====================================================
-
-function getVideoMimeType(filename) {
-
-  const name =
-    filename.toLowerCase();
-
-
-  if (name.endsWith(".mp4")) {
-
-    return "video/mp4";
-
-  }
-
-
-  if (name.endsWith(".webm")) {
-
-    return "video/webm";
-
-  }
-
-
-  if (
-    name.endsWith(".ogv") ||
-    name.endsWith(".ogg")
-  ) {
-
-    return "video/ogg";
-
-  }
-
-
-  return "video/mp4";
-
-}
-
-
-// =====================================================
 // HTML ESCAPE
 // =====================================================
 
@@ -541,7 +130,6 @@ function escapeHTML(value) {
     return "";
 
   }
-
 
   return String(value)
     .replace(/&/g, "&amp;")
@@ -575,7 +163,7 @@ function loadMain(movie) {
 
 
       <h1 class="title">
-        ${movie.title}
+        ${escapeHTML(movie.title)}
       </h1>
 
 
@@ -587,8 +175,8 @@ function loadMain(movie) {
 
           <img
             class="hero-poster"
-            src="${movie.poster}"
-            alt="${movie.title}"
+            src="${escapeHTML(movie.poster || "")}"
+            alt="${escapeHTML(movie.title)}"
           >
 
 
@@ -676,8 +264,10 @@ function loadMain(movie) {
 
 
         <h2>
-          ${movie.verdictTitle ||
-            "Worth Keeping an Eye On?"}
+          ${escapeHTML(
+            movie.verdictTitle ||
+            "Worth Keeping an Eye On?"
+          )}
         </h2>
 
 
@@ -725,6 +315,30 @@ function loadMain(movie) {
 
 
       <!-- ================================================= -->
+      <!-- WATCH FULL MOVIE -->
+      <!-- ================================================= -->
+
+      ${
+        movie.archiveId
+          ? `
+
+      <div class="watch-full-section">
+
+        <a
+          href="watch.html?id=${encodeURIComponent(movie.id)}"
+          class="watch-full-btn"
+        >
+          🎬 Watch Full Movie
+        </a>
+
+      </div>
+
+      `
+          : ""
+      }
+
+
+      <!-- ================================================= -->
       <!-- YOUTUBE TRAILER -->
       <!-- ================================================= -->
 
@@ -732,23 +346,35 @@ function loadMain(movie) {
 
         <h2 class="section-title">
 
-          ${movie.title}
+          ${escapeHTML(movie.title)}
           Official Trailer
 
         </h2>
 
 
+        ${
+          movie.trailer
+            ? `
+
         <iframe
           class="video-frame"
-          src="${movie.trailer || ""}"
-          title="${movie.title} Official Trailer"
+          src="${escapeHTML(movie.trailer)}"
+          title="${escapeHTML(movie.title)} Official Trailer"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowfullscreen>
         </iframe>
 
+        `
+            : `
+
+        <p>
+          Official trailer is not available yet.
+        </p>
+
+        `
+        }
+
       </div>
-
-
 
 
       <!-- COMMENTS -->
@@ -808,8 +434,12 @@ function loadMain(movie) {
 
           ${
             Array.isArray(movie.starring)
-              ? movie.starring.join(", ")
-              : movie.starring || "N/A"
+              ? movie.starring
+                  .map(actor => escapeHTML(actor))
+                  .join(", ")
+              : escapeHTML(
+                  movie.starring || "N/A"
+                )
           }
 
         </p>
@@ -830,16 +460,16 @@ function loadMain(movie) {
 
           <div
             class="recommend-card"
-            onclick="location.href='trailer.html?id=${rec.id}'"
+            onclick="location.href='trailer.html?id=${encodeURIComponent(rec.id)}'"
           >
 
             <img
-              src="${rec.poster}"
-              alt="${rec.title}"
+              src="${escapeHTML(rec.poster || "")}"
+              alt="${escapeHTML(rec.title)}"
             >
 
             <h4>
-              ${rec.title}
+              ${escapeHTML(rec.title)}
             </h4>
 
             <small>
@@ -866,16 +496,16 @@ function loadMain(movie) {
 
           <div
             class="recommend-card"
-            onclick="location.href='trailer.html?id=${rec.id}'"
+            onclick="location.href='trailer.html?id=${encodeURIComponent(rec.id)}'"
           >
 
             <img
-              src="${rec.poster}"
-              alt="${rec.title}"
+              src="${escapeHTML(rec.poster || "")}"
+              alt="${escapeHTML(rec.title)}"
             >
 
             <h4>
-              ${rec.title}
+              ${escapeHTML(rec.title)}
             </h4>
 
             <small>
@@ -902,16 +532,16 @@ function loadMain(movie) {
 
           <div
             class="recommend-card"
-            onclick="location.href='trailer.html?id=${rec.id}'"
+            onclick="location.href='trailer.html?id=${encodeURIComponent(rec.id)}'"
           >
 
             <img
-              src="${rec.poster}"
-              alt="${rec.title}"
+              src="${escapeHTML(rec.poster || "")}"
+              alt="${escapeHTML(rec.title)}"
             >
 
             <h4>
-              ${rec.title}
+              ${escapeHTML(rec.title)}
             </h4>
 
             <small>
@@ -929,13 +559,6 @@ function loadMain(movie) {
 
   `;
 
-
-  // =====================================================
-  // START INTERNET ARCHIVE PLAYER
-  // =====================================================
-
-  loadInternetArchivePlayer(movie);
-
 }
 
 
@@ -950,7 +573,7 @@ const backBtn =
 if (backBtn) {
 
   backBtn.href = id
-    ? `movie.html?id=${id}`
+    ? `movie.html?id=${encodeURIComponent(id)}`
     : "/";
 
 }
@@ -973,7 +596,11 @@ if (menuBtn) {
     "click",
     function () {
 
-      nav.classList.toggle("active");
+      if (nav) {
+
+        nav.classList.toggle("active");
+
+      }
 
     }
   );
@@ -1354,7 +981,7 @@ document.addEventListener(
     if (backBtn) {
 
       backBtn.href = id
-        ? `movie.html?id=${id}`
+        ? `movie.html?id=${encodeURIComponent(id)}`
         : "/";
 
     }
