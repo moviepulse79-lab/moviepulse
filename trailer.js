@@ -749,24 +749,6 @@ function loadMain(movie) {
       </div>
 
 
-      <!-- ================================================= -->
-      <!-- INTERNET ARCHIVE MOVIE PLAYER -->
-      <!-- ================================================= -->
-
-      <div
-        id="internetArchivePlayer"
-        class="internet-archive-section"
-      >
-
-        <div class="archive-loading">
-
-          <p>
-            Loading movie availability...
-          </p>
-
-        </div>
-
-      </div>
 
 
       <!-- COMMENTS -->
