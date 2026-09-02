@@ -1,217 +1,384 @@
-document.addEventListener("DOMContentLoaded", async () => {
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
 
-  const params = new URLSearchParams(window.location.search);
-  const movieId = params.get("id");
+const movie = movies.find(
+  m => String(m.id) === String(id)
+);
 
-  const watchTitle = document.getElementById("watchTitle");
-  const playerBox = document.getElementById("playerBox");
-  const movieInfo = document.getElementById("movieInfo");
-  const backButton = document.getElementById("backButton");
+const watchTitle = document.getElementById("watchTitle");
+const playerBox = document.getElementById("playerBox");
+const movieInfo = document.getElementById("movieInfo");
+const backButton = document.getElementById("backButton");
 
-  // Check movie ID
-  if (!movieId) {
-    showError("No movie was selected.");
-    return;
-  }
 
-  // Find movie
-  const movie = movies.find(
-    m => String(m.id) === String(movieId)
-  );
+// ==========================================
+// MOVIE NOT FOUND
+// ==========================================
 
-  if (!movie) {
-    showError("Movie not found.");
-    return;
-  }
+if (!movie) {
 
-  // Page information
-  watchTitle.textContent = `Watch ${movie.title}`;
-  document.title = `Watch ${movie.title} | MoviePulse`;
+  watchTitle.textContent = "Movie Not Found";
 
-  // Back to trailer page
-  backButton.href = `trailer.html?id=${encodeURIComponent(movie.id)}`;
+  playerBox.innerHTML = `
+    <div class="watch-error">
 
-  // Movie information
-  movieInfo.innerHTML = `
-    <p>
-      Now watching <strong>${escapeHTML(movie.title)}</strong>
-    </p>
+      <h2>Movie not found</h2>
+
+      <p>
+        We couldn't find this movie in MoviePulse.
+      </p>
+
+      <a
+        href="index.html"
+        class="error-back"
+      >
+        Back to MoviePulse
+      </a>
+
+    </div>
   `;
 
-  // No Internet Archive ID
+}
+
+
+// ==========================================
+// MOVIE FOUND
+// ==========================================
+
+else {
+
+  document.title =
+    `Watch ${movie.title} | MoviePulse`;
+
+  watchTitle.innerHTML =
+    `Watch <span>${escapeHTML(movie.title)}</span>`;
+
+
+  // Back to trailer page
+
+  backButton.href =
+    `trailer.html?id=${encodeURIComponent(movie.id)}`;
+
+
+  // Movie information
+
+  movieInfo.innerHTML = `
+
+    <h2>
+      ${escapeHTML(movie.title)}
+    </h2>
+
+    <div class="movie-meta">
+
+      ${movie.year ? movie.year : ""}
+
+      ${movie.rating
+        ? ` • ⭐ ${movie.rating}`
+        : ""
+      }
+
+    </div>
+
+    <div class="movie-summary">
+
+      ${escapeHTML(
+        movie.summary ||
+        "No movie description available."
+      )}
+
+    </div>
+
+  `;
+
+
+  // ========================================
+  // CHECK ARCHIVE ID
+  // ========================================
+
   if (!movie.archiveId) {
-    showError(
-      "The full movie is not currently available on MoviePulse."
-    );
-    return;
-  }
-
-  // Load Internet Archive video
-  await loadArchiveMovie(movie);
-
-
-  async function loadArchiveMovie(movie) {
 
     playerBox.innerHTML = `
-      <div class="loading">
-        Checking movie availability...
+
+      <div class="watch-error">
+
+        <h2>Full Movie Unavailable</h2>
+
+        <p>
+          This movie does not currently have
+          an authorized full-movie source on MoviePulse.
+        </p>
+
       </div>
+
     `;
 
-    try {
+  }
 
-      const metadataURL =
-        `https://archive.org/metadata/${encodeURIComponent(movie.archiveId)}`;
+  else {
 
-      const response = await fetch(metadataURL);
+    loadInternetArchiveMovie(movie);
 
-      if (!response.ok) {
-        throw new Error("Internet Archive request failed.");
-      }
+  }
 
-      const data = await response.json();
+}
 
-      if (!data.files || !Array.isArray(data.files)) {
-        throw new Error("No files returned by Internet Archive.");
-      }
 
-      // Find playable video files
-      const videoFiles = data.files.filter(file => {
+// ==========================================
+// LOAD INTERNET ARCHIVE MOVIE
+// ==========================================
 
-        if (!file.name) return false;
+async function loadInternetArchiveMovie(movie) {
 
-        const name = file.name.toLowerCase();
+  try {
 
-        return (
-          name.endsWith(".mp4") ||
-          name.endsWith(".webm") ||
-          name.endsWith(".ogv") ||
-          name.endsWith(".ogg")
-        );
-      });
+    const identifier =
+      encodeURIComponent(movie.archiveId);
 
-      if (!videoFiles.length) {
-        throw new Error(
-          "No playable video file was found for this movie."
-        );
-      }
+    const response = await fetch(
+      `https://archive.org/metadata/${identifier}`
+    );
 
-      // Prefer MP4
-      videoFiles.sort((a, b) => {
+    if (!response.ok) {
+      throw new Error("Archive request failed");
+    }
 
-        const aName = a.name.toLowerCase();
-        const bName = b.name.toLowerCase();
+    const data = await response.json();
 
-        const aMp4 = aName.endsWith(".mp4");
-        const bMp4 = bName.endsWith(".mp4");
+    if (!data.files || !data.files.length) {
+      throw new Error("No files available");
+    }
 
-        if (aMp4 && !bMp4) return -1;
-        if (!aMp4 && bMp4) return 1;
 
-        return (Number(b.size) || 0) - (Number(a.size) || 0);
-      });
+    // ======================================
+    // FIND VIDEO FILES
+    // ======================================
 
-      const selectedFile = videoFiles[0];
+    const videoFiles = data.files.filter(file => {
 
-      const videoURL =
-        `https://archive.org/download/${encodeURIComponent(movie.archiveId)}/${encodeURIComponent(selectedFile.name)}`;
+      if (!file.name) return false;
 
-      const archiveItemURL =
-        `https://archive.org/details/${encodeURIComponent(movie.archiveId)}`;
+      const name =
+        file.name.toLowerCase();
 
-      // Create player
-      playerBox.innerHTML = `
-        <video
-          class="archive-video"
-          controls
-          playsinline
-          preload="none"
-          poster="${escapeAttribute(movie.poster || "")}"
+      return (
+        name.endsWith(".mp4") ||
+        name.endsWith(".webm") ||
+        name.endsWith(".ogv") ||
+        name.endsWith(".ogg")
+      );
+
+    });
+
+
+    if (!videoFiles.length) {
+      throw new Error("No playable video found");
+    }
+
+
+    // ======================================
+    // PREFER MP4
+    // ======================================
+
+    const mp4Files =
+      videoFiles.filter(file =>
+        file.name.toLowerCase().endsWith(".mp4")
+      );
+
+
+    const candidates =
+      mp4Files.length
+        ? mp4Files
+        : videoFiles;
+
+
+    // ======================================
+    // PICK LARGEST REASONABLE FILE
+    // ======================================
+
+    const selectedFile =
+      candidates.reduce(
+        (largest, file) => {
+
+          const currentSize =
+            Number(file.size || 0);
+
+          const largestSize =
+            Number(largest.size || 0);
+
+          return currentSize > largestSize
+            ? file
+            : largest;
+
+        },
+        candidates[0]
+      );
+
+
+    const videoURL =
+      `https://archive.org/download/` +
+      `${encodeURIComponent(movie.archiveId)}/` +
+      `${encodeURIComponent(selectedFile.name)}`;
+
+
+    const archiveURL =
+      `https://archive.org/details/` +
+      `${encodeURIComponent(movie.archiveId)}`;
+
+
+    const mimeType =
+      getVideoMimeType(selectedFile.name);
+
+
+    // ======================================
+    // PLAYER
+    // ======================================
+
+    playerBox.innerHTML = `
+
+      <video
+        id="movieVideo"
+        class="archive-video"
+        controls
+        playsinline
+        preload="metadata"
+        poster="${escapeHTML(movie.poster || "")}"
+      >
+
+        <source
+          src="${videoURL}"
+          type="${mimeType}"
         >
-          <source
-            src="${escapeAttribute(videoURL)}"
-            type="${getVideoType(selectedFile.name)}"
-          >
 
-          Your browser does not support HTML5 video.
-        </video>
-      `;
+        Your browser does not support
+        HTML5 video.
 
-      // Add Archive link
-      playerBox.insertAdjacentHTML(
-        "afterend",
-        `
-          <div style="text-align:right; margin-top:12px;">
+      </video>
+
+      <div class="source-area">
+
+        <a
+          href="${archiveURL}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="source-btn"
+        >
+          Source: Internet Archive ↗
+        </a>
+
+      </div>
+
+    `;
+
+
+    // ======================================
+    // PLAYBACK ERROR
+    // ======================================
+
+    const video =
+      document.getElementById("movieVideo");
+
+
+    video.addEventListener(
+      "error",
+      () => {
+
+        playerBox.innerHTML = `
+
+          <div class="watch-error">
+
+            <h2>Playback Error</h2>
+
+            <p>
+              This video could not be played
+              right now.
+            </p>
+
             <a
-              class="archive-link"
-              href="${escapeAttribute(archiveItemURL)}"
+              href="${archiveURL}"
               target="_blank"
               rel="noopener noreferrer"
+              class="error-back"
             >
-              View Internet Archive Source
+              Open Internet Archive
             </a>
+
           </div>
-        `
-      );
 
-    } catch (error) {
+        `;
 
-      console.error("MoviePulse Archive error:", error);
+      }
+    );
 
-      showError(
-        "The full movie could not be loaded right now."
-      );
-    }
   }
 
+  catch (error) {
 
-  function showError(message) {
+    console.error(
+      "Internet Archive error:",
+      error
+    );
+
 
     playerBox.innerHTML = `
-      <div class="error-box">
-        <h2>🎬 Movie Unavailable</h2>
-        <p>${escapeHTML(message)}</p>
+
+      <div class="watch-error">
+
+        <h2>Movie Could Not Be Loaded</h2>
+
+        <p>
+          The authorized movie source could not
+          be loaded right now.
+        </p>
+
       </div>
+
     `;
+
   }
 
+}
 
-  function getVideoType(filename) {
 
-    const name = filename.toLowerCase();
+// ==========================================
+// MIME TYPE
+// ==========================================
 
-    if (name.endsWith(".mp4")) {
-      return "video/mp4";
-    }
+function getVideoMimeType(filename) {
 
-    if (name.endsWith(".webm")) {
-      return "video/webm";
-    }
+  const name =
+    filename.toLowerCase();
 
-    if (
-      name.endsWith(".ogv") ||
-      name.endsWith(".ogg")
-    ) {
-      return "video/ogg";
-    }
-
+  if (name.endsWith(".mp4")) {
     return "video/mp4";
   }
 
-
-  function escapeHTML(value) {
-
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+  if (name.endsWith(".webm")) {
+    return "video/webm";
   }
 
-
-  function escapeAttribute(value) {
-    return escapeHTML(value);
+  if (
+    name.endsWith(".ogv") ||
+    name.endsWith(".ogg")
+  ) {
+    return "video/ogg";
   }
 
-});
+  return "video/mp4";
+
+}
+
+
+// ==========================================
+// ESCAPE HTML
+// ==========================================
+
+function escapeHTML(value) {
+
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
