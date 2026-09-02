@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Watch Movie | MoviePulse</title>
+  <meta name="description" content="Watch movies on MoviePulse.">
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .watch-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 90px 20px 50px;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 25px;
+      color: #fff;
+      text-decoration: none;
+      background: #222;
+      padding: 10px 18px;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #ff1e1e;
+    }
+
+    .watch-title {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .player-box {
+      width: 100%;
+      background: #111;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 25px rgba(255, 30, 30, 0.15);
+    }
+
+    .archive-video {
+      display: block;
+      width: 100%;
+      max-height: 75vh;
+      background: #000;
+    }
+
+    .loading {
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px;
+      color: #aaa;
+    }
+
+    .error-box {
+      padding: 50px 20px;
+      text-align: center;
+      color: #ccc;
+    }
+
+    .error-box h2 {
+      color: #ff1e1e;
+      margin-bottom: 10px;
+    }
+
+    .archive-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #fff;
+      background: #ff1e1e;
+      padding: 11px 18px;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+
+    .archive-link:hover {
+      opacity: 0.85;
+    }
+
+    .movie-info {
+      padding: 20px 0;
+    }
+
+    .movie-info p {
+      color: #aaa;
+    }
+
+    @media (max-width: 600px) {
+      .watch-page {
+        padding: 80px 12px 30px;
+      }
+
+      .watch-title {
+        font-size: 21px;
+      }
+
+      .archive-video {
+        max-height: 60vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="watch-page">
+
+    <a href="#" id="backButton" class="back-btn">
+      ← Back to Trailer
+    </a>
+
+    <h1 id="watchTitle" class="watch-title">
+      Watch Movie
+    </h1>
+
+    <div id="playerBox" class="player-box">
+      <div class="loading">
+        Loading movie...
+      </div>
+    </div>
+
+    <div id="movieInfo" class="movie-info"></div>
+
+  </main>
+
+  <script src="movie.js"></script>
+  <script src="watch.js"></script>
+
+</body>
+</html>
