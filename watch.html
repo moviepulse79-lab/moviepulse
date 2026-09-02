@@ -241,7 +241,797 @@
       }
 
     }
+/* =====================================================
+   MOVIEPULSE - FULL RESPONSIVE DESIGN
+   ===================================================== */
 
+
+/* =====================================================
+   GLOBAL RESPONSIVE FIXES
+   ===================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
+}
+
+
+/* =====================================================
+   MAIN CONTENT
+   ===================================================== */
+
+#mainArea {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.movie-page {
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+
+/* =====================================================
+   MOVIE TITLE
+   ===================================================== */
+
+.movie-page .title {
+  width: 100%;
+  text-align: center;
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1.15;
+  margin: 20px 0 30px;
+  word-wrap: break-word;
+}
+
+
+/* =====================================================
+   POSTER + ARTICLE
+   ===================================================== */
+
+.content-wrap {
+  display: grid;
+  grid-template-columns: minmax(220px, 350px) minmax(0, 1fr);
+  gap: 35px;
+  width: 100%;
+  align-items: start;
+}
+
+.poster-column {
+  width: 100%;
+}
+
+.hero-poster {
+  display: block;
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.article-side {
+  width: 100%;
+  min-width: 0;
+  overflow-wrap: break-word;
+  line-height: 1.8;
+}
+
+
+/* =====================================================
+   ARTICLE CONTENT
+   ===================================================== */
+
+.article-side img,
+.article-full img {
+  max-width: 100%;
+  height: auto;
+}
+
+.article-side iframe,
+.article-full iframe {
+  max-width: 100%;
+}
+
+.article-side table,
+.article-full table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+
+/* =====================================================
+   WATCH FULL MOVIE BUTTON
+   ===================================================== */
+
+.watch-full-section {
+  width: 100%;
+  margin: 30px 0;
+  text-align: center;
+  padding: 0 10px;
+}
+
+.watch-full-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  max-width: 100%;
+  min-height: 52px;
+  padding: 15px 32px;
+
+  background: #e50914;
+  color: #ffffff;
+
+  border-radius: 8px;
+  text-decoration: none;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  text-align: center;
+
+  box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
+
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.watch-full-btn:hover {
+  background: #ff1e1e;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(229, 9, 20, 0.45);
+}
+
+.watch-full-btn:active {
+  transform: scale(0.97);
+}
+
+
+/* =====================================================
+   TRAILER
+   ===================================================== */
+
+.video-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 35px auto;
+}
+
+.video-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  min-height: 0;
+  border: 0;
+  border-radius: 12px;
+}
+
+
+/* =====================================================
+   VERDICT
+   ===================================================== */
+
+.verdict-box {
+  width: 100%;
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 25px;
+  overflow: hidden;
+}
+
+.verdict-text {
+  overflow-wrap: break-word;
+}
+
+.hype-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hype-bar {
+  flex: 1;
+  min-width: 100px;
+  max-width: 100%;
+}
+
+
+/* =====================================================
+   COMMENTS
+   ===================================================== */
+
+.comments-box {
+  width: 100%;
+  max-width: 1100px;
+  margin: 35px auto;
+}
+
+#commentInput {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-height: 130px;
+  resize: vertical;
+}
+
+#commentBtn {
+  max-width: 100%;
+  cursor: pointer;
+}
+
+#commentsList {
+  width: 100%;
+  max-width: 100%;
+}
+
+.comment-item {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+
+/* =====================================================
+   SUMMARY
+   ===================================================== */
+
+.summary-box {
+  width: 100%;
+  max-width: 1100px;
+  margin: 35px auto;
+  overflow-wrap: break-word;
+}
+
+
+/* =====================================================
+   STARRING
+   ===================================================== */
+
+.starring-section {
+  width: 100%;
+  max-width: 1100px;
+  margin: 35px auto;
+  overflow-wrap: break-word;
+}
+
+
+/* =====================================================
+   RECOMMENDATIONS
+   ===================================================== */
+
+.recommend-grid {
+  width: 100%;
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(160px, 1fr));
+
+  gap: 20px;
+
+  margin-bottom: 35px;
+}
+
+.recommend-card {
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.recommend-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.recommend-card h4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   WATCH.HTML
+   FULL MOVIE PAGE
+   ===================================================== */
+
+.watch-page,
+.watch-container,
+.watch-main {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+
+/* Main watch title */
+
+#watchTitle {
+  width: 100%;
+  max-width: 1100px;
+  margin: 20px auto 25px;
+
+  text-align: center;
+
+  font-size: clamp(26px, 4vw, 46px);
+  line-height: 1.2;
+
+  overflow-wrap: break-word;
+}
+
+
+/* =====================================================
+   FULL MOVIE PLAYER BOX
+   ===================================================== */
+
+.player-box,
+#playerBox {
+  width: 100%;
+  max-width: 1200px;
+
+  margin: 0 auto 30px;
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   FULL MOVIE VIDEO
+   ===================================================== */
+
+.player-box video,
+#playerBox video,
+.watch-video,
+.full-movie-video {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+
+  height: auto;
+
+  aspect-ratio: 16 / 9;
+
+  background: #000;
+
+  border-radius: 12px;
+
+  object-fit: contain;
+}
+
+
+/* =====================================================
+   MOVIE INFO
+   ===================================================== */
+
+.movie-info,
+#movieInfo {
+  width: 100%;
+  max-width: 1100px;
+
+  margin: 30px auto;
+
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.movie-info img,
+#movieInfo img {
+  max-width: 100%;
+  height: auto;
+}
+
+
+/* =====================================================
+   WATCH PAGE LINKS / BUTTONS
+   ===================================================== */
+
+#playerBox a,
+#movieInfo a {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+
+/* =====================================================
+   TABLET
+   ===================================================== */
+
+@media (max-width: 900px) {
+
+  #mainArea {
+    padding: 16px;
+  }
+
+  .content-wrap {
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 25px;
+  }
+
+  .recommend-grid {
+    grid-template-columns:
+      repeat(auto-fit, minmax(145px, 1fr));
+
+    gap: 16px;
+  }
+
+  .video-container {
+    margin: 25px auto;
+  }
+
+  .verdict-box {
+    padding: 22px;
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 700px) {
+
+  #mainArea {
+    padding: 12px;
+  }
+
+  .movie-page {
+    width: 100%;
+  }
+
+
+  /* Movie title */
+
+  .movie-page .title {
+    font-size: 29px;
+    margin: 15px 0 22px;
+  }
+
+
+  /* Poster + article */
+
+  .content-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .poster-column {
+    width: 100%;
+  }
+
+  .hero-poster {
+    width: min(80%, 300px);
+    max-width: 300px;
+  }
+
+  .article-side {
+    width: 100%;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+
+  /* Watch button */
+
+  .watch-full-section {
+    margin: 25px 0;
+    padding: 0 5px;
+  }
+
+  .watch-full-btn {
+    width: 100%;
+    max-width: 400px;
+
+    padding: 15px 20px;
+
+    font-size: 16px;
+  }
+
+
+  /* Trailer */
+
+  .video-container {
+    width: 100%;
+    margin: 25px auto;
+  }
+
+  .video-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+  }
+
+
+  /* Verdict */
+
+  .verdict-box {
+    padding: 18px;
+    margin: 25px auto;
+    border-radius: 10px;
+  }
+
+  .hype-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hype-bar {
+    width: 100%;
+    flex: none;
+  }
+
+
+  /* Comments */
+
+  .comments-box,
+  .summary-box,
+  .starring-section {
+    margin: 25px auto;
+  }
+
+  #commentInput {
+    min-height: 120px;
+    font-size: 15px;
+  }
+
+  #commentBtn {
+    width: 100%;
+    padding: 13px 15px;
+  }
+
+
+  /* Recommendations */
+
+  .recommend-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+  }
+
+  .recommend-card h4 {
+    font-size: 14px;
+  }
+
+
+  /* Watch page */
+
+  .watch-page,
+  .watch-container,
+  .watch-main {
+    padding: 10px;
+  }
+
+  #watchTitle {
+    font-size: 27px;
+    margin: 15px 0 20px;
+  }
+
+  .player-box,
+  #playerBox {
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 8px;
+  }
+
+  .player-box video,
+  #playerBox video,
+  .watch-video,
+  .full-movie-video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+  }
+
+  .movie-info,
+  #movieInfo {
+    margin: 20px auto;
+    font-size: 15px;
+  }
+
+}
+
+
+/* =====================================================
+   SMALL PHONES
+   ===================================================== */
+
+@media (max-width: 420px) {
+
+  #mainArea {
+    padding: 9px;
+  }
+
+
+  .movie-page .title {
+    font-size: 25px;
+  }
+
+
+  .hero-poster {
+    width: 90%;
+    max-width: 280px;
+  }
+
+
+  .watch-full-btn {
+    width: 100%;
+    padding: 14px 12px;
+    font-size: 15px;
+  }
+
+
+  .verdict-box {
+    padding: 15px;
+  }
+
+
+  .recommend-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 9px;
+  }
+
+
+  .recommend-card h4 {
+    font-size: 13px;
+  }
+
+
+  .recommend-card small {
+    font-size: 11px;
+  }
+
+
+  #watchTitle {
+    font-size: 23px;
+  }
+
+
+  .player-box video,
+  #playerBox video,
+  .watch-video,
+  .full-movie-video {
+    border-radius: 5px;
+  }
+
+}
+
+
+/* =====================================================
+   VERY SMALL PHONES
+   ===================================================== */
+
+@media (max-width: 340px) {
+
+  .movie-page .title {
+    font-size: 22px;
+  }
+
+  .recommend-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+
+  .recommend-card h4 {
+    font-size: 12px;
+  }
+
+  .watch-full-btn {
+    font-size: 14px;
+  }
+
+}
+
+
+/* =====================================================
+   PREVENT LONG TEXT FROM BREAKING THE PAGE
+   ===================================================== */
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+a {
+  overflow-wrap: break-word;
+}
+
+pre,
+code {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+
+/* =====================================================
+   MOBILE VIDEO CONTROLS
+   ===================================================== */
+
+video {
+  max-width: 100%;
+}
+
+
+/* =====================================================
+   LANDSCAPE PHONES
+   ===================================================== */
+
+@media (max-width: 900px) and (orientation: landscape) {
+
+  #playerBox video,
+  .player-box video,
+  .watch-video,
+  .full-movie-video {
+    max-height: 85vh;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+
+}
+
+
+/* =====================================================
+   LARGE SCREENS
+   ===================================================== */
+
+@media (min-width: 1400px) {
+
+  #mainArea {
+    max-width: 1450px;
+  }
+
+  .movie-page {
+    max-width: 1400px;
+  }
+
+  .content-wrap {
+    grid-template-columns: 360px minmax(0, 1fr);
+  }
+
+  .hero-poster {
+    max-width: 360px;
+  }
+
+}
   </style>
 </head>
 
