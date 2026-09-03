@@ -10,26 +10,49 @@ export default async (req) => {
     const requestedCategory =
       url.searchParams.get("category") || null;
 
-    /* =========================
-       OSHAKUR CATALOG
-    ========================= */
+    // --------------------------------------------------
+    // ENVIRONMENT VARIABLES
+    // --------------------------------------------------
+
+    const SUPABASE_URL =
+      process.env.SUPABASE_URL;
+
+    const SUPABASE_SERVICE_ROLE_KEY =
+      process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (
+      !SUPABASE_URL ||
+      !SUPABASE_SERVICE_ROLE_KEY
+    ) {
+      throw new Error(
+        "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY"
+      );
+    }
+
+    // --------------------------------------------------
+    // OSHAKUR CATALOG
+    // --------------------------------------------------
 
     let catalogUrl =
       `https://www.oshakurfilms.com/movies?page=${page}`;
 
     if (requestedCategory) {
       catalogUrl +=
-        `&category=${encodeURIComponent(requestedCategory)}`;
+        `&category=${encodeURIComponent(
+          requestedCategory
+        )}`;
     }
 
-    const catalogResponse = await fetch(catalogUrl, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
-        "Accept":
-          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-      }
-    });
+    const catalogResponse =
+      await fetch(catalogUrl, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
+          "Accept":
+            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        }
+      });
 
     if (!catalogResponse.ok) {
       throw new Error(
@@ -40,10 +63,9 @@ export default async (req) => {
     const catalogHtml =
       await catalogResponse.text();
 
-
-    /* =========================
-       FIND MOVIE LINKS
-    ========================= */
+    // --------------------------------------------------
+    // FIND MOVIE URLS
+    // --------------------------------------------------
 
     const movieUrls = [];
     const seen = new Set();
@@ -59,16 +81,16 @@ export default async (req) => {
 
       const rawHref = match[1];
 
-      const absoluteUrl = new URL(
-        rawHref,
-        "https://www.oshakurfilms.com"
-      ).href;
+      const absoluteUrl =
+        new URL(
+          rawHref,
+          "https://www.oshakurfilms.com"
+        ).href;
 
       const cleanUrl =
         absoluteUrl
           .split("?")[0]
           .split("#")[0];
-
 
       if (
         !cleanUrl.includes(
@@ -78,21 +100,18 @@ export default async (req) => {
         continue;
       }
 
-
       if (seen.has(cleanUrl)) {
         continue;
       }
-
 
       seen.add(cleanUrl);
 
       movieUrls.push(cleanUrl);
     }
 
-
-    /* =========================
-       IMPORT MOVIES
-    ========================= */
+    // --------------------------------------------------
+    // IMPORT MOVIES
+    // --------------------------------------------------
 
     const movies = [];
 
@@ -107,24 +126,28 @@ export default async (req) => {
             headers: {
               "User-Agent":
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
               "Accept":
                 "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
             }
           });
 
-
         if (!movieResponse.ok) {
+          console.error(
+            "Movie page failed:",
+            sourceUrl,
+            movieResponse.status
+          );
+
           continue;
         }
-
 
         const html =
           await movieResponse.text();
 
-
-        /* =========================
-           TITLE
-        ========================= */
+        // ------------------------------------------------
+        // TITLE
+        // ------------------------------------------------
 
         const title =
           extractMeta(
@@ -134,10 +157,9 @@ export default async (req) => {
           extractTitleTag(html) ||
           "Untitled";
 
-
-        /* =========================
-           POSTER
-        ========================= */
+        // ------------------------------------------------
+        // POSTER
+        // ------------------------------------------------
 
         const poster =
           extractMeta(
@@ -145,10 +167,9 @@ export default async (req) => {
             "og:image"
           ) || null;
 
-
-        /* =========================
-           SUMMARY
-        ========================= */
+        // ------------------------------------------------
+        // SUMMARY
+        // ------------------------------------------------
 
         const summary =
           extractMovieSummary(html) ||
@@ -158,10 +179,9 @@ export default async (req) => {
           ) ||
           "No description available.";
 
-
-        /* =========================
-           CATEGORY
-        ========================= */
+        // ------------------------------------------------
+        // CATEGORY
+        // ------------------------------------------------
 
         const category =
           extractCategory(
@@ -169,26 +189,26 @@ export default async (req) => {
             requestedCategory
           );
 
-
-        /* =========================
-           WATCH URL
-        ========================= */
+        // ------------------------------------------------
+        // WATCH URL
+        // ------------------------------------------------
 
         const watchUrl =
           extractWatchUrl(html);
 
+        // ------------------------------------------------
+        // MOVIE OBJECT
+        // ------------------------------------------------
 
-        /* =========================
-           MOVIE OBJECT
-        ========================= */
+        const movie = {
 
-        movies.push({
+          title:
+            cleanText(title),
 
-          title: cleanText(title),
-
-          poster: poster
-            ? decodeHtml(poster)
-            : null,
+          poster:
+            poster
+              ? decodeHtml(poster)
+              : null,
 
           summary:
             cleanText(summary),
@@ -199,21 +219,14 @@ export default async (req) => {
           watchUrl:
             watchUrl || null,
 
-          /*
-             We intentionally do NOT
-             extract duration here.
-
-             OSHAkur pages may contain
-             preview/player durations that
-             are not the movie runtime.
-          */
-
-          duration: null,
+          duration:
+            null,
 
           sourceUrl
 
-        });
+        };
 
+        movies.push(movie);
 
       } catch (movieError) {
 
@@ -227,10 +240,94 @@ export default async (req) => {
 
     }
 
+    // --------------------------------------------------
+    // SAVE TO SUPABASE
+    // --------------------------------------------------
+
+    let saved = 0;
+    let failed = 0;
+
+    if (movies.length > 0) {
+
+      const supabaseRows =
+        movies.map(movie => ({
+          source_url:
+            movie.sourceUrl,
+
+          title:
+            movie.title,
+
+          poster:
+            movie.poster,
+
+          summary:
+            movie.summary,
+
+          category:
+            movie.category,
+
+          watch_url:
+            movie.watchUrl,
+
+          duration:
+            movie.duration,
+
+          updated_at:
+            new Date().toISOString()
+        }));
+
+      const supabaseResponse =
+        await fetch(
+          `${SUPABASE_URL}/rest/v1/oshakur_movies?on_conflict=source_url`,
+          {
+            method: "POST",
+
+            headers: {
+
+              "apikey":
+                SUPABASE_SERVICE_ROLE_KEY,
+
+              "Authorization":
+                `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+
+              "Content-Type":
+                "application/json",
+
+              "Prefer":
+                "resolution=merge-duplicates,return=minimal"
+            },
+
+            body:
+              JSON.stringify(
+                supabaseRows
+              )
+          }
+        );
+
+      if (!supabaseResponse.ok) {
+
+        const errorText =
+          await supabaseResponse.text();
+
+        throw new Error(
+          `Supabase save failed (${supabaseResponse.status}): ${errorText}`
+        );
+
+      }
+
+      saved =
+        supabaseRows.length;
+
+    }
+
+    // --------------------------------------------------
+    // RESPONSE
+    // --------------------------------------------------
 
     return json({
 
-      success: true,
+      success:
+        true,
 
       page,
 
@@ -243,10 +340,13 @@ export default async (req) => {
       imported:
         movies.length,
 
+      saved,
+
+      failed,
+
       movies
 
     });
-
 
   } catch (error) {
 
@@ -255,24 +355,24 @@ export default async (req) => {
       error
     );
 
+    return json(
+      {
+        success:
+          false,
 
-    return json({
-
-      success: false,
-
-      error:
-        error.message
-
-    }, 500);
+        error:
+          error.message
+      },
+      500
+    );
 
   }
-
 };
 
 
-/* =====================================================
-   EXTRACT META
-===================================================== */
+// ======================================================
+// META EXTRACTION
+// ======================================================
 
 function extractMeta(
   html,
@@ -285,27 +385,22 @@ function extractMeta(
       "\\$&"
     );
 
-
   const regex =
     new RegExp(
       `<meta[^>]+(?:property|name)=["']${escaped}["'][^>]+content=["']([^"']*)["'][^>]*>`,
       "i"
     );
 
-
   const match =
     html.match(regex);
 
-
   if (match) {
-    return decodeHtml(match[1]);
+
+    return decodeHtml(
+      match[1]
+    );
+
   }
-
-
-  /*
-     Also support reversed
-     attribute order.
-  */
 
   const reverseRegex =
     new RegExp(
@@ -313,45 +408,43 @@ function extractMeta(
       "i"
     );
 
-
   const reverseMatch =
     html.match(reverseRegex);
-
 
   return reverseMatch
     ? decodeHtml(reverseMatch[1])
     : null;
+
 }
 
 
-/* =====================================================
-   TITLE TAG
-===================================================== */
+// ======================================================
+// TITLE
+// ======================================================
 
-function extractTitleTag(html) {
+function extractTitleTag(
+  html
+) {
 
   const match =
     html.match(
       /<title[^>]*>([\s\S]*?)<\/title>/i
     );
 
-
   return match
     ? decodeHtml(match[1])
     : null;
+
 }
 
 
-/* =====================================================
-   MOVIE SUMMARY
-===================================================== */
+// ======================================================
+// SUMMARY
+// ======================================================
 
-function extractMovieSummary(html) {
-
-  /*
-     Try common description containers
-     used by movie detail pages.
-  */
+function extractMovieSummary(
+  html
+) {
 
   const patterns = [
 
@@ -363,7 +456,6 @@ function extractMovieSummary(html) {
 
   ];
 
-
   for (
     const pattern of patterns
   ) {
@@ -371,12 +463,12 @@ function extractMovieSummary(html) {
     const match =
       html.match(pattern);
 
-
     if (match) {
 
       const text =
-        stripHtml(match[1]);
-
+        stripHtml(
+          match[1]
+        );
 
       if (
         text.length > 20
@@ -392,31 +484,27 @@ function extractMovieSummary(html) {
 
   }
 
-
   return null;
+
 }
 
+
+// ======================================================
+// CATEGORY
+// ======================================================
 
 function extractCategory(
   html,
   requestedCategory = null
 ) {
 
-  // If category was requested from the catalog,
-  // use that category directly.
   if (requestedCategory) {
+
     return normalizeCategory(
       requestedCategory
     );
+
   }
-
-  /*
-     OSHAkur puts the movie category near
-     the movie title.
-
-     We look only shortly after the first
-     H1 instead of searching the whole page.
-  */
 
   const h1Match =
     html.match(
@@ -443,6 +531,7 @@ function extractCategory(
       );
 
     const categories = [
+
       "Action",
       "Drama",
       "Horror",
@@ -452,6 +541,7 @@ function extractCategory(
       "Scifi",
       "Sci-Fi",
       "Others"
+
     ];
 
     for (
@@ -460,7 +550,9 @@ function extractCategory(
 
       const regex =
         new RegExp(
-          `\\b${escapeRegex(category)}\\b`,
+          `\\b${escapeRegex(
+            category
+          )}\\b`,
           "i"
         );
 
@@ -480,15 +572,151 @@ function extractCategory(
 
   }
 
-  // If no category can be detected,
-  // don't incorrectly label it Action.
   return "Other";
+
 }
 
 
-/* =====================================================
-   ESCAPE REGEX
-===================================================== */
+// ======================================================
+// WATCH URL
+// ======================================================
+
+function extractWatchUrl(
+  html
+) {
+
+  const allowedHosts = [
+
+    "audinifer.com",
+    "vibuxer.com",
+    "streamhg",
+    "hgcloud.to"
+
+  ];
+
+  const hrefRegex =
+    /href=["']([^"']+)["']/gi;
+
+  let match;
+
+  while (
+    (match =
+      hrefRegex.exec(html)) !== null
+  ) {
+
+    let href =
+      decodeHtml(
+        match[1]
+      );
+
+    if (
+      !/^https?:\/\//i.test(
+        href
+      )
+    ) {
+      continue;
+    }
+
+    const lower =
+      href.toLowerCase();
+
+    const allowed =
+      allowedHosts.some(
+        host =>
+          lower.includes(host)
+      );
+
+    if (!allowed) {
+      continue;
+    }
+
+    return href;
+
+  }
+
+  return null;
+
+}
+
+
+// ======================================================
+// CATEGORY NORMALIZATION
+// ======================================================
+
+function normalizeCategory(
+  value
+) {
+
+  if (!value) {
+    return null;
+  }
+
+  const text =
+    cleanText(
+      decodeHtml(value)
+    );
+
+  const lower =
+    text.toLowerCase();
+
+  if (
+    lower.includes("action")
+  ) {
+    return "Action";
+  }
+
+  if (
+    lower.includes("drama")
+  ) {
+    return "Drama";
+  }
+
+  if (
+    lower.includes("horror")
+  ) {
+    return "Horror";
+  }
+
+  if (
+    lower.includes("indian")
+  ) {
+    return "Indian";
+  }
+
+  if (
+    lower.includes("cartoon")
+  ) {
+    return "Cartoon";
+  }
+
+  if (
+    lower.includes("romance")
+  ) {
+    return "Romance";
+  }
+
+  if (
+    lower.includes("scifi") ||
+    lower.includes("sci-fi") ||
+    lower.includes("sci fi")
+  ) {
+    return "Scifi";
+  }
+
+  if (
+    lower.includes("other")
+  ) {
+    return "Others";
+  }
+
+  return null;
+
+}
+
+
+// ======================================================
+// REGEX ESCAPE
+// ======================================================
 
 function escapeRegex(
   value
@@ -502,200 +730,45 @@ function escapeRegex(
 
 }
 
-/* =====================================================
-   WATCH URL
-===================================================== */
 
-function extractWatchUrl(html) {
-
-  const allowedHosts = [
-
-    "audinifer.com",
-
-    "vibuxer.com",
-
-    "streamhg",
-
-    "hgcloud.to"
-
-  ];
-
-
-  /*
-     Find every href in the page.
-  */
-
-  const hrefRegex =
-    /href=["']([^"']+)["']/gi;
-
-
-  let match;
-
-
-  while (
-    (match = hrefRegex.exec(html)) !== null
-  ) {
-
-    let href =
-      decodeHtml(
-        match[1]
-      );
-
-
-    /*
-       Ignore local links.
-    */
-
-    if (
-      !/^https?:\/\//i.test(href)
-    ) {
-      continue;
-    }
-
-
-    const lower =
-      href.toLowerCase();
-
-
-    const allowed =
-      allowedHosts.some(
-        host =>
-          lower.includes(host)
-      );
-
-
-    if (!allowed) {
-      continue;
-    }
-
-
-    return href;
-
-  }
-
-
-  return null;
-}
-
-
-/* =====================================================
-   NORMALIZE CATEGORY
-===================================================== */
-
-function normalizeCategory(
-  value
-) {
-
-  if (!value) {
-    return null;
-  }
-
-
-  const text =
-    cleanText(
-      decodeHtml(value)
-    );
-
-
-  const lower =
-    text.toLowerCase();
-
-
-  if (
-    lower.includes("action")
-  ) {
-    return "Action";
-  }
-
-
-  if (
-    lower.includes("drama")
-  ) {
-    return "Drama";
-  }
-
-
-  if (
-    lower.includes("horror")
-  ) {
-    return "Horror";
-  }
-
-
-  if (
-    lower.includes("indian")
-  )
-  {
-    return "Indian";
-  }
-
-
-  if (
-    lower.includes("cartoon")
-  ) {
-    return "Cartoon";
-  }
-
-
-  if (
-    lower.includes("romance")
-  ) {
-    return "Romance";
-  }
-
-
-  if (
-    lower.includes("scifi") ||
-    lower.includes("sci-fi") ||
-    lower.includes("sci fi")
-  ) {
-    return "Scifi";
-  }
-
-
-  if (
-    lower.includes("other")
-  ) {
-    return "Others";
-  }
-
-
-  return null;
-}
-
-
-/* =====================================================
-   STRIP HTML
-===================================================== */
+// ======================================================
+// STRIP HTML
+// ======================================================
 
 function stripHtml(
   value
 ) {
 
   return String(value || "")
+
     .replace(
       /<script[\s\S]*?<\/script>/gi,
       ""
     )
+
     .replace(
       /<style[\s\S]*?<\/style>/gi,
       ""
     )
+
     .replace(
       /<[^>]+>/g,
       " "
     )
+
     .replace(
       /\s+/g,
       " "
     )
+
     .trim();
+
 }
 
 
-/* =====================================================
-   CLEAN TEXT
-===================================================== */
+// ======================================================
+// CLEAN TEXT
+// ======================================================
 
 function cleanText(
   value
@@ -713,9 +786,9 @@ function cleanText(
 }
 
 
-/* =====================================================
-   HTML ENTITIES
-===================================================== */
+// ======================================================
+// HTML ENTITY DECODER
+// ======================================================
 
 function decodeHtml(
   value
@@ -761,9 +834,9 @@ function decodeHtml(
 }
 
 
-/* =====================================================
-   JSON RESPONSE
-===================================================== */
+// ======================================================
+// JSON RESPONSE
+// ======================================================
 
 function json(
   data,
