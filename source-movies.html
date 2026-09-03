@@ -1,0 +1,1253 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MoviePulse – Watch Free Movies</title>
+
+<link rel="icon" type="image/png" href="moviepulse (2).png">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<meta name="description"
+content="Watch available movies online on MoviePulse. Explore free movies available from our authorized streaming sources.">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:#050505;
+    color:#fff;
+    overflow-x:hidden;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+img{
+    display:block;
+    max-width:100%;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+    position:sticky;
+    top:0;
+    width:100%;
+    height:80px;
+
+    z-index:99999;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 40px;
+
+    background:#000;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo img{
+    width:160px;
+    max-height:60px;
+    object-fit:contain;
+
+    border-radius:14px;
+
+    transition:.4s;
+}
+
+.logo img:hover{
+    transform:scale(1.08) rotate(-2deg);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+}
+
+.logo a{
+    display:flex;
+    align-items:center;
+}
+
+nav{
+    display:flex;
+    align-items:center;
+    gap:35px;
+}
+
+nav a{
+    color:#fff;
+    font-size:16px;
+    transition:.3s;
+}
+
+nav a:hover,
+nav a.active{
+    color:#ff1f1f;
+    text-shadow:0 0 10px #ff1e1e;
+}
+
+.menu-btn{
+    display:none;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.watch-hero{
+
+    min-height:520px;
+
+    display:flex;
+    align-items:center;
+
+    padding:70px 7%;
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:
+    linear-gradient(
+        to right,
+        rgba(0,0,0,1),
+        rgba(0,0,0,.85),
+        rgba(0,0,0,.35)
+    ),
+    url("https://i.vimeocdn.com/video/237605099_1280.jpg");
+
+    background-size:cover;
+    background-position:center;
+}
+
+.hero-content{
+    max-width:700px;
+    position:relative;
+    z-index:2;
+}
+
+.hero-tagline{
+    display:inline-block;
+
+    margin-bottom:15px;
+
+    padding:8px 18px;
+
+    border:1px solid rgba(255,255,255,.2);
+
+    border-radius:30px;
+
+    background:rgba(255,255,255,.08);
+
+    color:#ff3b3b;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+}
+
+.hero-content h1{
+    font-size:4rem;
+    line-height:1.1;
+
+    margin-bottom:18px;
+}
+
+.hero-content p{
+    max-width:650px;
+
+    color:#ddd;
+
+    font-size:17px;
+
+    line-height:1.8;
+
+    margin-bottom:25px;
+}
+
+.hero-meta{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+
+    margin-bottom:25px;
+
+    color:#ccc;
+
+    font-size:14px;
+}
+
+.hero-meta span{
+    background:rgba(255,255,255,.08);
+
+    padding:7px 13px;
+
+    border-radius:20px;
+}
+
+.watch-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    background:linear-gradient(90deg,#ff1e1e,#b30000);
+
+    color:#fff;
+
+    border:none;
+
+    padding:15px 32px;
+
+    border-radius:50px;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+    box-shadow:
+        0 0 15px rgba(229,9,20,.45),
+        0 0 35px rgba(229,9,20,.2);
+}
+
+.watch-btn:hover{
+    transform:translateY(-4px) scale(1.04);
+
+    box-shadow:
+        0 0 20px rgba(255,59,59,.9),
+        0 0 45px rgba(255,59,59,.6);
+}
+
+/* =========================
+   SECTION
+========================= */
+
+.movies-section{
+    padding:60px 6%;
+}
+
+.section-title{
+    font-size:40px;
+
+    margin-bottom:10px;
+
+    position:relative;
+
+    padding-left:15px;
+}
+
+.section-title::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:5px;
+
+    width:5px;
+    height:80%;
+
+    background:red;
+
+    border-radius:10px;
+}
+
+.section-desc{
+    color:#aaa;
+
+    margin-bottom:35px;
+
+    max-width:700px;
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-box{
+
+    max-width:500px;
+
+    margin-bottom:35px;
+
+    position:relative;
+}
+
+.search-box input{
+
+    width:100%;
+
+    padding:15px 20px 15px 48px;
+
+    border-radius:30px;
+
+    border:1px solid #333;
+
+    outline:none;
+
+    background:#111;
+
+    color:#fff;
+
+    font-family:inherit;
+
+    font-size:15px;
+}
+
+.search-box i{
+
+    position:absolute;
+
+    left:18px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#888;
+}
+
+/* =========================
+   MOVIE GRID
+========================= */
+
+.movie-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fill,minmax(180px,1fr));
+
+    gap:25px;
+}
+
+.movie-card{
+
+    background:#111;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    transition:.35s;
+
+    cursor:pointer;
+
+    border:1px solid transparent;
+}
+
+.movie-card:hover{
+
+    transform:translateY(-8px);
+
+    border-color:rgba(229,9,20,.4);
+
+    box-shadow:
+        0 18px 40px rgba(229,9,20,.25);
+}
+
+.poster-wrap{
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.movie-card img{
+
+    width:100%;
+
+    height:270px;
+
+    object-fit:cover;
+
+    transition:.4s;
+}
+
+.movie-card:hover img{
+    transform:scale(1.07);
+}
+
+.source-badge{
+
+    position:absolute;
+
+    top:10px;
+    left:10px;
+
+    background:#e50914;
+
+    padding:5px 9px;
+
+    border-radius:20px;
+
+    font-size:10px;
+
+    font-weight:700;
+}
+
+.movie-info{
+
+    padding:14px;
+}
+
+.movie-info h3{
+
+    font-size:16px;
+
+    margin-bottom:7px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+}
+
+.movie-meta{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    color:#aaa;
+
+    font-size:12px;
+
+    margin-bottom:10px;
+}
+
+.movie-info p{
+
+    color:#999;
+
+    font-size:12px;
+
+    line-height:1.6;
+
+    margin-bottom:12px;
+}
+
+.card-watch{
+
+    display:block;
+
+    text-align:center;
+
+    background:#e50914;
+
+    padding:9px;
+
+    border-radius:7px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    transition:.3s;
+}
+
+.card-watch:hover{
+    background:#ff1e1e;
+}
+
+/* =========================
+   PLAYER MODAL
+========================= */
+
+.player-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.92);
+
+    z-index:100000;
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+}
+
+.player-modal.active{
+    display:flex;
+}
+
+.player-box{
+
+    width:min(1000px,100%);
+
+    background:#0d0d0d;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    box-shadow:0 20px 70px rgba(0,0,0,.8);
+}
+
+.player-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:15px 20px;
+
+    border-bottom:1px solid #222;
+}
+
+.player-header h2{
+    font-size:18px;
+}
+
+.close-player{
+
+    width:38px;
+    height:38px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#222;
+
+    color:#fff;
+
+    font-size:20px;
+
+    cursor:pointer;
+}
+
+.close-player:hover{
+    background:#e50914;
+}
+
+.video-container{
+
+    position:relative;
+
+    width:100%;
+
+    aspect-ratio:16/9;
+
+    background:#000;
+}
+
+.video-container iframe{
+
+    width:100%;
+    height:100%;
+
+    border:0;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty-state{
+
+    text-align:center;
+
+    padding:70px 20px;
+
+    color:#777;
+
+    display:none;
+}
+
+.empty-state i{
+
+    font-size:50px;
+
+    margin-bottom:15px;
+
+    color:#333;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.site-footer{
+
+    margin-top:60px;
+
+    background:#0f0f0f;
+
+    color:#fff;
+
+    padding:40px 20px;
+
+    text-align:center;
+
+    border-top:1px solid #222;
+}
+
+.footer-text{
+
+    color:#bbb;
+
+    margin:10px auto 20px;
+
+    max-width:600px;
+
+    line-height:1.6;
+}
+
+.footer-links{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:15px;
+
+    margin-bottom:20px;
+}
+
+.footer-links a{
+
+    color:#aaa;
+
+    font-size:14px;
+
+    transition:.3s;
+}
+
+.footer-links a:hover{
+    color:red;
+}
+
+.footer-copy{
+
+    font-size:13px;
+
+    color:#777;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:768px){
+
+    header{
+
+        height:70px;
+
+        padding:10px 20px;
+
+        position:fixed;
+    }
+
+    .logo img{
+        width:110px;
+    }
+
+    .menu-btn{
+
+        display:flex;
+
+        align-items:center;
+        justify-content:center;
+
+        width:42px;
+        height:42px;
+
+        margin-left:auto;
+
+        color:#fff;
+
+        font-size:28px;
+
+        cursor:pointer;
+    }
+
+    header > nav{
+
+        display:none;
+
+        position:absolute;
+
+        top:70px;
+        left:0;
+
+        width:100%;
+
+        background:#111;
+
+        flex-direction:column;
+
+        gap:0;
+    }
+
+    header > nav.active{
+        display:flex;
+    }
+
+    header > nav a{
+
+        width:100%;
+
+        padding:17px 20px;
+
+        text-align:center;
+
+        border-bottom:1px solid rgba(255,255,255,.1);
+    }
+
+    .watch-hero{
+
+        min-height:600px;
+
+        padding:100px 20px 50px;
+
+        background-position:center;
+    }
+
+    .hero-content h1{
+        font-size:2.5rem;
+    }
+
+    .hero-content p{
+        font-size:14px;
+    }
+
+    .movies-section{
+        padding:45px 15px;
+    }
+
+    .section-title{
+        font-size:28px;
+    }
+
+    .movie-grid{
+
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+
+        gap:15px;
+    }
+
+    .movie-card img{
+        height:220px;
+    }
+
+    .movie-info{
+        padding:10px;
+    }
+
+    .movie-info h3{
+        font-size:14px;
+    }
+
+}
+
+@media(max-width:400px){
+
+    .movie-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .movie-card img{
+        height:200px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+
+        <a href="index.html">
+
+            <img
+                src="ChatGPT Image Jul 7, 2026, 09_00_03 AM.png"
+                alt="MoviePulse Logo">
+
+        </a>
+
+    </div>
+
+    <div class="menu-btn">☰</div>
+
+    <nav>
+
+        <a href="index.html">Home</a>
+
+        <a href="poster.html">Movies</a>
+
+        <a href="shorts.html">Shorts</a>
+
+        <a href="favorite.html">Favorites</a>
+
+        <a href="about.html">About</a>
+
+        <a href="privacy.html">Privacy Policy</a>
+
+        <a href="contact.html">Contact</a>
+
+    </nav>
+
+</header>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="watch-hero">
+
+    <div class="hero-content">
+
+        <span class="hero-tagline">
+            MOVIEPULSE WATCH
+        </span>
+
+        <h1 id="heroTitle">
+            Time Expired
+        </h1>
+
+        <div class="hero-meta">
+
+            <span id="heroYear">2011</span>
+
+            <span id="heroGenre">
+                Comedy / Drama
+            </span>
+
+            <span id="heroDuration">
+                1h 33min
+            </span>
+
+            <span>
+                ⭐ <span id="heroRating">7.0</span>
+            </span>
+
+        </div>
+
+        <p id="heroDescription">
+            A terminally ill parking enforcement officer wants nothing more
+            than to live out his days in peace, but his family and friends
+            have other plans.
+        </p>
+
+        <button class="watch-btn" onclick="openFeaturedMovie()">
+
+            <i class="fa-solid fa-play"></i>
+
+            Watch Now
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     AVAILABLE MOVIES
+========================= -->
+
+<section class="movies-section">
+
+    <h2 class="section-title">
+        Available Movies
+    </h2>
+
+    <p class="section-desc">
+        Watch movies that are currently available through our authorized
+        streaming sources.
+    </p>
+
+
+    <div class="search-box">
+
+        <i class="fa-solid fa-search"></i>
+
+        <input
+            type="text"
+            id="movieSearch"
+            placeholder="Search available movies...">
+
+    </div>
+
+
+    <div class="movie-grid" id="movieGrid"></div>
+
+
+    <div class="empty-state" id="emptyState">
+
+        <i class="fa-solid fa-film"></i>
+
+        <h3>No movies found</h3>
+
+        <p>
+            Try searching for another movie.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PLAYER
+========================= -->
+
+<div class="player-modal" id="playerModal">
+
+    <div class="player-box">
+
+        <div class="player-header">
+
+            <h2 id="playerTitle">
+                Movie
+            </h2>
+
+            <button
+                class="close-player"
+                onclick="closePlayer()">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <div class="video-container" id="videoContainer"></div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer class="site-footer">
+
+    <h3>MoviePulse</h3>
+
+    <p class="footer-text">
+        Discover movies, explore stories, and watch titles that are
+        legitimately available through our streaming sources.
+    </p>
+
+    <div class="footer-links">
+
+        <a href="index.html">Home</a>
+
+        <a href="poster.html">Movies</a>
+
+        <a href="about.html">About</a>
+
+        <a href="privacy.html">Privacy</a>
+
+        <a href="contact.html">Contact</a>
+
+    </div>
+
+    <div class="footer-copy">
+
+        © 2026 MoviePulse. All rights reserved.
+
+    </div>
+
+</footer>
+
+
+<script src="vimeo-movies.js"></script>
+
+<script>
+
+const movieGrid =
+    document.getElementById("movieGrid");
+
+const searchInput =
+    document.getElementById("movieSearch");
+
+const emptyState =
+    document.getElementById("emptyState");
+
+const playerModal =
+    document.getElementById("playerModal");
+
+const videoContainer =
+    document.getElementById("videoContainer");
+
+const playerTitle =
+    document.getElementById("playerTitle");
+
+
+/* =========================
+   RENDER MOVIES
+========================= */
+
+function renderMovies(list){
+
+    movieGrid.innerHTML = "";
+
+    if(!list.length){
+
+        emptyState.style.display = "block";
+
+        return;
+
+    }
+
+    emptyState.style.display = "none";
+
+    list.forEach(movie => {
+
+        const card =
+        document.createElement("div");
+
+        card.className = "movie-card";
+
+        card.innerHTML = `
+
+            <div class="poster-wrap">
+
+                <img
+                    src="${movie.poster}"
+                    alt="${movie.title}">
+
+                <span class="source-badge">
+                    VIMEO
+                </span>
+
+            </div>
+
+            <div class="movie-info">
+
+                <h3>${movie.title}</h3>
+
+                <div class="movie-meta">
+
+                    <span>${movie.year}</span>
+
+                    <span>⭐ ${movie.rating}</span>
+
+                </div>
+
+                <p>
+                    ${movie.genre}
+                </p>
+
+                <a
+                    href="#"
+                    class="card-watch"
+                    onclick="openMovie('${movie.id}'); return false;">
+
+                    <i class="fa-solid fa-play"></i>
+                    Watch Now
+
+                </a>
+
+            </div>
+        `;
+
+        movieGrid.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================
+   OPEN MOVIE
+========================= */
+
+function openMovie(id){
+
+    const movie =
+        vimeoMovies.find(
+            m => m.id === id
+        );
+
+    if(!movie) return;
+
+    playerTitle.textContent =
+        movie.title;
+
+    videoContainer.innerHTML = `
+
+        <iframe
+            src="https://player.vimeo.com/video/${movie.vimeoId}?autoplay=1&title=0&byline=0&portrait=0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen>
+        </iframe>
+
+    `;
+
+    playerModal.classList.add("active");
+
+    document.body.style.overflow = "hidden";
+
+}
+
+
+/* =========================
+   FEATURED MOVIE
+========================= */
+
+function openFeaturedMovie(){
+
+    if(vimeoMovies.length){
+
+        openMovie(vimeoMovies[0].id);
+
+    }
+
+}
+
+
+/* =========================
+   CLOSE PLAYER
+========================= */
+
+function closePlayer(){
+
+    playerModal.classList.remove("active");
+
+    videoContainer.innerHTML = "";
+
+    document.body.style.overflow = "";
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+searchInput.addEventListener(
+    "input",
+    function(){
+
+        const query =
+            this.value
+            .toLowerCase()
+            .trim();
+
+        const filtered =
+            vimeoMovies.filter(movie =>
+
+                movie.title
+                    .toLowerCase()
+                    .includes(query)
+
+            );
+
+        renderMovies(filtered);
+
+    }
+);
+
+
+/* =========================
+   MOBILE MENU
+========================= */
+
+const menuBtn =
+    document.querySelector(".menu-btn");
+
+const nav =
+    document.querySelector("header nav");
+
+menuBtn.addEventListener(
+    "click",
+    () => {
+
+        nav.classList.toggle("active");
+
+    }
+);
+
+
+/* =========================
+   CLOSE WHEN CLICKING OUTSIDE
+========================= */
+
+playerModal.addEventListener(
+    "click",
+    function(e){
+
+        if(e.target === playerModal){
+
+            closePlayer();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+renderMovies(vimeoMovies);
+
+</script>
+
+</body>
+</html>
+```
