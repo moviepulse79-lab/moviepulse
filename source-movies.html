@@ -1309,50 +1309,8 @@ searchInput.addEventListener(
 );
 
 
-/* =========================
-   MOBILE MENU
-========================= */
-
-const menuBtn =
-    document.querySelector(".menu-btn");
-
-const nav =
-    document.querySelector("header nav");
-
-menuBtn.addEventListener(
-    "click",
-    () => {
-
-        nav.classList.toggle("active");
-
-    }
-);
-
-
-/* =========================
-   CLOSE WHEN CLICKING OUTSIDE
-========================= */
-
-playerModal.addEventListener(
-    "click",
-    function(e){
-
-        if(e.target === playerModal){
-
-            closePlayer();
-
-        }
-
-    }
-);
-
-
-    /* ========================= INITIALIZE ========================= */ 
-    renderMovies(vimeoMovies);
+ 
     
-</script>
-
-    <script src="vimeo-movies.js"></script>
     
 </body>
 </html>
