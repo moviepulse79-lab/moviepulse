@@ -1122,48 +1122,39 @@ nav a.active{
 
 </footer>
     
-<script>
-let oshakurMovies = [];
-</script>
+
 
 <script>
+
+<script>
+
+let oshakurMovies = [];
 
 const movieGrid = document.getElementById("movieGrid");
-const searchInput = document.getElementById("movieSearch");
+const movieSearch = document.getElementById("movieSearch");
 const emptyState = document.getElementById("emptyState");
 
 const playerModal = document.getElementById("playerModal");
 const videoContainer = document.getElementById("videoContainer");
 const playerTitle = document.getElementById("playerTitle");
 
-let oshakurMovies = [];
 
-
-/* =========================
-   LOAD OSHAKUR MOVIES
-========================= */
+// ===============================
+// LOAD MOVIES FROM SUPABASE CACHE
+// ===============================
 
 async function loadMovies() {
 
-    movieGrid.innerHTML = `
-        <div style="
-            grid-column:1/-1;
-            text-align:center;
-            padding:60px;
-            color:#aaa;
-        ">
-            <i class="fa-solid fa-spinner fa-spin"
-               style="font-size:35px;color:#e50914;margin-bottom:15px;">
-            </i>
-
-            <p>Loading available movies...</p>
-        </div>
-    `;
-
     try {
 
+        movieGrid.innerHTML = `
+            <div style="width:100%;text-align:center;padding:40px;">
+                Loading movies...
+            </div>
+        `;
+
         const response = await fetch(
-            "/.netlify/functions/oshakur-import?page=1"
+            "/.netlify/functions/oshakur-movies"
         );
 
         if (!response.ok) {
@@ -1173,42 +1164,38 @@ async function loadMovies() {
         const data = await response.json();
 
         if (!data.success) {
-            throw new Error(data.error || "Importer failed");
+            throw new Error(
+                data.error || "Movie loading failed"
+            );
         }
 
-        oshakurMovies = (data.movies || []).map((movie, index) => ({
+        oshakurMovies = (data.movies || []).map(movie => ({
 
-            id: "oshakur-" + index,
+            id: movie.id,
 
             title: movie.title || "Untitled",
 
-            poster:
-                movie.poster ||
-                "https://via.placeholder.com/300x450/111/fff?text=No+Poster",
+            poster: movie.poster || "",
 
             summary:
                 movie.summary ||
                 "No description available.",
-
-            genre:
-                movie.category ||
-                "Other",
 
             category:
                 movie.category ||
                 "Other",
 
             watchUrl:
-                movie.watchUrl ||
+                movie.watch_url ||
                 null,
+
+            sourceUrl:
+                movie.source_url ||
+                "",
 
             duration:
                 movie.duration ||
-                "",
-
-            sourceUrl:
-                movie.sourceUrl ||
-                ""
+                null
 
         }));
 
@@ -1218,19 +1205,18 @@ async function loadMovies() {
 
     } catch (error) {
 
-        console.error("Movie loading error:", error);
+        console.error(
+            "Movie loading error:",
+            error
+        );
 
         movieGrid.innerHTML = "";
 
         emptyState.style.display = "block";
 
         emptyState.innerHTML = `
-            <i class="fa-solid fa-triangle-exclamation"></i>
-
-            <h3>Unable to load movies</h3>
-
             <p>
-                Please try again later.
+                Unable to load movies right now.
             </p>
         `;
 
@@ -1239,15 +1225,15 @@ async function loadMovies() {
 }
 
 
-/* =========================
-   RENDER MOVIES
-========================= */
+// ===============================
+// RENDER MOVIES
+// ===============================
 
-function renderMovies(list) {
+function renderMovies(movies) {
 
     movieGrid.innerHTML = "";
 
-    if (!list || list.length === 0) {
+    if (!movies.length) {
 
         emptyState.style.display = "block";
 
@@ -1257,80 +1243,72 @@ function renderMovies(list) {
     emptyState.style.display = "none";
 
 
-    list.forEach(movie => {
+    movies.forEach(movie => {
 
         const card = document.createElement("div");
 
         card.className = "movie-card";
 
 
-        const safeTitle =
-            escapeHtml(movie.title);
-
-        const safeSummary =
-            escapeHtml(movie.summary);
+        const poster =
+            movie.poster ||
+            "https://via.placeholder.com/300x450?text=No+Poster";
 
 
-        const watchButton = movie.watchUrl
-
-            ? `
-                <button
-                    class="card-watch"
-                    onclick="openMovie('${movie.id}')">
-
-                    <i class="fa-solid fa-play"></i>
-                    Watch Now
-
-                </button>
-              `
-
-            : `
-                <button
-                    class="card-watch"
-                    disabled
-                    style="
-                        background:#333;
-                        color:#777;
-                        cursor:not-allowed;
-                    ">
-
-                    Not Available
-
-                </button>
-              `;
+        const duration =
+            movie.duration ||
+            "—";
 
 
-        const duration = movie.duration
+        const category =
+            movie.category ||
+            "Other";
 
-            ? `
-                <span>
-                    ${escapeHtml(movie.duration)}
-                </span>
-              `
 
-            : `
-                <span>
-                    —
-                </span>
-              `;
+        const hasWatch =
+            !!movie.watchUrl;
 
 
         card.innerHTML = `
 
-            <div class="poster-wrap">
+            <div class="movie-poster">
 
                 <img
-                    src="${escapeAttribute(movie.poster)}"
-                    alt="${safeTitle}"
+                    src="${escapeHtml(poster)}"
+                    alt="${escapeHtml(movie.title)}"
                     loading="lazy"
-                    onerror="
-                        this.src='https://via.placeholder.com/300x450/111/fff?text=No+Poster'
-                    "
+                    onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'"
                 >
 
-                <span class="source-badge">
+                <div class="movie-badge">
                     OSHAkur
-                </span>
+                </div>
+
+                <div class="movie-overlay">
+
+                    ${
+                        hasWatch
+
+                        ? `
+                            <button
+                                class="watch-btn"
+                                onclick="openMovie('${movie.id}')"
+                            >
+                                ▶ Watch
+                            </button>
+                        `
+
+                        : `
+                            <span
+                                class="watch-btn"
+                                style="opacity:.6;cursor:not-allowed;"
+                            >
+                                Not Available
+                            </span>
+                        `
+                    }
+
+                </div>
 
             </div>
 
@@ -1338,27 +1316,20 @@ function renderMovies(list) {
             <div class="movie-info">
 
                 <h3>
-                    ${safeTitle}
+                    ${escapeHtml(movie.title)}
                 </h3>
-
 
                 <div class="movie-meta">
 
                     <span>
-                        ${escapeHtml(movie.category || "Movie")}
+                        ${escapeHtml(category)}
                     </span>
 
-                    ${duration}
+                    <span>
+                        ${escapeHtml(duration)}
+                    </span>
 
                 </div>
-
-
-                <p>
-                    ${safeSummary}
-                </p>
-
-
-                ${watchButton}
 
             </div>
 
@@ -1372,19 +1343,28 @@ function renderMovies(list) {
 }
 
 
-/* =========================
-   OPEN MOVIE
-========================= */
+// ===============================
+// OPEN MOVIE
+// ===============================
 
 function openMovie(id) {
 
     const movie =
         oshakurMovies.find(
-            m => m.id === id
+            m => String(m.id) === String(id)
         );
 
 
-    if (!movie || !movie.watchUrl) {
+    if (!movie) {
+        return;
+    }
+
+
+    if (!movie.watchUrl) {
+
+        alert(
+            "This movie is currently not available for streaming."
+        );
 
         return;
     }
@@ -1394,166 +1374,240 @@ function openMovie(id) {
         movie.title;
 
 
-    /*
-       IMPORTANT:
-
-       We use the watch/embed URL supplied
-       by the external source.
-
-       We do NOT download or proxy the movie.
-    */
-
-    let embedUrl =
-        convertToEmbedUrl(movie.watchUrl);
-
-
     videoContainer.innerHTML = `
 
         <iframe
-
-            src="${escapeAttribute(embedUrl)}"
-
-            allow="
-                autoplay;
-                fullscreen;
-                picture-in-picture;
-                encrypted-media
-            "
-
-            allowfullscreen>
-
-        </iframe>
+            src="${escapeHtml(
+                convertToEmbedUrl(movie.watchUrl)
+            )}"
+            width="100%"
+            height="100%"
+            frameborder="0"
+            allowfullscreen
+            allow="autoplay; fullscreen"
+        ></iframe>
 
     `;
 
 
     playerModal.classList.add("active");
 
-
     document.body.style.overflow =
         "hidden";
+
 }
 
 
-/* =========================
-   CONVERT WATCH URL
-========================= */
+// ===============================
+// CLOSE PLAYER
+// ===============================
+
+function closePlayer() {
+
+    playerModal.classList.remove("active");
+
+    videoContainer.innerHTML = "";
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+// ===============================
+// CONVERT WATCH URL TO EMBED URL
+// ===============================
 
 function convertToEmbedUrl(url) {
 
-    if (!url) return "";
+    if (!url) {
+        return "";
+    }
 
 
-    /*
-       hgcloud.to/e/ID
-       is already an embed URL.
-    */
+    try {
 
-    if (
-        url.includes("hgcloud.to/e/")
-    ) {
+        const parsed =
+            new URL(url);
+
+
+        // hgcloud.to/ID
+        // becomes
+        // hgcloud.to/e/ID
+
+        if (
+            parsed.hostname
+                .toLowerCase()
+                .includes("hgcloud.to")
+        ) {
+
+            const parts =
+                parsed.pathname
+                    .split("/")
+                    .filter(Boolean);
+
+
+            if (
+                parts.length === 1 &&
+                parts[0] !== "e"
+            ) {
+
+                return (
+                    "https://hgcloud.to/e/" +
+                    parts[0]
+                );
+
+            }
+
+        }
+
 
         return url;
+
+    } catch {
+
+        return url;
+
     }
-
-
-    /*
-       Some source URLs may look like:
-
-       https://hgcloud.to/abcdef
-
-       Convert them to:
-
-       https://hgcloud.to/e/abcdef
-    */
-
-    if (
-        url.includes("hgcloud.to/")
-    ) {
-
-        const id =
-            url.split("hgcloud.to/")[1]
-               .split("?")[0]
-               .split("#")[0];
-
-
-        if (id) {
-
-            return `https://hgcloud.to/e/${id}`;
-        }
-    }
-
-
-    /*
-       For other providers, use the
-       original watch URL.
-    */
-
-    return url;
 
 }
 
 
-/* =========================
-   FEATURED MOVIE
-========================= */
+// ===============================
+// SEARCH
+// ===============================
+
+if (movieSearch) {
+
+    movieSearch.addEventListener(
+        "input",
+        function () {
+
+            const query =
+                this.value
+                    .trim()
+                    .toLowerCase();
+
+
+            const filtered =
+                oshakurMovies.filter(movie => {
+
+                    return (
+
+                        movie.title
+                            .toLowerCase()
+                            .includes(query)
+
+                        ||
+
+                        movie.category
+                            .toLowerCase()
+                            .includes(query)
+
+                    );
+
+                });
+
+
+            renderMovies(filtered);
+
+        }
+    );
+
+}
+
+
+// ===============================
+// FEATURED MOVIE
+// ===============================
 
 function updateFeaturedMovie() {
 
-    const movie =
+    if (!oshakurMovies.length) {
+        return;
+    }
+
+
+    const featured =
         oshakurMovies.find(
-            m => m.watchUrl
+            movie => movie.watchUrl
+        ) ||
+        oshakurMovies[0];
+
+
+    if (!featured) {
+        return;
+    }
+
+
+    const heroTitle =
+        document.getElementById("heroTitle");
+
+    const heroDescription =
+        document.getElementById(
+            "heroDescription"
+        );
+
+    const heroGenre =
+        document.getElementById("heroGenre");
+
+    const heroDuration =
+        document.getElementById(
+            "heroDuration"
         );
 
 
-    if (!movie) return;
+    if (heroTitle) {
+
+        heroTitle.textContent =
+            featured.title;
+
+    }
 
 
-    document.getElementById(
-        "heroTitle"
-    ).textContent =
-        movie.title;
+    if (heroDescription) {
+
+        heroDescription.textContent =
+            featured.summary;
+
+    }
 
 
-    document.getElementById(
-        "heroGenre"
-    ).textContent =
-        movie.category || "Movie";
+    if (heroGenre) {
+
+        heroGenre.textContent =
+            featured.category;
+
+    }
 
 
-    document.getElementById(
-        "heroDuration"
-    ).textContent =
-        movie.duration || "Available";
+    if (heroDuration) {
 
+        heroDuration.textContent =
+            featured.duration ||
+            "—";
 
-    document.getElementById(
-        "heroDescription"
-    ).textContent =
-        movie.summary ||
-        "Watch this movie through its available streaming source.";
+    }
 
-
-    /*
-       Save the featured movie ID
-       for the Watch Now button.
-    */
 
     window.featuredMovieId =
-        movie.id;
+        featured.id;
 
 }
 
 
-/* =========================
-   FEATURED WATCH BUTTON
-========================= */
+// ===============================
+// FEATURED MOVIE BUTTON
+// ===============================
 
 function openFeaturedMovie() {
 
-    if (!window.featuredMovieId) {
+    if (
+        window.featuredMovieId === undefined
+    ) {
 
         return;
+
     }
 
 
@@ -1564,33 +1618,44 @@ function openFeaturedMovie() {
 }
 
 
-/* =========================
-   CLOSE PLAYER
-========================= */
+// ===============================
+// ESCAPE HTML
+// ===============================
 
-function closePlayer() {
+function escapeHtml(value) {
 
-    playerModal.classList.remove(
-        "active"
-    );
-
-
-    videoContainer.innerHTML = "";
-
-
-    document.body.style.overflow =
-        "";
+    return String(value || "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
 
-/* =========================
-   CLOSE WITH ESC
-========================= */
+// ===============================
+// CLOSE MODAL WITH ESCAPE
+// ===============================
 
 document.addEventListener(
     "keydown",
-    function(event) {
+    function (event) {
 
         if (
             event.key === "Escape"
@@ -1604,47 +1669,24 @@ document.addEventListener(
 );
 
 
-/* =========================
-   SEARCH
-========================= */
+// ===============================
+// CLOSE WHEN CLICKING OUTSIDE
+// ===============================
 
-if (searchInput) {
+if (playerModal) {
 
-    searchInput.addEventListener(
-        "input",
-        function() {
+    playerModal.addEventListener(
+        "click",
+        function (event) {
 
-            const query =
-                this.value
-                    .toLowerCase()
-                    .trim();
+            if (
+                event.target ===
+                playerModal
+            ) {
 
+                closePlayer();
 
-            const filtered =
-                oshakurMovies.filter(
-                    movie =>
-
-                        movie.title
-                            .toLowerCase()
-                            .includes(query)
-
-                        ||
-
-                        (movie.category || "")
-                            .toLowerCase()
-                            .includes(query)
-
-                        ||
-
-                        (movie.summary || "")
-                            .toLowerCase()
-                            .includes(query)
-                );
-
-
-            renderMovies(
-                filtered
-            );
+            }
 
         }
     );
@@ -1652,26 +1694,22 @@ if (searchInput) {
 }
 
 
-/* =========================
-   MOBILE MENU
-========================= */
+// ===============================
+// MOBILE MENU
+// ===============================
 
 const menuBtn =
-    document.querySelector(
-        ".menu-btn"
-    );
+    document.querySelector(".menu-btn");
 
 const nav =
-    document.querySelector(
-        "header > nav"
-    );
+    document.querySelector("header > nav");
 
 
 if (menuBtn && nav) {
 
     menuBtn.addEventListener(
         "click",
-        function() {
+        function () {
 
             nav.classList.toggle(
                 "active"
@@ -1683,92 +1721,13 @@ if (menuBtn && nav) {
 }
 
 
-/* =========================
-   ACCOUNT DROPDOWN
-========================= */
-
-const userIcon =
-    document.getElementById(
-        "userIcon"
-    );
-
-const userDropdown =
-    document.getElementById(
-        "userDropdown"
-    );
-
-
-if (
-    userIcon &&
-    userDropdown
-) {
-
-    userIcon.addEventListener(
-        "click",
-        function(e) {
-
-            e.stopPropagation();
-
-            userDropdown.classList.toggle(
-                "active"
-            );
-
-        }
-    );
-
-
-    userDropdown.addEventListener(
-        "click",
-        function(e) {
-
-            e.stopPropagation();
-
-        }
-    );
-
-
-    document.addEventListener(
-        "click",
-        function() {
-
-            userDropdown.classList.remove(
-                "active"
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================
-   HTML SECURITY HELPERS
-========================= */
-
-function escapeHtml(value) {
-
-    return String(value || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-}
-
-
-function escapeAttribute(value) {
-
-    return escapeHtml(value);
-
-}
-
-
-/* =========================
-   START
-========================= */
+// ===============================
+// START
+// ===============================
 
 loadMovies();
+
+</script>
 
 </script>
 
