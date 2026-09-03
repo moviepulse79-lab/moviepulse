@@ -1,4 +1,4 @@
-const VERSION = "10.1-stable";
+const VERSION = "10.2-stable";
 
 const SEARCHES = [
   "full movie",
@@ -183,16 +183,19 @@ const COPYRIGHT_RISK = [
   "hulu"
 ];
 
-export default async function handler() {
+export default async function handler(req, context) {
 
   const token = process.env.VIMEO_ACCESS_TOKEN;
 
   if (!token) {
-    return response(500, {
-      success: false,
-      scannerVersion: VERSION,
-      error: "VIMEO_ACCESS_TOKEN is missing"
-    });
+    return jsonResponse(
+      {
+        success: false,
+        scannerVersion: VERSION,
+        error: "VIMEO_ACCESS_TOKEN is missing"
+      },
+      500
+    );
   }
 
   const approved = [];
@@ -226,31 +229,12 @@ export default async function handler() {
 
       const url =
         "https://api.vimeo.com/videos" +
-        "?query=" + encodeURIComponent(search) +
+        "?query=" +
+        encodeURIComponent(search) +
         "&per_page=25" +
         "&sort=relevant";
 
-      let result;
-
-      try {
-
-        result = await requestVimeo(
-          url,
-          token
-        );
-
-      } catch (err) {
-
-        console.log(
-          "Vimeo request failed:",
-          search,
-          err.message
-        );
-
-        stats.errors++;
-
-        continue;
-      }
+      const result = await requestVimeo(url, token);
 
       if (result.rateLimited) {
 
@@ -319,10 +303,6 @@ export default async function handler() {
         const duration =
           Number(video.duration || 0);
 
-        /* =========================
-           DURATION
-        ========================= */
-
         if (duration < MIN_DURATION) {
           stats.tooShort++;
           stats.rejected++;
@@ -335,10 +315,6 @@ export default async function handler() {
           continue;
         }
 
-        /* =========================
-           BLOCK OBVIOUS NON-MOVIES
-        ========================= */
-
         const blockedMatch =
           BLOCKED.find(word =>
             hasPhrase(text, word)
@@ -350,17 +326,11 @@ export default async function handler() {
           continue;
         }
 
-        /* =========================
-           CATEGORIES
-        ========================= */
-
         const categories =
           Array.isArray(video.categories)
             ? video.categories
                 .map(category =>
-                  String(
-                    category?.name || ""
-                  ).trim()
+                  String(category?.name || "").trim()
                 )
                 .filter(Boolean)
             : [];
@@ -379,10 +349,6 @@ export default async function handler() {
           stats.rejected++;
           continue;
         }
-
-        /* =========================
-           POSTER
-        ========================= */
 
         let poster = "";
 
@@ -410,10 +376,6 @@ export default async function handler() {
           continue;
         }
 
-        /* =========================
-           VIMEO URL
-        ========================= */
-
         const vimeoUrl =
           typeof video.link === "string"
             ? video.link
@@ -425,10 +387,6 @@ export default async function handler() {
           continue;
         }
 
-        /* =========================
-           MOVIE DETECTION
-        ========================= */
-
         const movieMatches =
           findMatches(
             text,
@@ -438,9 +396,7 @@ export default async function handler() {
         const hasMovieSignal =
           movieMatches.length > 0 ||
           categories.some(category =>
-            /film|movie|documentary/i.test(
-              category
-            )
+            /film|movie|documentary/i.test(category)
           );
 
         if (!hasMovieSignal) {
@@ -448,10 +404,6 @@ export default async function handler() {
           stats.rejected++;
           continue;
         }
-
-        /* =========================
-           RIGHTS DETECTION
-        ========================= */
 
         const freeMatches =
           findMatches(
@@ -480,10 +432,6 @@ export default async function handler() {
         if (copyrightMatches.length) {
           stats.copyrightRisk++;
         }
-
-        /* =========================
-           SCORE
-        ========================= */
 
         let score = 0;
 
@@ -521,9 +469,7 @@ export default async function handler() {
 
         if (
           licenseMatches.some(match =>
-            /creative commons|public domain|cc by/i.test(
-              match
-            )
+            /creative commons|public domain|cc by/i.test(match)
           )
         ) {
           score += 3;
@@ -532,10 +478,6 @@ export default async function handler() {
         if (copyrightMatches.length) {
           score -= 10;
         }
-
-        /* =========================
-           STATUS
-        ========================= */
 
         let rightsStatus = "REVIEW";
 
@@ -547,21 +489,6 @@ export default async function handler() {
 
         const ownershipEvidence =
           ownershipMatches.length > 0;
-
-        /*
-         * APPROVED:
-         *
-         * Explicit license
-         *
-         * OR
-         *
-         * Explicitly free + ownership
-         *
-         * OR
-         *
-         * Explicitly free with
-         * strong movie evidence.
-         */
 
         if (
           copyrightMatches.length === 0 &&
@@ -580,36 +507,21 @@ export default async function handler() {
           rightsStatus = "APPROVED";
         }
 
-        /*
-         * Never automatically approve
-         * known commercial companies.
-         */
-
         if (copyrightMatches.length > 0) {
           rightsStatus = "REVIEW";
         }
-
-        /* =========================
-           YEAR
-        ========================= */
 
         let year = null;
 
         if (video.release_time) {
 
           const date =
-            new Date(
-              video.release_time
-            );
+            new Date(video.release_time);
 
           if (!Number.isNaN(date.getTime())) {
             year = date.getFullYear();
           }
         }
-
-        /* =========================
-           MOVIE OBJECT
-        ========================= */
 
         const movie = {
 
@@ -666,27 +578,19 @@ export default async function handler() {
 
         };
 
-        if (
-          rightsStatus === "APPROVED"
-        ) {
+        if (rightsStatus === "APPROVED") {
 
           approved.push(movie);
-
           stats.approved++;
 
         } else {
 
           review.push(movie);
-
           stats.review++;
 
         }
 
       }
-
-      /*
-       * Protect Vimeo API rate limit.
-       */
 
       await sleep(1800);
     }
@@ -703,7 +607,7 @@ export default async function handler() {
         a.rightsScore
     );
 
-    return response(200, {
+    return jsonResponse({
 
       success: true,
 
@@ -733,18 +637,19 @@ export default async function handler() {
       error
     );
 
-    return response(500, {
+    return jsonResponse(
+      {
+        success: false,
 
-      success: false,
+        scannerVersion:
+          VERSION,
 
-      scannerVersion:
-        VERSION,
-
-      error:
-        error?.message ||
-        String(error)
-
-    });
+        error:
+          error?.message ||
+          String(error)
+      },
+      500
+    );
   }
 }
 
@@ -753,50 +658,64 @@ export default async function handler() {
    VIMEO REQUEST
 ========================= */
 
-async function requestVimeo(
-  url,
-  token
-) {
+async function requestVimeo(url, token) {
 
-  const res =
-    await fetch(url, {
+  try {
 
-      method: "GET",
+    const res =
+      await fetch(url, {
 
-      headers: {
-        Authorization:
-          "Bearer " + token,
+        method: "GET",
 
-        Accept:
-          "application/vnd.vimeo.*+json;version=3.4"
-      }
+        headers: {
+          Authorization:
+            "Bearer " + token,
 
-    });
+          Accept:
+            "application/vnd.vimeo.*+json;version=3.4"
+        }
 
-  if (res.status === 429) {
+      });
+
+    if (res.status === 429) {
+
+      return {
+        ok: false,
+        rateLimited: true,
+        status: 429,
+        data: null
+      };
+    }
+
+    let data = null;
+
+    try {
+      data = await res.json();
+    } catch {
+      data = null;
+    }
+
+    return {
+      ok: res.ok,
+      rateLimited: false,
+      status: res.status,
+      data
+    };
+
+  } catch (error) {
+
+    console.error(
+      "FETCH ERROR:",
+      error
+    );
 
     return {
       ok: false,
-      rateLimited: true,
-      status: 429,
+      rateLimited: false,
+      status: 0,
       data: null
     };
   }
-
-  let data = null;
-
-  try {
-    data = await res.json();
-  } catch {
-    data = null;
-  }
-
-  return {
-    ok: res.ok,
-    rateLimited: false,
-    status: res.status,
-    data
-  };
 }
 
 
@@ -804,10 +723,7 @@ async function requestVimeo(
    PHRASE MATCHING
 ========================= */
 
-function hasPhrase(
-  text,
-  phrase
-) {
+function hasPhrase(text, phrase) {
 
   const escaped =
     phrase
@@ -832,10 +748,7 @@ function hasPhrase(
 }
 
 
-function findMatches(
-  text,
-  list
-) {
+function findMatches(text, list) {
 
   return list.filter(
     phrase =>
@@ -851,30 +764,26 @@ function findMatches(
    DURATION
 ========================= */
 
-function formatDuration(
-  seconds
-) {
+function formatDuration(seconds) {
 
   const minutes =
-    Math.floor(
-      seconds / 60
-    );
+    Math.floor(seconds / 60);
 
   const hours =
-    Math.floor(
-      minutes / 60
-    );
+    Math.floor(minutes / 60);
 
   const remaining =
     minutes % 60;
 
   if (hours > 0) {
+
     return (
       hours +
       "h " +
       remaining +
       "min"
     );
+
   }
 
   return remaining + "min";
@@ -889,10 +798,7 @@ function sleep(ms) {
 
   return new Promise(
     resolve =>
-      setTimeout(
-        resolve,
-        ms
-      )
+      setTimeout(resolve, ms)
   );
 }
 
@@ -901,29 +807,24 @@ function sleep(ms) {
    NETLIFY RESPONSE
 ========================= */
 
-function response(
-  status,
-  data
-) {
+function jsonResponse(data, status = 200) {
 
-  return {
+  return new Response(
+    JSON.stringify(
+      data,
+      null,
+      2
+    ),
+    {
+      status,
 
-    statusCode: status,
+      headers: {
+        "Content-Type":
+          "application/json",
 
-    headers: {
-      "Content-Type":
-        "application/json",
-
-      "Cache-Control":
-        "public, max-age=3600"
-    },
-
-    body:
-      JSON.stringify(
-        data,
-        null,
-        2
-      )
-
-  };
+        "Cache-Control":
+          "public, max-age=3600"
+      }
+    }
+  );
 }
