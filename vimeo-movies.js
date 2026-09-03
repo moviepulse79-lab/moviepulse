@@ -58,23 +58,8 @@ const vimeoMovies = [
 
         description:
             "A clone faces obsolescence and deterioration as alien technology spreads. An original independent science-fiction film using original, public-domain and Creative Commons material."
-    },
-
-    {
-        id: "happy-thoughts",
-        title: "Happy Thoughts",
-        year: 2010,
-        genre: "Snowboard / Sports",
-        duration: "Feature Film",
-        rating: "7.0",
-
-        poster:
-            "https://i.vimeocdn.com/video/14688151_640.jpg",
-
-        vimeoId: "14688151",
-
-        description:
-            "A full-length snowboarding film featuring riders from the independent bHappy Films crew."
     }
+
+  
  
 ];
