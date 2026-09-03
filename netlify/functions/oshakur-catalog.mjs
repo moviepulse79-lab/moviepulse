@@ -31,41 +31,38 @@ export default async (req) => {
     const html = await response.text();
 
     const movies = [];
+    const seen = new Set();
 
     /*
-      Find OSHAkur movie links.
+      Find EVERY OSHAkur /watch/ link.
 
-      Example:
-      /watch/the-myth
-      /watch/robin-hood
+      We no longer assume the movie title is
+      inside the same <a> element.
     */
 
-    const linkRegex =
-      /href=["'](\/watch\/[^"'?#]+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+    const hrefRegex =
+      /href=["']([^"']*\/watch\/[^"'?#]+)["']/gi;
 
     let match;
 
-    const seen = new Set();
+    while ((match = hrefRegex.exec(html)) !== null) {
+      let href = match[1];
 
-    while ((match = linkRegex.exec(html)) !== null) {
-      const path = match[1];
+      // Convert relative URL to absolute
+      const sourceUrl = new URL(
+        href,
+        "https://www.oshakurfilms.com"
+      ).href;
 
-      if (seen.has(path)) continue;
+      // Remove query/hash
+      const cleanUrl = sourceUrl.split("?")[0].split("#")[0];
 
-      seen.add(path);
+      if (seen.has(cleanUrl)) continue;
 
-      const rawText = match[2]
-        .replace(/<script[\s\S]*?<\/script>/gi, "")
-        .replace(/<style[\s\S]*?<\/style>/gi, "")
-        .replace(/<[^>]+>/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-
-      if (!rawText) continue;
+      seen.add(cleanUrl);
 
       movies.push({
-        title: decode(rawText),
-        sourceUrl: `https://www.oshakurfilms.com${path}`
+        sourceUrl: cleanUrl
       });
     }
 
@@ -84,17 +81,6 @@ export default async (req) => {
     }, 500);
   }
 };
-
-
-function decode(value) {
-  return value
-    .replace(/&amp;/gi, "&")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;/gi, "'")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">");
-}
 
 
 function json(data, status = 200) {
