@@ -1354,37 +1354,61 @@ playerModal.addEventListener(
    INITIALIZE
 ========================= */
 
-renderMovies(vimeoMovies);
-
-
 document.addEventListener("DOMContentLoaded", function () {
+
+    renderMovies(vimeoMovies);
+
+
+    /* =========================
+       USER MENU
+    ========================= */
 
     const userIcon = document.getElementById("userIcon");
     const userDropdown = document.getElementById("userDropdown");
 
-    if (!userIcon || !userDropdown) {
-        console.log("User menu elements not found");
-        return;
+    if (userIcon && userDropdown) {
+
+        userIcon.addEventListener("click", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            userDropdown.classList.toggle("show");
+        });
+
+        userDropdown.addEventListener("click", function (event) {
+            event.stopPropagation();
+        });
+
+        document.addEventListener("click", function () {
+            userDropdown.classList.remove("show");
+        });
     }
 
-    userIcon.addEventListener("click", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
 
-        userDropdown.classList.toggle("show");
-    });
+    /* =========================
+       MOBILE MENU
+    ========================= */
 
-    userDropdown.addEventListener("click", function (event) {
-        event.stopPropagation();
-    });
+    const menuBtn = document.querySelector(".menu-btn");
+    const nav = document.querySelector("header nav");
 
-    document.addEventListener("click", function () {
-        userDropdown.classList.remove("show");
-    });
+    if (menuBtn && nav) {
+
+        menuBtn.addEventListener("click", function (event) {
+            event.stopPropagation();
+            nav.classList.toggle("active");
+        });
+
+        nav.addEventListener("click", function (event) {
+            event.stopPropagation();
+        });
+
+        document.addEventListener("click", function () {
+            nav.classList.remove("active");
+        });
+    }
 
 });
-</script>
-
 </body>
 </html>
 
