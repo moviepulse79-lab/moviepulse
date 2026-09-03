@@ -41,7 +41,40 @@ const vimeoMovies = [
         vimeoId: "46777125",
         description:
             "An award-winning Canadian feature film following a man caught in the aftermath of a devastating event."
-    }
+    },
+    
+  {
+        id: "three-weeks-later",
+        title: "Three Weeks Later",
+        year: 2014,
+        genre: "Sci-Fi / Psychological Horror",
+        duration: "Feature Film",
+        rating: "6.5",
 
+        poster:
+            "https://i.vimeocdn.com/video/88947415_640.jpg",
+
+        vimeoId: "88947415",
+
+        description:
+            "A clone faces obsolescence and deterioration as alien technology spreads. An original independent science-fiction film using original, public-domain and Creative Commons material."
+    },
+
+    {
+        id: "happy-thoughts",
+        title: "Happy Thoughts",
+        year: 2010,
+        genre: "Snowboard / Sports",
+        duration: "Feature Film",
+        rating: "7.0",
+
+        poster:
+            "https://i.vimeocdn.com/video/14688151_640.jpg",
+
+        vimeoId: "14688151",
+
+        description:
+            "A full-length snowboarding film featuring riders from the independent bHappy Films crew."
+    }
  
 ];
