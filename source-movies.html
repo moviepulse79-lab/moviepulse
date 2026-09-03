@@ -1121,10 +1121,13 @@ nav a.active{
     </div>
 
 </footer>
-<script src="vimeo-movies.js"></script>
-
-<!-- PAGE JAVASCRIPT -->
+    
 <script>
+let oshakurMovies = [];
+</script>
+
+<script>
+
 const movieGrid = document.getElementById("movieGrid");
 const searchInput = document.getElementById("movieSearch");
 const emptyState = document.getElementById("emptyState");
@@ -1132,6 +1135,108 @@ const emptyState = document.getElementById("emptyState");
 const playerModal = document.getElementById("playerModal");
 const videoContainer = document.getElementById("videoContainer");
 const playerTitle = document.getElementById("playerTitle");
+
+let oshakurMovies = [];
+
+
+/* =========================
+   LOAD OSHAKUR MOVIES
+========================= */
+
+async function loadMovies() {
+
+    movieGrid.innerHTML = `
+        <div style="
+            grid-column:1/-1;
+            text-align:center;
+            padding:60px;
+            color:#aaa;
+        ">
+            <i class="fa-solid fa-spinner fa-spin"
+               style="font-size:35px;color:#e50914;margin-bottom:15px;">
+            </i>
+
+            <p>Loading available movies...</p>
+        </div>
+    `;
+
+    try {
+
+        const response = await fetch(
+            "/.netlify/functions/oshakur-import?page=1"
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to load movies");
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.error || "Importer failed");
+        }
+
+        oshakurMovies = (data.movies || []).map((movie, index) => ({
+
+            id: "oshakur-" + index,
+
+            title: movie.title || "Untitled",
+
+            poster:
+                movie.poster ||
+                "https://via.placeholder.com/300x450/111/fff?text=No+Poster",
+
+            summary:
+                movie.summary ||
+                "No description available.",
+
+            genre:
+                movie.category ||
+                "Other",
+
+            category:
+                movie.category ||
+                "Other",
+
+            watchUrl:
+                movie.watchUrl ||
+                null,
+
+            duration:
+                movie.duration ||
+                "",
+
+            sourceUrl:
+                movie.sourceUrl ||
+                ""
+
+        }));
+
+        renderMovies(oshakurMovies);
+
+        updateFeaturedMovie();
+
+    } catch (error) {
+
+        console.error("Movie loading error:", error);
+
+        movieGrid.innerHTML = "";
+
+        emptyState.style.display = "block";
+
+        emptyState.innerHTML = `
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+            <h3>Unable to load movies</h3>
+
+            <p>
+                Please try again later.
+            </p>
+        `;
+
+    }
+
+}
 
 
 /* =========================
@@ -1143,11 +1248,14 @@ function renderMovies(list) {
     movieGrid.innerHTML = "";
 
     if (!list || list.length === 0) {
+
         emptyState.style.display = "block";
+
         return;
     }
 
     emptyState.style.display = "none";
+
 
     list.forEach(movie => {
 
@@ -1155,29 +1263,112 @@ function renderMovies(list) {
 
         card.className = "movie-card";
 
+
+        const safeTitle =
+            escapeHtml(movie.title);
+
+        const safeSummary =
+            escapeHtml(movie.summary);
+
+
+        const watchButton = movie.watchUrl
+
+            ? `
+                <button
+                    class="card-watch"
+                    onclick="openMovie('${movie.id}')">
+
+                    <i class="fa-solid fa-play"></i>
+                    Watch Now
+
+                </button>
+              `
+
+            : `
+                <button
+                    class="card-watch"
+                    disabled
+                    style="
+                        background:#333;
+                        color:#777;
+                        cursor:not-allowed;
+                    ">
+
+                    Not Available
+
+                </button>
+              `;
+
+
+        const duration = movie.duration
+
+            ? `
+                <span>
+                    ${escapeHtml(movie.duration)}
+                </span>
+              `
+
+            : `
+                <span>
+                    —
+                </span>
+              `;
+
+
         card.innerHTML = `
-            <img src="${movie.poster}" 
-                 alt="${movie.title}"
-                 onerror="this.src='https://via.placeholder.com/300x450/111/fff?text=No+Poster'">
+
+            <div class="poster-wrap">
+
+                <img
+                    src="${escapeAttribute(movie.poster)}"
+                    alt="${safeTitle}"
+                    loading="lazy"
+                    onerror="
+                        this.src='https://via.placeholder.com/300x450/111/fff?text=No+Poster'
+                    "
+                >
+
+                <span class="source-badge">
+                    OSHAkur
+                </span>
+
+            </div>
+
 
             <div class="movie-info">
-                <h3>${movie.title}</h3>
+
+                <h3>
+                    ${safeTitle}
+                </h3>
+
+
+                <div class="movie-meta">
+
+                    <span>
+                        ${escapeHtml(movie.category || "Movie")}
+                    </span>
+
+                    ${duration}
+
+                </div>
+
 
                 <p>
-                    ${movie.year} • ${movie.genre}
+                    ${safeSummary}
                 </p>
 
-                <p>⭐ ${movie.rating}</p>
 
-                <button onclick="openMovie('${movie.id}')">
-                    ▶ Watch Now
-                </button>
+                ${watchButton}
+
             </div>
+
         `;
+
 
         movieGrid.appendChild(card);
 
     });
+
 }
 
 
@@ -1187,21 +1378,119 @@ function renderMovies(list) {
 
 function openMovie(id) {
 
-    const movie = vimeoMovies.find(m => m.id === id);
+    const movie =
+        oshakurMovies.find(
+            m => m.id === id
+        );
 
-    if (!movie) return;
 
-    playerTitle.textContent = movie.title;
+    if (!movie || !movie.watchUrl) {
+
+        return;
+    }
+
+
+    playerTitle.textContent =
+        movie.title;
+
+
+    /*
+       IMPORTANT:
+
+       We use the watch/embed URL supplied
+       by the external source.
+
+       We do NOT download or proxy the movie.
+    */
+
+    let embedUrl =
+        convertToEmbedUrl(movie.watchUrl);
+
 
     videoContainer.innerHTML = `
+
         <iframe
-            src="https://player.vimeo.com/video/${movie.vimeoId}?autoplay=1&title=0&byline=0&portrait=0"
-            allow="autoplay; fullscreen; picture-in-picture"
+
+            src="${escapeAttribute(embedUrl)}"
+
+            allow="
+                autoplay;
+                fullscreen;
+                picture-in-picture;
+                encrypted-media
+            "
+
             allowfullscreen>
+
         </iframe>
+
     `;
 
+
     playerModal.classList.add("active");
+
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+/* =========================
+   CONVERT WATCH URL
+========================= */
+
+function convertToEmbedUrl(url) {
+
+    if (!url) return "";
+
+
+    /*
+       hgcloud.to/e/ID
+       is already an embed URL.
+    */
+
+    if (
+        url.includes("hgcloud.to/e/")
+    ) {
+
+        return url;
+    }
+
+
+    /*
+       Some source URLs may look like:
+
+       https://hgcloud.to/abcdef
+
+       Convert them to:
+
+       https://hgcloud.to/e/abcdef
+    */
+
+    if (
+        url.includes("hgcloud.to/")
+    ) {
+
+        const id =
+            url.split("hgcloud.to/")[1]
+               .split("?")[0]
+               .split("#")[0];
+
+
+        if (id) {
+
+            return `https://hgcloud.to/e/${id}`;
+        }
+    }
+
+
+    /*
+       For other providers, use the
+       original watch URL.
+    */
+
+    return url;
+
 }
 
 
@@ -1209,11 +1498,68 @@ function openMovie(id) {
    FEATURED MOVIE
 ========================= */
 
+function updateFeaturedMovie() {
+
+    const movie =
+        oshakurMovies.find(
+            m => m.watchUrl
+        );
+
+
+    if (!movie) return;
+
+
+    document.getElementById(
+        "heroTitle"
+    ).textContent =
+        movie.title;
+
+
+    document.getElementById(
+        "heroGenre"
+    ).textContent =
+        movie.category || "Movie";
+
+
+    document.getElementById(
+        "heroDuration"
+    ).textContent =
+        movie.duration || "Available";
+
+
+    document.getElementById(
+        "heroDescription"
+    ).textContent =
+        movie.summary ||
+        "Watch this movie through its available streaming source.";
+
+
+    /*
+       Save the featured movie ID
+       for the Watch Now button.
+    */
+
+    window.featuredMovieId =
+        movie.id;
+
+}
+
+
+/* =========================
+   FEATURED WATCH BUTTON
+========================= */
+
 function openFeaturedMovie() {
 
-    if (vimeoMovies.length === 0) return;
+    if (!window.featuredMovieId) {
 
-    openMovie(vimeoMovies[0].id);
+        return;
+    }
+
+
+    openMovie(
+        window.featuredMovieId
+    );
 
 }
 
@@ -1224,11 +1570,38 @@ function openFeaturedMovie() {
 
 function closePlayer() {
 
-    playerModal.classList.remove("active");
+    playerModal.classList.remove(
+        "active"
+    );
+
 
     videoContainer.innerHTML = "";
 
+
+    document.body.style.overflow =
+        "";
+
 }
+
+
+/* =========================
+   CLOSE WITH ESC
+========================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            closePlayer();
+
+        }
+
+    }
+);
 
 
 /* =========================
@@ -1237,18 +1610,44 @@ function closePlayer() {
 
 if (searchInput) {
 
-    searchInput.addEventListener("input", function () {
+    searchInput.addEventListener(
+        "input",
+        function() {
 
-        const query = this.value.toLowerCase().trim();
+            const query =
+                this.value
+                    .toLowerCase()
+                    .trim();
 
-        const filtered = vimeoMovies.filter(movie =>
-            movie.title.toLowerCase().includes(query) ||
-            movie.genre.toLowerCase().includes(query)
-        );
 
-        renderMovies(filtered);
+            const filtered =
+                oshakurMovies.filter(
+                    movie =>
 
-    });
+                        movie.title
+                            .toLowerCase()
+                            .includes(query)
+
+                        ||
+
+                        (movie.category || "")
+                            .toLowerCase()
+                            .includes(query)
+
+                        ||
+
+                        (movie.summary || "")
+                            .toLowerCase()
+                            .includes(query)
+                );
+
+
+            renderMovies(
+                filtered
+            );
+
+        }
+    );
 
 }
 
@@ -1257,16 +1656,29 @@ if (searchInput) {
    MOBILE MENU
 ========================= */
 
-const menuBtn = document.querySelector(".menu-btn");
-const nav = document.querySelector("header > nav");
+const menuBtn =
+    document.querySelector(
+        ".menu-btn"
+    );
+
+const nav =
+    document.querySelector(
+        "header > nav"
+    );
+
 
 if (menuBtn && nav) {
 
-    menuBtn.addEventListener("click", function () {
+    menuBtn.addEventListener(
+        "click",
+        function() {
 
-        nav.classList.toggle("active");
+            nav.classList.toggle(
+                "active"
+            );
 
-    });
+        }
+    );
 
 }
 
@@ -1275,39 +1687,88 @@ if (menuBtn && nav) {
    ACCOUNT DROPDOWN
 ========================= */
 
-const userIcon = document.getElementById("userIcon");
-const userDropdown = document.getElementById("userDropdown");
+const userIcon =
+    document.getElementById(
+        "userIcon"
+    );
 
-if (userIcon && userDropdown) {
+const userDropdown =
+    document.getElementById(
+        "userDropdown"
+    );
 
-    userIcon.addEventListener("click", function(e) {
 
-        e.stopPropagation();
+if (
+    userIcon &&
+    userDropdown
+) {
 
-        userDropdown.classList.toggle("active");
+    userIcon.addEventListener(
+        "click",
+        function(e) {
 
-    });
+            e.stopPropagation();
 
-    userDropdown.addEventListener("click", function(e) {
+            userDropdown.classList.toggle(
+                "active"
+            );
 
-        e.stopPropagation();
+        }
+    );
 
-    });
 
-    document.addEventListener("click", function() {
+    userDropdown.addEventListener(
+        "click",
+        function(e) {
 
-        userDropdown.classList.remove("active");
+            e.stopPropagation();
 
-    });
+        }
+    );
+
+
+    document.addEventListener(
+        "click",
+        function() {
+
+            userDropdown.classList.remove(
+                "active"
+            );
+
+        }
+    );
 
 }
 
 
 /* =========================
-   INITIALIZE
+   HTML SECURITY HELPERS
 ========================= */
 
-renderMovies(vimeoMovies);
+function escapeHtml(value) {
+
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+function escapeAttribute(value) {
+
+    return escapeHtml(value);
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadMovies();
 
 </script>
 
