@@ -2,9 +2,19 @@ export default async (req) => {
   try {
     const url = new URL(req.url);
 
-    const page = Math.max(
+    const startPage = Math.max(
       1,
       parseInt(url.searchParams.get("page") || "1", 10)
+    );
+
+    // Number of catalog pages to import in this run.
+    // Keep this small to avoid Netlify timeouts.
+    const pages = Math.min(
+      3,
+      Math.max(
+        1,
+        parseInt(url.searchParams.get("pages") || "1", 10)
+      )
     );
 
     const requestedCategory =
@@ -30,213 +40,256 @@ export default async (req) => {
     }
 
     // --------------------------------------------------
-    // OSHAKUR CATALOG
+    // ALL IMPORTED MOVIES
     // --------------------------------------------------
 
-    let catalogUrl =
-      `https://www.oshakurfilms.com/movies?page=${page}`;
-
-    if (requestedCategory) {
-      catalogUrl +=
-        `&category=${encodeURIComponent(
-          requestedCategory
-        )}`;
-    }
-
-    const catalogResponse =
-      await fetch(catalogUrl, {
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
-
-          "Accept":
-            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-        }
-      });
-
-    if (!catalogResponse.ok) {
-      throw new Error(
-        `OSHAkur catalog returned ${catalogResponse.status}`
-      );
-    }
-
-    const catalogHtml =
-      await catalogResponse.text();
+    const allMovies = [];
+    const allMovieUrls = [];
+    const processedPages = [];
 
     // --------------------------------------------------
-    // FIND MOVIE URLS
+    // PROCESS CATALOG PAGES
     // --------------------------------------------------
 
-    const movieUrls = [];
-    const seen = new Set();
-
-    const hrefRegex =
-      /href=["']([^"']*\/watch\/[^"'?#]+)["']/gi;
-
-    let match;
-
-    while (
-      (match = hrefRegex.exec(catalogHtml)) !== null
+    for (
+      let page = startPage;
+      page < startPage + pages;
+      page++
     ) {
 
-      const rawHref = match[1];
+      console.log(
+        `Processing OSHAkur catalog page ${page}`
+      );
 
-      const absoluteUrl =
-        new URL(
-          rawHref,
-          "https://www.oshakurfilms.com"
-        ).href;
+      let catalogUrl =
+        `https://www.oshakurfilms.com/movies?page=${page}`;
 
-      const cleanUrl =
-        absoluteUrl
-          .split("?")[0]
-          .split("#")[0];
+      if (requestedCategory) {
+        catalogUrl +=
+          `&category=${encodeURIComponent(
+            requestedCategory
+          )}`;
+      }
+
+      const catalogResponse =
+        await fetch(catalogUrl, {
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
+            "Accept":
+              "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+          }
+        });
+
+      if (!catalogResponse.ok) {
+        throw new Error(
+          `OSHAkur catalog page ${page} returned ${catalogResponse.status}`
+        );
+      }
+
+      const catalogHtml =
+        await catalogResponse.text();
+
+      // ------------------------------------------------
+      // FIND MOVIE URLS
+      // ------------------------------------------------
+
+      const movieUrls = [];
+      const seen = new Set();
+
+      const hrefRegex =
+        /href=["']([^"']*\/watch\/[^"'?#]+)["']/gi;
+
+      let match;
+
+      while (
+        (match =
+          hrefRegex.exec(catalogHtml)) !== null
+      ) {
+
+        const rawHref =
+          match[1];
+
+        const absoluteUrl =
+          new URL(
+            rawHref,
+            "https://www.oshakurfilms.com"
+          ).href;
+
+        const cleanUrl =
+          absoluteUrl
+            .split("?")[0]
+            .split("#")[0];
+
+        if (
+          !cleanUrl.includes(
+            "oshakurfilms.com/watch/"
+          )
+        ) {
+          continue;
+        }
+
+        if (seen.has(cleanUrl)) {
+          continue;
+        }
+
+        seen.add(cleanUrl);
+
+        movieUrls.push(cleanUrl);
+
+      }
+
+      console.log(
+        `Page ${page}: found ${movieUrls.length} movies`
+      );
+
+      allMovieUrls.push(
+        ...movieUrls
+      );
+
+      processedPages.push({
+        page,
+        discovered: movieUrls.length
+      });
+
+      // ------------------------------------------------
+      // IMPORT MOVIES FROM THIS PAGE
+      // ------------------------------------------------
+
+      for (
+        const sourceUrl of movieUrls
+      ) {
+
+        try {
+
+          const movieResponse =
+            await fetch(sourceUrl, {
+              headers: {
+                "User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
+                "Accept":
+                  "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+              }
+            });
+
+          if (!movieResponse.ok) {
+
+            console.error(
+              "Movie page failed:",
+              sourceUrl,
+              movieResponse.status
+            );
+
+            continue;
+          }
+
+          const html =
+            await movieResponse.text();
+
+          // TITLE
+          const title =
+            extractMeta(
+              html,
+              "og:title"
+            ) ||
+            extractTitleTag(html) ||
+            "Untitled";
+
+          // POSTER
+          const poster =
+            extractMeta(
+              html,
+              "og:image"
+            ) || null;
+
+          // SUMMARY
+          const summary =
+            extractMovieSummary(html) ||
+            extractMeta(
+              html,
+              "description"
+            ) ||
+            "No description available.";
+
+          // CATEGORY
+          const category =
+            extractCategory(
+              html,
+              requestedCategory
+            );
+
+          // WATCH URL
+          const watchUrl =
+            extractWatchUrl(html);
+
+          allMovies.push({
+
+            title:
+              cleanText(title),
+
+            poster:
+              poster
+                ? decodeHtml(poster)
+                : null,
+
+            summary:
+              cleanText(summary),
+
+            category:
+              category || "Other",
+
+            watchUrl:
+              watchUrl || null,
+
+            duration:
+              null,
+
+            sourceUrl
+
+          });
+
+        } catch (movieError) {
+
+          console.error(
+            "Movie import failed:",
+            sourceUrl,
+            movieError.message
+          );
+
+        }
+
+      }
+
+    }
+
+    // --------------------------------------------------
+    // REMOVE DUPLICATES
+    // --------------------------------------------------
+
+    const uniqueMovies = [];
+    const movieSeen = new Set();
+
+    for (
+      const movie of allMovies
+    ) {
 
       if (
-        !cleanUrl.includes(
-          "oshakurfilms.com/watch/"
+        movieSeen.has(
+          movie.sourceUrl
         )
       ) {
         continue;
       }
 
-      if (seen.has(cleanUrl)) {
-        continue;
-      }
+      movieSeen.add(
+        movie.sourceUrl
+      );
 
-      seen.add(cleanUrl);
-
-      movieUrls.push(cleanUrl);
-    }
-
-    // --------------------------------------------------
-    // IMPORT MOVIES
-    // --------------------------------------------------
-
-    const movies = [];
-
-    for (
-      const sourceUrl of movieUrls
-    ) {
-
-      try {
-
-        const movieResponse =
-          await fetch(sourceUrl, {
-            headers: {
-              "User-Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
-
-              "Accept":
-                "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-            }
-          });
-
-        if (!movieResponse.ok) {
-          console.error(
-            "Movie page failed:",
-            sourceUrl,
-            movieResponse.status
-          );
-
-          continue;
-        }
-
-        const html =
-          await movieResponse.text();
-
-        // ------------------------------------------------
-        // TITLE
-        // ------------------------------------------------
-
-        const title =
-          extractMeta(
-            html,
-            "og:title"
-          ) ||
-          extractTitleTag(html) ||
-          "Untitled";
-
-        // ------------------------------------------------
-        // POSTER
-        // ------------------------------------------------
-
-        const poster =
-          extractMeta(
-            html,
-            "og:image"
-          ) || null;
-
-        // ------------------------------------------------
-        // SUMMARY
-        // ------------------------------------------------
-
-        const summary =
-          extractMovieSummary(html) ||
-          extractMeta(
-            html,
-            "description"
-          ) ||
-          "No description available.";
-
-        // ------------------------------------------------
-        // CATEGORY
-        // ------------------------------------------------
-
-        const category =
-          extractCategory(
-            html,
-            requestedCategory
-          );
-
-        // ------------------------------------------------
-        // WATCH URL
-        // ------------------------------------------------
-
-        const watchUrl =
-          extractWatchUrl(html);
-
-        // ------------------------------------------------
-        // MOVIE OBJECT
-        // ------------------------------------------------
-
-        const movie = {
-
-          title:
-            cleanText(title),
-
-          poster:
-            poster
-              ? decodeHtml(poster)
-              : null,
-
-          summary:
-            cleanText(summary),
-
-          category:
-            category || "Other",
-
-          watchUrl:
-            watchUrl || null,
-
-          duration:
-            null,
-
-          sourceUrl
-
-        };
-
-        movies.push(movie);
-
-      } catch (movieError) {
-
-        console.error(
-          "Movie import failed:",
-          sourceUrl,
-          movieError.message
-        );
-
-      }
+      uniqueMovies.push(
+        movie
+      );
 
     }
 
@@ -245,36 +298,39 @@ export default async (req) => {
     // --------------------------------------------------
 
     let saved = 0;
-    let failed = 0;
 
-    if (movies.length > 0) {
+    if (
+      uniqueMovies.length > 0
+    ) {
 
       const supabaseRows =
-        movies.map(movie => ({
-          source_url:
-            movie.sourceUrl,
+        uniqueMovies.map(
+          movie => ({
+            source_url:
+              movie.sourceUrl,
 
-          title:
-            movie.title,
+            title:
+              movie.title,
 
-          poster:
-            movie.poster,
+            poster:
+              movie.poster,
 
-          summary:
-            movie.summary,
+            summary:
+              movie.summary,
 
-          category:
-            movie.category,
+            category:
+              movie.category,
 
-          watch_url:
-            movie.watchUrl,
+            watch_url:
+              movie.watchUrl,
 
-          duration:
-            movie.duration,
+            duration:
+              movie.duration,
 
-          updated_at:
-            new Date().toISOString()
-        }));
+            updated_at:
+              new Date().toISOString()
+          })
+        );
 
       const supabaseResponse =
         await fetch(
@@ -295,12 +351,14 @@ export default async (req) => {
 
               "Prefer":
                 "resolution=merge-duplicates,return=minimal"
+
             },
 
             body:
               JSON.stringify(
                 supabaseRows
               )
+
           }
         );
 
@@ -316,7 +374,7 @@ export default async (req) => {
       }
 
       saved =
-        supabaseRows.length;
+        uniqueMovies.length;
 
     }
 
@@ -329,22 +387,26 @@ export default async (req) => {
       success:
         true,
 
-      page,
+      startPage,
 
-      category:
-        requestedCategory,
+      pagesProcessed:
+        pages,
+
+      nextPage:
+        startPage + pages,
+
+      processedPages,
 
       discovered:
-        movieUrls.length,
+        allMovieUrls.length,
 
       imported:
-        movies.length,
+        uniqueMovies.length,
 
       saved,
 
-      failed,
-
-      movies
+      movies:
+        uniqueMovies
 
     });
 
@@ -395,11 +457,9 @@ function extractMeta(
     html.match(regex);
 
   if (match) {
-
     return decodeHtml(
       match[1]
     );
-
   }
 
   const reverseRegex =
@@ -412,9 +472,10 @@ function extractMeta(
     html.match(reverseRegex);
 
   return reverseMatch
-    ? decodeHtml(reverseMatch[1])
+    ? decodeHtml(
+        reverseMatch[1]
+      )
     : null;
-
 }
 
 
@@ -432,9 +493,10 @@ function extractTitleTag(
     );
 
   return match
-    ? decodeHtml(match[1])
+    ? decodeHtml(
+        match[1]
+      )
     : null;
-
 }
 
 
@@ -485,7 +547,6 @@ function extractMovieSummary(
   }
 
   return null;
-
 }
 
 
@@ -573,7 +634,6 @@ function extractCategory(
   }
 
   return "Other";
-
 }
 
 
@@ -604,7 +664,7 @@ function extractWatchUrl(
       hrefRegex.exec(html)) !== null
   ) {
 
-    let href =
+    const href =
       decodeHtml(
         match[1]
       );
@@ -623,7 +683,9 @@ function extractWatchUrl(
     const allowed =
       allowedHosts.some(
         host =>
-          lower.includes(host)
+          lower.includes(
+            host
+          )
       );
 
     if (!allowed) {
@@ -635,7 +697,6 @@ function extractWatchUrl(
   }
 
   return null;
-
 }
 
 
@@ -661,56 +722,39 @@ function normalizeCategory(
 
   if (
     lower.includes("action")
-  ) {
-    return "Action";
-  }
+  ) return "Action";
 
   if (
     lower.includes("drama")
-  ) {
-    return "Drama";
-  }
+  ) return "Drama";
 
   if (
     lower.includes("horror")
-  ) {
-    return "Horror";
-  }
+  ) return "Horror";
 
   if (
     lower.includes("indian")
-  ) {
-    return "Indian";
-  }
+  ) return "Indian";
 
   if (
     lower.includes("cartoon")
-  ) {
-    return "Cartoon";
-  }
+  ) return "Cartoon";
 
   if (
     lower.includes("romance")
-  ) {
-    return "Romance";
-  }
+  ) return "Romance";
 
   if (
     lower.includes("scifi") ||
     lower.includes("sci-fi") ||
     lower.includes("sci fi")
-  ) {
-    return "Scifi";
-  }
+  ) return "Scifi";
 
   if (
     lower.includes("other")
-  ) {
-    return "Others";
-  }
+  ) return "Others";
 
   return null;
-
 }
 
 
@@ -739,7 +783,9 @@ function stripHtml(
   value
 ) {
 
-  return String(value || "")
+  return String(
+    value || ""
+  )
 
     .replace(
       /<script[\s\S]*?<\/script>/gi,
@@ -775,7 +821,9 @@ function cleanText(
 ) {
 
   return decodeHtml(
-    String(value || "")
+    String(
+      value || ""
+    )
   )
     .replace(
       /\s+/g,
@@ -794,7 +842,9 @@ function decodeHtml(
   value
 ) {
 
-  return String(value || "")
+  return String(
+    value || ""
+  )
 
     .replace(
       /&amp;/g,
