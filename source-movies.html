@@ -744,7 +744,33 @@ nav a.active{
 
         border-bottom:1px solid rgba(255,255,255,.1);
     }
+.user-menu {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
+.user-icon {
+    margin: 10px auto;
+}
+
+.user-dropdown {
+    position: static;
+    width: 100%;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+    background: #0b0b0b;
+}
+
+.user-dropdown a,
+.user-dropdown button {
+    text-align: center;
+    padding: 15px;
+}
     .watch-hero{
 
         min-height:600px;
@@ -1330,6 +1356,33 @@ playerModal.addEventListener(
 
 renderMovies(vimeoMovies);
 
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const userIcon = document.getElementById("userIcon");
+    const userDropdown = document.getElementById("userDropdown");
+
+    if (!userIcon || !userDropdown) {
+        console.log("User menu elements not found");
+        return;
+    }
+
+    userIcon.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        userDropdown.classList.toggle("show");
+    });
+
+    userDropdown.addEventListener("click", function (event) {
+        event.stopPropagation();
+    });
+
+    document.addEventListener("click", function () {
+        userDropdown.classList.remove("show");
+    });
+
+});
 </script>
 
 </body>
