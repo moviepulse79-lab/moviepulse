@@ -397,127 +397,110 @@ function extractMovieSummary(html) {
 }
 
 
-/* =====================================================
-   CATEGORY
-===================================================== */
-
 function extractCategory(
   html,
   requestedCategory = null
 ) {
 
-  /*
-     If the user requested a category
-     from the catalog, use it.
-
-     This is much safer than scanning
-     the whole page for "Action",
-     "Drama", etc.
-  */
-
+  // If category was requested from the catalog,
+  // use that category directly.
   if (requestedCategory) {
-
     return normalizeCategory(
       requestedCategory
     );
-
   }
 
-
   /*
-     Look for category labels near
-     movie information.
+     OSHAkur puts the movie category near
+     the movie title.
+
+     We look only shortly after the first
+     H1 instead of searching the whole page.
   */
 
-  const patterns = [
+  const h1Match =
+    html.match(
+      /<h1[^>]*>([\s\S]*?)<\/h1>/i
+    );
 
-    /(?:Category|Genre)\s*[:\-]?\s*<\/?[^>]*>\s*([^<]+)/i,
+  if (h1Match) {
 
-    /(?:Category|Genre)\s*[:\-]?\s*([^<\n]+)/i,
+    const h1End =
+      h1Match.index +
+      h1Match[0].length;
 
-    /class=["'][^"']*(?:category|genre)[^"']*["'][^>]*>\s*([^<]+)/i
+    const afterTitle =
+      html.substring(
+        h1End,
+        h1End + 2000
+      );
 
-  ];
-
-
-  for (
-    const pattern of patterns
-  ) {
-
-    const match =
-      html.match(pattern);
-
-
-    if (!match) {
-      continue;
-    }
-
-
-    const value =
+    const visibleText =
       cleanText(
         stripHtml(
-          match[1]
+          afterTitle
         )
       );
 
+    const categories = [
+      "Action",
+      "Drama",
+      "Horror",
+      "Indian",
+      "Cartoon",
+      "Romance",
+      "Scifi",
+      "Sci-Fi",
+      "Others"
+    ];
 
-    const normalized =
-      normalizeCategory(
-        value
-      );
-
-
-    if (normalized) {
-      return normalized;
-    }
-
-  }
-
-
-  /*
-     Final fallback:
-     inspect links around category
-     structures rather than searching
-     the entire page.
-  */
-
-  const knownCategories = [
-    "Action",
-    "Drama",
-    "Horror",
-    "Indian",
-    "Cartoon",
-    "Romance",
-    "Scifi",
-    "Others"
-  ];
-
-
-  for (
-    const category of knownCategories
-  ) {
-
-    const regex =
-      new RegExp(
-        `(?:category|genre)[^<]{0,100}${category}`,
-        "i"
-      );
-
-
-    if (
-      regex.test(html)
+    for (
+      const category of categories
     ) {
 
-      return category;
+      const regex =
+        new RegExp(
+          `\\b${escapeRegex(category)}\\b`,
+          "i"
+        );
+
+      if (
+        regex.test(
+          visibleText
+        )
+      ) {
+
+        return normalizeCategory(
+          category
+        );
+
+      }
 
     }
 
   }
 
-
+  // If no category can be detected,
+  // don't incorrectly label it Action.
   return "Other";
 }
 
+
+/* =====================================================
+   ESCAPE REGEX
+===================================================== */
+
+function escapeRegex(
+  value
+) {
+
+  return String(value)
+    .replace(
+      /[.*+?^${}()|[\]\\]/g,
+      "\\$&"
+    );
+
+}
 
 /* =====================================================
    WATCH URL
