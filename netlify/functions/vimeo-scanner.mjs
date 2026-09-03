@@ -1,14 +1,18 @@
-```js
-const SCANNER_VERSION = "10.1-stable";
+const VERSION = "10.1-stable";
 
 const SEARCHES = [
   "full movie",
   "full film",
   "feature film",
   "full feature film",
+  "independent feature film",
   "free movie",
   "free film",
-  "full documentary"
+  "free feature film",
+  "watch full movie",
+  "watch full film",
+  "full documentary",
+  "feature documentary"
 ];
 
 const MIN_DURATION = 40 * 60;
@@ -17,87 +21,153 @@ const MAX_DURATION = 5 * 60 * 60;
 const BLOCKED = [
   "trailer",
   "teaser",
-  "clip",
+  "movie clip",
+  "film clip",
+  "scene from",
+  "deleted scene",
+  "behind the scenes",
+  "behind-the-scenes",
   "interview",
   "preview",
   "promo",
-  "behind the scenes",
+  "promotional",
   "making of",
+  "making-of",
+  "showreel",
+  "sizzle reel",
+  "highlight reel",
   "music video",
+  "concert",
+  "podcast",
+  "web series",
   "commercial",
-  "showreel"
+  "advertisement"
 ];
 
-const FREE = [
+const BLOCKED_CATEGORIES = [
+  "Sports",
+  "Music",
+  "Gaming"
+];
+
+const MOVIE_SIGNALS = [
+  "full movie",
+  "full film",
+  "feature film",
+  "feature movie",
+  "full feature",
+  "full-length",
+  "full length",
+  "complete film",
+  "complete movie",
+  "feature documentary",
+  "full documentary",
+  "documentary film",
+  "independent film",
+  "independent feature"
+];
+
+const FREE_SIGNALS = [
   "free to watch",
   "free to view",
   "watch for free",
   "watch it free",
+  "watch this for free",
   "full movie free",
   "full film free",
   "feature film free",
-  "free online",
   "available for free",
   "available to watch for free",
+  "available free online",
+  "free online",
+  "completely free",
+  "entire movie free",
+  "entire film free",
   "movie is free",
   "film is free",
   "this movie is free",
   "this film is free",
+  "the movie is free",
+  "the film is free",
   "free because",
+  "free of charge",
+  "no charge to watch",
+  "watch at no cost",
   "free on vimeo",
-  "watch free on vimeo",
-  "made available for free",
+  "free to watch on vimeo",
+  "available free on vimeo",
+  "available on vimeo for free",
   "share this for free",
-  "available on vimeo for free"
+  "sharing this for free",
+  "made available for free",
+  "made available to watch for free",
+  "now available for free",
+  "now available to watch for free"
 ];
 
-const LICENSE = [
+const LICENSE_SIGNALS = [
   "creative commons",
   "creativecommons",
+  "public domain",
+  "public-domain",
   "cc by",
   "cc-by",
   "cc by-sa",
   "cc-by-sa",
-  "cc by-nc",
-  "cc-by-nc",
   "cc by-nd",
   "cc-by-nd",
-  "public domain",
+  "cc by-nc",
+  "cc-by-nc",
+  "cc by-nc-nd",
+  "cc-by-nc-nd",
   "licensed under",
   "released under",
+  "released with permission",
   "with permission",
   "permission to share",
-  "permission to distribute"
+  "permission to distribute",
+  "permission granted",
+  "licensed for distribution",
+  "licensed for online viewing"
 ];
 
-const OWNERSHIP = [
+const OWNERSHIP_SIGNALS = [
   "produced by",
   "directed by",
   "written by",
+  "written and directed by",
+  "written & directed by",
   "created by",
   "our film",
-  "our movie",
+  "our feature",
   "our documentary",
+  "our movie",
   "my film",
-  "my movie",
+  "my feature",
   "my documentary",
+  "my movie",
+  "official film",
+  "official feature",
+  "official documentary",
   "filmmaker",
   "filmmakers",
   "independent filmmaker",
-  "independent filmmakers"
+  "independent filmmakers",
+  "production company"
 ];
 
-const COPYRIGHT = [
+const COPYRIGHT_RISK = [
   "netflix",
   "disney+",
+  "disney",
   "warner bros",
   "warner brothers",
   "universal pictures",
   "paramount pictures",
   "sony pictures",
   "lionsgate",
-  "20th century fox",
   "20th century studios",
+  "20th century fox",
   "hbo",
   "amazon studios",
   "prime video",
@@ -108,39 +178,47 @@ const COPYRIGHT = [
   "miramax",
   "new line cinema",
   "columbia pictures",
-  "dreamworks"
+  "dreamworks",
+  "hallmark",
+  "hulu"
 ];
 
-export default async () => {
+export default async function handler() {
+
+  const token = process.env.VIMEO_ACCESS_TOKEN;
+
+  if (!token) {
+    return response(500, {
+      success: false,
+      scannerVersion: VERSION,
+      error: "VIMEO_ACCESS_TOKEN is missing"
+    });
+  }
+
+  const approved = [];
+  const review = [];
+  const seen = new Set();
+
+  const stats = {
+    searches: 0,
+    searchResults: 0,
+    duplicates: 0,
+    tooShort: 0,
+    tooLong: 0,
+    blockedWords: 0,
+    blockedCategories: 0,
+    notMovie: 0,
+    noPoster: 0,
+    noVimeoLink: 0,
+    copyrightRisk: 0,
+    approved: 0,
+    review: 0,
+    rejected: 0,
+    rateLimited: 0,
+    errors: 0
+  };
 
   try {
-
-    const token = process.env.VIMEO_ACCESS_TOKEN;
-
-    if (!token) {
-      return response({
-        success: false,
-        error: "VIMEO_ACCESS_TOKEN is missing"
-      }, 500);
-    }
-
-    const movies = [];
-    const reviewMovies = [];
-    const seen = new Set();
-
-    const stats = {
-      searches: 0,
-      searchResults: 0,
-      duplicates: 0,
-      tooShort: 0,
-      tooLong: 0,
-      blocked: 0,
-      noPoster: 0,
-      approved: 0,
-      review: 0,
-      rejected: 0,
-      rateLimited: 0
-    };
 
     for (const search of SEARCHES) {
 
@@ -152,44 +230,78 @@ export default async () => {
         "&per_page=25" +
         "&sort=relevant";
 
-      const result = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/vnd.vimeo.*+json;version=3.4"
-        }
-      });
+      let result;
 
-      if (result.status === 429) {
+      try {
+
+        result = await requestVimeo(
+          url,
+          token
+        );
+
+      } catch (err) {
+
+        console.log(
+          "Vimeo request failed:",
+          search,
+          err.message
+        );
+
+        stats.errors++;
+
+        continue;
+      }
+
+      if (result.rateLimited) {
+
         stats.rateLimited++;
+
+        await sleep(5000);
+
         continue;
       }
 
       if (!result.ok) {
+
         console.log(
-          "Vimeo error:",
+          "Vimeo API error:",
           search,
           result.status
         );
+
+        stats.errors++;
+
         continue;
       }
 
-      const data = await result.json();
+      const videos =
+        Array.isArray(result.data?.data)
+          ? result.data.data
+          : [];
 
-      for (const video of data.data || []) {
+      for (const video of videos) {
 
         stats.searchResults++;
 
-        const id =
-          video.uri?.split("/").pop();
+        const uri =
+          typeof video.uri === "string"
+            ? video.uri
+            : "";
 
-        if (!id) continue;
+        const videoId =
+          uri.split("/").pop();
 
-        if (seen.has(id)) {
+        if (!videoId) {
+          stats.rejected++;
+          continue;
+        }
+
+        if (seen.has(videoId)) {
           stats.duplicates++;
           continue;
         }
 
-        seen.add(id);
+        seen.add(videoId);
 
         const title =
           String(video.name || "").trim();
@@ -198,10 +310,18 @@ export default async () => {
           String(video.description || "").trim();
 
         const text =
-          `${title} ${description}`.toLowerCase();
+          (
+            title +
+            " " +
+            description
+          ).toLowerCase();
 
         const duration =
           Number(video.duration || 0);
+
+        /* =========================
+           DURATION
+        ========================= */
 
         if (duration < MIN_DURATION) {
           stats.tooShort++;
@@ -215,23 +335,74 @@ export default async () => {
           continue;
         }
 
-        if (
-          BLOCKED.some(word =>
-            text.includes(word)
-          )
-        ) {
-          stats.blocked++;
+        /* =========================
+           BLOCK OBVIOUS NON-MOVIES
+        ========================= */
+
+        const blockedMatch =
+          BLOCKED.find(word =>
+            hasPhrase(text, word)
+          );
+
+        if (blockedMatch) {
+          stats.blockedWords++;
           stats.rejected++;
           continue;
         }
 
-        const pictures =
-          video.pictures?.sizes || [];
+        /* =========================
+           CATEGORIES
+        ========================= */
 
-        const poster =
-          pictures.length
-            ? pictures[pictures.length - 1]?.link
-            : "";
+        const categories =
+          Array.isArray(video.categories)
+            ? video.categories
+                .map(category =>
+                  String(
+                    category?.name || ""
+                  ).trim()
+                )
+                .filter(Boolean)
+            : [];
+
+        const blockedCategory =
+          categories.find(category =>
+            BLOCKED_CATEGORIES.some(
+              blocked =>
+                category.toLowerCase() ===
+                blocked.toLowerCase()
+            )
+          );
+
+        if (blockedCategory) {
+          stats.blockedCategories++;
+          stats.rejected++;
+          continue;
+        }
+
+        /* =========================
+           POSTER
+        ========================= */
+
+        let poster = "";
+
+        const pictures =
+          Array.isArray(video.pictures?.sizes)
+            ? video.pictures.sizes
+            : [];
+
+        if (pictures.length > 0) {
+
+          const sorted =
+            [...pictures].sort(
+              (a, b) =>
+                Number(b.width || 0) -
+                Number(a.width || 0)
+            );
+
+          poster =
+            sorted[0]?.link || "";
+        }
 
         if (!poster) {
           stats.noPoster++;
@@ -239,193 +410,520 @@ export default async () => {
           continue;
         }
 
-        const movieSignal =
-          /full movie|full film|feature film|full feature|full-length|full length|complete film|complete movie|documentary/i
-            .test(text);
+        /* =========================
+           VIMEO URL
+        ========================= */
 
-        if (!movieSignal) {
+        const vimeoUrl =
+          typeof video.link === "string"
+            ? video.link
+            : "";
+
+        if (!vimeoUrl) {
+          stats.noVimeoLink++;
           stats.rejected++;
           continue;
         }
 
+        /* =========================
+           MOVIE DETECTION
+        ========================= */
+
+        const movieMatches =
+          findMatches(
+            text,
+            MOVIE_SIGNALS
+          );
+
+        const hasMovieSignal =
+          movieMatches.length > 0 ||
+          categories.some(category =>
+            /film|movie|documentary/i.test(
+              category
+            )
+          );
+
+        if (!hasMovieSignal) {
+          stats.notMovie++;
+          stats.rejected++;
+          continue;
+        }
+
+        /* =========================
+           RIGHTS DETECTION
+        ========================= */
+
         const freeMatches =
-          FREE.filter(x =>
-            text.includes(x)
+          findMatches(
+            text,
+            FREE_SIGNALS
           );
 
         const licenseMatches =
-          LICENSE.filter(x =>
-            text.includes(x)
+          findMatches(
+            text,
+            LICENSE_SIGNALS
           );
 
         const ownershipMatches =
-          OWNERSHIP.filter(x =>
-            text.includes(x)
+          findMatches(
+            text,
+            OWNERSHIP_SIGNALS
           );
 
         const copyrightMatches =
-          COPYRIGHT.filter(x =>
-            text.includes(x)
+          findMatches(
+            text,
+            COPYRIGHT_RISK
           );
+
+        if (copyrightMatches.length) {
+          stats.copyrightRisk++;
+        }
+
+        /* =========================
+           SCORE
+        ========================= */
 
         let score = 0;
 
-        if (freeMatches.length) {
-          score += 6;
-        }
-
-        if (licenseMatches.length) {
-          score += 7;
-        }
-
-        if (ownershipMatches.length) {
-          score += 2;
+        if (movieMatches.length) {
+          score += 3;
         }
 
         if (duration >= 60 * 60) {
           score += 1;
         }
 
+        if (freeMatches.length >= 1) {
+          score += 6;
+        }
+
+        if (freeMatches.length >= 2) {
+          score += 2;
+        }
+
+        if (licenseMatches.length >= 1) {
+          score += 7;
+        }
+
+        if (licenseMatches.length >= 2) {
+          score += 2;
+        }
+
+        if (ownershipMatches.length >= 1) {
+          score += 2;
+        }
+
+        if (ownershipMatches.length >= 2) {
+          score += 1;
+        }
+
+        if (
+          licenseMatches.some(match =>
+            /creative commons|public domain|cc by/i.test(
+              match
+            )
+          )
+        ) {
+          score += 3;
+        }
+
         if (copyrightMatches.length) {
           score -= 10;
         }
 
-        const hasFree =
-          freeMatches.length > 0;
-
-        const hasLicense =
-          licenseMatches.length > 0;
-
-        const hasOwnership =
-          ownershipMatches.length > 0;
+        /* =========================
+           STATUS
+        ========================= */
 
         let rightsStatus = "REVIEW";
+
+        const freeEvidence =
+          freeMatches.length > 0;
+
+        const licenseEvidence =
+          licenseMatches.length > 0;
+
+        const ownershipEvidence =
+          ownershipMatches.length > 0;
+
+        /*
+         * APPROVED:
+         *
+         * Explicit license
+         *
+         * OR
+         *
+         * Explicitly free + ownership
+         *
+         * OR
+         *
+         * Explicitly free with
+         * strong movie evidence.
+         */
 
         if (
           copyrightMatches.length === 0 &&
           (
-            hasLicense ||
-            (hasFree && hasOwnership) ||
-            (hasFree && score >= 7)
+            licenseEvidence ||
+            (
+              freeEvidence &&
+              ownershipEvidence
+            ) ||
+            (
+              freeEvidence &&
+              score >= 9
+            )
           )
         ) {
           rightsStatus = "APPROVED";
         }
 
-        const movie = {
-          id: `vimeo-${id}`,
-          title,
-          year: video.release_time
-            ? new Date(video.release_time).getFullYear()
-            : null,
-          duration,
-          durationText: formatDuration(duration),
-          poster,
-          description,
-          vimeoId: id,
-          vimeoUrl: video.link,
-          playerUrl:
-            `https://player.vimeo.com/video/${id}`,
-          categories:
-            (video.categories || [])
-              .map(x => x.name)
-              .filter(Boolean),
-          source: "Vimeo",
-          rightsStatus,
-          rightsScore: score,
-          embedStatus: "NOT_TESTED",
-          rightsEvidence: {
-            free: freeMatches,
-            license: licenseMatches,
-            ownership: ownershipMatches,
-            copyrightRisk: copyrightMatches
+        /*
+         * Never automatically approve
+         * known commercial companies.
+         */
+
+        if (copyrightMatches.length > 0) {
+          rightsStatus = "REVIEW";
+        }
+
+        /* =========================
+           YEAR
+        ========================= */
+
+        let year = null;
+
+        if (video.release_time) {
+
+          const date =
+            new Date(
+              video.release_time
+            );
+
+          if (!Number.isNaN(date.getTime())) {
+            year = date.getFullYear();
           }
+        }
+
+        /* =========================
+           MOVIE OBJECT
+        ========================= */
+
+        const movie = {
+
+          id: "vimeo-" + videoId,
+
+          title,
+
+          year,
+
+          duration,
+
+          durationText:
+            formatDuration(duration),
+
+          poster,
+
+          description,
+
+          vimeoId:
+            videoId,
+
+          vimeoUrl,
+
+          playerUrl:
+            "https://player.vimeo.com/video/" +
+            videoId,
+
+          categories,
+
+          source: "Vimeo",
+
+          rightsStatus,
+
+          rightsScore: score,
+
+          embedStatus:
+            "NOT_TESTED",
+
+          rightsEvidence: {
+
+            free:
+              freeMatches,
+
+            license:
+              licenseMatches,
+
+            ownership:
+              ownershipMatches,
+
+            copyrightRisk:
+              copyrightMatches
+
+          }
+
         };
 
-        if (rightsStatus === "APPROVED") {
-          movies.push(movie);
+        if (
+          rightsStatus === "APPROVED"
+        ) {
+
+          approved.push(movie);
+
           stats.approved++;
+
         } else {
-          reviewMovies.push(movie);
+
+          review.push(movie);
+
           stats.review++;
+
         }
 
       }
 
-      // Small delay between searches
-      await sleep(1200);
+      /*
+       * Protect Vimeo API rate limit.
+       */
+
+      await sleep(1800);
     }
 
-    movies.sort((a, b) =>
-      b.rightsScore - a.rightsScore
+    approved.sort(
+      (a, b) =>
+        b.rightsScore -
+        a.rightsScore
     );
 
-    reviewMovies.sort((a, b) =>
-      b.rightsScore - a.rightsScore
+    review.sort(
+      (a, b) =>
+        b.rightsScore -
+        a.rightsScore
     );
 
-    return response({
+    return response(200, {
+
       success: true,
-      scannerVersion: SCANNER_VERSION,
-      count: movies.length,
-      movies,
-      reviewCount: reviewMovies.length,
-      reviewMovies,
+
+      scannerVersion:
+        VERSION,
+
+      count:
+        approved.length,
+
+      movies:
+        approved,
+
+      reviewCount:
+        review.length,
+
+      reviewMovies:
+        review,
+
       stats
+
     });
 
   } catch (error) {
 
     console.error(
-      "Vimeo scanner crashed:",
+      "SCANNER CRASH:",
       error
     );
 
-    return response({
-      success: false,
-      scannerVersion: SCANNER_VERSION,
-      error: error?.message || String(error)
-    }, 500);
+    return response(500, {
 
+      success: false,
+
+      scannerVersion:
+        VERSION,
+
+      error:
+        error?.message ||
+        String(error)
+
+    });
+  }
+}
+
+
+/* =========================
+   VIMEO REQUEST
+========================= */
+
+async function requestVimeo(
+  url,
+  token
+) {
+
+  const res =
+    await fetch(url, {
+
+      method: "GET",
+
+      headers: {
+        Authorization:
+          "Bearer " + token,
+
+        Accept:
+          "application/vnd.vimeo.*+json;version=3.4"
+      }
+
+    });
+
+  if (res.status === 429) {
+
+    return {
+      ok: false,
+      rateLimited: true,
+      status: 429,
+      data: null
+    };
   }
 
-};
+  let data = null;
 
-function sleep(ms) {
-  return new Promise(resolve =>
-    setTimeout(resolve, ms)
+  try {
+    data = await res.json();
+  } catch {
+    data = null;
+  }
+
+  return {
+    ok: res.ok,
+    rateLimited: false,
+    status: res.status,
+    data
+  };
+}
+
+
+/* =========================
+   PHRASE MATCHING
+========================= */
+
+function hasPhrase(
+  text,
+  phrase
+) {
+
+  const escaped =
+    phrase
+      .replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&"
+      )
+      .replace(
+        /\s+/g,
+        "\\s+"
+      );
+
+  const regex =
+    new RegExp(
+      "(^|[^a-z0-9+])" +
+      escaped +
+      "([^a-z0-9+]|$)",
+      "i"
+    );
+
+  return regex.test(text);
+}
+
+
+function findMatches(
+  text,
+  list
+) {
+
+  return list.filter(
+    phrase =>
+      hasPhrase(
+        text,
+        phrase
+      )
   );
 }
 
-function formatDuration(seconds) {
+
+/* =========================
+   DURATION
+========================= */
+
+function formatDuration(
+  seconds
+) {
 
   const minutes =
-    Math.floor(seconds / 60);
+    Math.floor(
+      seconds / 60
+    );
 
   const hours =
-    Math.floor(minutes / 60);
+    Math.floor(
+      minutes / 60
+    );
 
   const remaining =
     minutes % 60;
 
   if (hours > 0) {
-    return `${hours}h ${remaining}min`;
+    return (
+      hours +
+      "h " +
+      remaining +
+      "min"
+    );
   }
 
-  return `${minutes}min`;
+  return remaining + "min";
 }
 
-function response(data, status = 200) {
 
-  return new Response(
-    JSON.stringify(data, null, 2),
-    {
-      status,
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=3600"
-      }
-    }
+/* =========================
+   DELAY
+========================= */
+
+function sleep(ms) {
+
+  return new Promise(
+    resolve =>
+      setTimeout(
+        resolve,
+        ms
+      )
   );
 }
-```
+
+
+/* =========================
+   NETLIFY RESPONSE
+========================= */
+
+function response(
+  status,
+  data
+) {
+
+  return {
+
+    statusCode: status,
+
+    headers: {
+      "Content-Type":
+        "application/json",
+
+      "Cache-Control":
+        "public, max-age=3600"
+    },
+
+    body:
+      JSON.stringify(
+        data,
+        null,
+        2
+      )
+
+  };
+}
