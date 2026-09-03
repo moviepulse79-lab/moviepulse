@@ -826,24 +826,25 @@ nav a.active{
 
     <div class="menu-btn">☰</div>
 
-    <nav>
+ <nav>
+    <a href="index.html" class="active">Home</a>
+    <a href="poster.html">Movies</a>
+    <a href="source-movies.html">Free Movies</a>
+    <a href="shorts.html">Shorts</a>
+    <a href="favorite.html">Favorites</a>
+    <a href="about.html">About</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="contact.html">Contact</a>
 
-        <a href="index.html">Home</a>
-
-        <a href="poster.html">Movies</a>
-
-        <a href="shorts.html">Shorts</a>
-
-        <a href="favorite.html">Favorites</a>
-        <a href="source-movies.html" class="active">Free Movies</a>
-
-        <a href="about.html">About</a>
-
-        <a href="privacy.html">Privacy Policy</a>
-
-        <a href="contact.html">Contact</a>
-
-    </nav>
+    <div class="user-menu">
+        <button id="userIcon" class="user-icon" aria-label="Account">👤</button>
+        <div id="userDropdown" class="user-dropdown">
+            <a href="auth.html" id="loginLink">Sign In</a>
+            <a href="auth.html" id="signupLink">Create Account</a>
+            <button id="logoutLink" style="display:none;">Logout</button>
+        </div>
+    </div>
+</nav>
 
 </header>
 
