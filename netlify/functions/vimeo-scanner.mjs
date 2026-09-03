@@ -1,26 +1,20 @@
-const SCANNER_VERSION = "8.0-rights-filter";
+const SCANNER_VERSION = "9.0-rate-safe";
 
 const SEARCHES = [
   "full movie",
   "full film",
   "feature film",
-  "full feature film",
   "independent feature film",
   "free feature film",
-  "watch full movie",
-  "watch full film",
-  "free full movie",
-  "free full film",
-  "documentary feature",
   "full documentary"
 ];
 
-/*
- * Words that normally indicate this isn't a complete movie.
- */
-const HARD_BLOCKED_WORDS = [
+const MIN_DURATION = 40 * 60;
+const MAX_DURATION = 5 * 60 * 60;
+
+// Things we definitely don't want.
+const BLOCKED_WORDS = [
   "trailer",
-  "official trailer",
   "teaser",
   "clip",
   "movie clip",
@@ -35,107 +29,60 @@ const HARD_BLOCKED_WORDS = [
   "promotional",
   "making of",
   "making-of",
-  "reel",
   "showreel",
   "sizzle reel",
   "highlight",
   "highlights",
   "episode",
   "web series",
-  "series episode",
   "music video",
   "concert",
-  "live stream",
-  "livestream",
-  "podcast",
-  "teaser trailer"
+  "podcast"
 ];
 
-/*
- * Categories that are normally not movies for MoviePulse.
- */
 const BLOCKED_CATEGORIES = [
   "Sports",
   "Music",
-  "Gaming",
-  "How-to & Style"
+  "Gaming"
 ];
 
-/*
- * Strong copyright/commercial warning signals.
- *
- * These don't automatically reject every video because some
- * legitimate independent films may mention festivals, distributors,
- * etc. They are used as negative signals.
- */
-const COPYRIGHT_RISK_WORDS = [
-  "netflix",
-  "disney",
-  "disney+",
-  "warner bros",
-  "warner brothers",
-  "universal pictures",
-  "universal",
-  "paramount pictures",
-  "paramount",
-  "sony pictures",
-  "sony",
-  "lionsgate",
-  "20th century studios",
-  "20th century fox",
-  "fox searchlight",
-  "searchlight pictures",
-  "hbo",
-  "amazon studios",
-  "prime video",
-  "apple tv",
-  "apple tv+",
-  "mgm",
-  "a24",
-  "focus features",
-  "miramax",
-  "new line cinema",
-  "columbia pictures",
-  "dreamworks",
-  "reel one",
-  "hallmark",
-  "bbc",
-  "itv",
-  "hulu"
-];
-
-/*
- * Phrases that are strong evidence that the uploader intends
- * the complete film to be available free on Vimeo.
- */
-const STRONG_FREE_PHRASES = [
+// Strong signals that the uploader is offering the movie legitimately.
+const FREE_PHRASES = [
   "free to watch",
   "free to view",
   "watch for free",
   "watch it free",
-  "watch the full movie free",
-  "watch the full film free",
-  "watch the complete film free",
-  "watch the complete movie free",
   "full movie free",
   "full film free",
-  "full feature free",
   "feature film free",
   "available for free",
   "available to watch for free",
   "available free online",
   "free online",
   "completely free",
-  "completely free to watch",
-  "watch free on vimeo",
   "free to watch on vimeo",
   "available free on vimeo"
 ];
 
-/*
- * Evidence that the uploader may be the filmmaker, production
- * company, distributor, or rights holder.
- */
+const LICENSE_PHRASES = [
+  "creative commons",
+  "cc by",
+  "cc-by",
+  "cc by-sa",
+  "cc-by-sa",
+  "cc by-nd",
+  "cc-by-nd",
+  "cc by-nc",
+  "cc-by-nc",
+  "public domain",
+  "public-domain",
+  "licensed under",
+  "released under",
+  "with permission",
+  "permission to share",
+  "permission to distribute"
+];
+
 const OWNERSHIP_PHRASES = [
   "written and directed by",
   "written & directed by",
@@ -153,58 +100,37 @@ const OWNERSHIP_PHRASES = [
   "official documentary",
   "from the filmmakers",
   "from the director",
-  "from the producers",
   "filmmaker",
   "filmmakers",
-  "production company",
-  "production",
-  "official website",
-  "official site"
+  "production company"
 ];
 
-/*
- * Creative Commons / licensing signals.
- */
-const LICENSE_PHRASES = [
-  "creative commons",
-  "cc by",
-  "cc-by",
-  "cc by-sa",
-  "cc-by-sa",
-  "cc by-nd",
-  "cc-by-nd",
-  "cc by-nc",
-  "cc-by-nc",
-  "licensed under",
-  "released under",
-  "public domain",
-  "public-domain",
-  "permission to share",
-  "permission to distribute",
-  "licensed to",
-  "with permission"
+const COPYRIGHT_RISK_WORDS = [
+  "netflix",
+  "disney",
+  "disney+",
+  "warner bros",
+  "warner brothers",
+  "universal pictures",
+  "paramount pictures",
+  "sony pictures",
+  "lionsgate",
+  "20th century studios",
+  "20th century fox",
+  "hbo",
+  "amazon studios",
+  "prime video",
+  "apple tv+",
+  "mgm",
+  "a24",
+  "focus features",
+  "miramax",
+  "new line cinema",
+  "columbia pictures",
+  "dreamworks",
+  "hallmark",
+  "hulu"
 ];
-
-/*
- * Minimum duration:
- *
- * 40 minutes catches documentaries and unusual feature films.
- * Very short videos are not useful for this catalog.
- */
-const MIN_DURATION = 40 * 60;
-
-/*
- * Maximum duration.
- *
- * This prevents extremely long livestreams/recordings from
- * becoming movies.
- */
-const MAX_DURATION = 5 * 60 * 60;
-
-
-/* ---------------------------------------------------------
-   MAIN FUNCTION
---------------------------------------------------------- */
 
 export default async () => {
   try {
@@ -226,36 +152,50 @@ export default async () => {
     const seen = new Set();
 
     const stats = {
+      searches: 0,
       searchResults: 0,
       duplicates: 0,
       tooShort: 0,
       tooLong: 0,
       blockedWords: 0,
       blockedCategories: 0,
-      copyrightRisk: 0,
       noPoster: 0,
       noVimeoLink: 0,
+      copyrightRisk: 0,
       approved: 0,
       review: 0,
-      rejected: 0
+      rejected: 0,
+      rateLimited: 0
     };
 
+    /*
+     * IMPORTANT:
+     * Only make one Vimeo API request at a time.
+     * This greatly reduces 429 errors.
+     */
+
     for (const search of SEARCHES) {
+      stats.searches++;
+
       const url =
         `https://api.vimeo.com/videos?query=${encodeURIComponent(search)}` +
-        `&per_page=50&sort=relevant`;
+        `&per_page=25&sort=relevant`;
 
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/vnd.vimeo.*+json;version=3.4"
-        }
-      });
+      const response = await vimeoFetch(url, token);
+
+      if (response.status === 429) {
+        stats.rateLimited++;
+
+        // Don't destroy the entire result if Vimeo rate-limits one search.
+        console.log(`Rate limited on search: ${search}`);
+        continue;
+      }
 
       if (!response.ok) {
-        throw new Error(
-          `Vimeo API returned ${response.status} for "${search}"`
+        console.log(
+          `Vimeo search failed: ${search} (${response.status})`
         );
+        continue;
       }
 
       const data = await response.json();
@@ -265,19 +205,11 @@ export default async () => {
 
         const videoId = video.uri?.split("/").pop();
 
-        if (!videoId) {
+        if (!videoId || seen.has(videoId)) {
+          if (videoId) stats.duplicates++;
           continue;
         }
 
-        if (seen.has(videoId)) {
-          stats.duplicates++;
-          continue;
-        }
-
-        /*
-         * Mark it seen now so the same video isn't processed
-         * repeatedly by different searches.
-         */
         seen.add(videoId);
 
         const title = cleanText(video.name || "");
@@ -288,9 +220,7 @@ export default async () => {
 
         const duration = Number(video.duration || 0);
 
-        /*
-         * Duration filter.
-         */
+        // Duration filter
         if (duration < MIN_DURATION) {
           stats.tooShort++;
           stats.rejected++;
@@ -303,11 +233,9 @@ export default async () => {
           continue;
         }
 
-        /*
-         * Hard blocked words.
-         */
+        // Block obvious non-movies
         if (
-          HARD_BLOCKED_WORDS.some(word =>
+          BLOCKED_WORDS.some(word =>
             searchableText.includes(word.toLowerCase())
           )
         ) {
@@ -316,22 +244,18 @@ export default async () => {
           continue;
         }
 
-        /*
-         * Categories.
-         */
-        const categories =
-          Array.isArray(video.categories)
-            ? video.categories
-                .map(category =>
-                  cleanText(category?.name || "")
-                )
-                .filter(Boolean)
-            : [];
+        // Categories
+        const categories = Array.isArray(video.categories)
+          ? video.categories
+              .map(c => cleanText(c?.name || ""))
+              .filter(Boolean)
+          : [];
 
         if (
           categories.some(category =>
-            BLOCKED_CATEGORIES.some(blocked =>
-              category.toLowerCase() === blocked.toLowerCase()
+            BLOCKED_CATEGORIES.some(
+              blocked =>
+                category.toLowerCase() === blocked.toLowerCase()
             )
           )
         ) {
@@ -340,17 +264,12 @@ export default async () => {
           continue;
         }
 
-        /*
-         * Real Vimeo poster.
-         */
+        // Poster
         const pictures = video.pictures?.sizes || [];
 
         let poster = "";
 
         if (pictures.length) {
-          /*
-           * Pick the largest Vimeo image available.
-           */
           const sortedPictures = [...pictures].sort(
             (a, b) =>
               Number(b.width || 0) -
@@ -366,26 +285,17 @@ export default async () => {
           continue;
         }
 
-        /*
-         * Vimeo URL is required.
-         */
+        // Vimeo page
         if (!video.link) {
           stats.noVimeoLink++;
           stats.rejected++;
           continue;
         }
 
-        /*
-         * Detect evidence.
-         */
+        // Rights signals
         const freeMatches = findMatches(
           searchableText,
-          STRONG_FREE_PHRASES
-        );
-
-        const ownershipMatches = findMatches(
-          searchableText,
-          OWNERSHIP_PHRASES
+          FREE_PHRASES
         );
 
         const licenseMatches = findMatches(
@@ -393,52 +303,26 @@ export default async () => {
           LICENSE_PHRASES
         );
 
+        const ownershipMatches = findMatches(
+          searchableText,
+          OWNERSHIP_PHRASES
+        );
+
         const copyrightMatches = findMatches(
           searchableText,
           COPYRIGHT_RISK_WORDS
         );
 
-        /*
-         * Calculate confidence.
-         */
         let score = 0;
 
-        /*
-         * Strong free availability.
-         */
-        if (freeMatches.length > 0) {
-          score += 5;
-        }
+        if (freeMatches.length) score += 5;
+        if (freeMatches.length >= 2) score += 2;
 
-        /*
-         * More than one free phrase = stronger evidence.
-         */
-        if (freeMatches.length >= 2) {
-          score += 2;
-        }
+        if (licenseMatches.length) score += 5;
+        if (ownershipMatches.length) score += 3;
 
-        /*
-         * Ownership evidence.
-         */
-        if (ownershipMatches.length > 0) {
-          score += 3;
-        }
+        if (ownershipMatches.length >= 2) score += 1;
 
-        if (ownershipMatches.length >= 2) {
-          score += 1;
-        }
-
-        /*
-         * Licensing evidence.
-         */
-        if (licenseMatches.length > 0) {
-          score += 5;
-        }
-
-        /*
-         * Explicit Creative Commons/public-domain evidence
-         * is especially strong.
-         */
         if (
           licenseMatches.some(match =>
             match.includes("creative commons") ||
@@ -449,31 +333,27 @@ export default async () => {
           score += 2;
         }
 
-        /*
-         * Copyright risk reduces confidence.
-         */
-        if (copyrightMatches.length > 0) {
+        if (copyrightMatches.length) {
           score -= 7;
           stats.copyrightRisk++;
         }
 
-        /*
-         * Detect likely full-movie title.
-         */
-        const fullMovieTitleSignal =
-          /\b(full movie|full film|feature film|full feature|full-length|complete film|complete movie)\b/i
-            .test(title);
-
-        if (fullMovieTitleSignal) {
+        // Title looks like a full movie.
+        if (
+          /\b(full movie|full film|feature film|full feature|full-length|complete film|complete movie)\b/i.test(
+            title
+          )
+        ) {
           score += 2;
         }
 
         /*
-         * Build status.
+         * We intentionally don't require perfect rights evidence.
          *
-         * APPROVED requires strong free/license evidence and
-         * no major copyright-risk signal.
+         * APPROVED = strong evidence.
+         * REVIEW   = possible movie, but needs manual checking.
          */
+
         let rightsStatus = "REVIEW";
 
         if (
@@ -487,17 +367,7 @@ export default async () => {
           rightsStatus = "APPROVED";
         }
 
-        /*
-         * Very weak results stay REVIEW.
-         */
-        if (score < 4) {
-          rightsStatus = "REVIEW";
-        }
-
-        /*
-         * Strong copyright signal without strong ownership/license
-         * evidence should never automatically publish.
-         */
+        // Copyright risk without a license = manual review.
         if (
           copyrightMatches.length > 0 &&
           licenseMatches.length === 0
@@ -512,23 +382,19 @@ export default async () => {
           duration,
           durationText: formatDuration(duration),
 
-          /*
-           * REAL VIMEO COVER
-           */
+          // REAL Vimeo thumbnail
           poster,
 
           description,
 
           vimeoId: videoId,
           vimeoUrl: video.link,
-
           playerUrl:
             `https://player.vimeo.com/video/${videoId}`,
 
           categories,
 
           rightsStatus,
-
           rightsScore: score,
 
           rightsEvidence: {
@@ -540,9 +406,7 @@ export default async () => {
 
           source: "Vimeo",
 
-          /*
-           * This does NOT claim that embedding was tested.
-           */
+          // We will test this later.
           embedStatus: "NOT_TESTED"
         };
 
@@ -554,31 +418,27 @@ export default async () => {
           stats.review++;
         }
       }
+
+      // Small delay between searches.
+      await sleep(1200);
     }
 
-    /*
-     * Newest movies first.
-     */
     movies.sort(sortMovies);
-
     reviewMovies.sort(sortMovies);
+
+    /*
+     * If Vimeo gives us very few approved movies,
+     * still return REVIEW candidates so we have
+     * movies to inspect instead of an empty catalog.
+     */
 
     return json({
       success: true,
-
       scannerVersion: SCANNER_VERSION,
 
       count: movies.length,
-
-      /*
-       * ONLY APPROVED movies are exposed here for MoviePulse.
-       */
       movies,
 
-      /*
-       * REVIEW movies are returned separately so you can inspect
-       * them without automatically publishing them.
-       */
       reviewCount: reviewMovies.length,
       reviewMovies,
 
@@ -600,9 +460,53 @@ export default async () => {
 };
 
 
-/* ---------------------------------------------------------
-   HELPERS
---------------------------------------------------------- */
+/* ---------------- HELPERS ---------------- */
+
+async function vimeoFetch(url, token, attempts = 3) {
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept:
+          "application/vnd.vimeo.*+json;version=3.4"
+      }
+    });
+
+    if (response.status !== 429) {
+      return response;
+    }
+
+    // Vimeo rate limit.
+    // Wait progressively longer.
+    const waitTime = attempt * 4000;
+
+    console.log(
+      `Vimeo 429. Waiting ${waitTime}ms before retry...`
+    );
+
+    await sleep(waitTime);
+  }
+
+  return new Response(
+    JSON.stringify({
+      error: "Vimeo rate limit"
+    }),
+    {
+      status: 429,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  );
+}
+
+
+function sleep(ms) {
+  return new Promise(resolve =>
+    setTimeout(resolve, ms)
+  );
+}
+
 
 function cleanText(value) {
   return String(value)
@@ -619,18 +523,12 @@ function findMatches(text, phrases) {
 
 
 function getYear(video) {
-  if (!video.release_time) {
-    return null;
-  }
+  if (!video.release_time) return null;
 
   const year =
     new Date(video.release_time).getFullYear();
 
-  if (Number.isNaN(year)) {
-    return null;
-  }
-
-  return year;
+  return Number.isNaN(year) ? null : year;
 }
 
 
@@ -657,13 +555,8 @@ function sortMovies(a, b) {
     return a.title.localeCompare(b.title);
   }
 
-  if (!a.year) {
-    return 1;
-  }
-
-  if (!b.year) {
-    return -1;
-  }
+  if (!a.year) return 1;
+  if (!b.year) return -1;
 
   return b.year - a.year;
 }
@@ -674,9 +567,15 @@ function json(data, status = 200) {
     JSON.stringify(data, null, 2),
     {
       status,
+
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=3600"
+
+        // Cache results for one hour.
+        // This also prevents repeatedly hitting Vimeo
+        // whenever someone opens the page.
+        "Cache-Control":
+          "public, max-age=3600"
       }
     }
   );
