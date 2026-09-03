@@ -1122,9 +1122,6 @@ nav a.active{
 
 </footer>
 
-
-<script src="vimeo-movies.js"></script>
-
 <script>
 
 const movieGrid =
@@ -1379,16 +1376,35 @@ document.addEventListener("DOMContentLoaded", function () {
             event.stopPropagation();
         });
 
+    <script src="vimeo-movies.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* USER MENU */
+    const userIcon = document.getElementById("userIcon");
+    const userDropdown = document.getElementById("userDropdown");
+
+    if (userIcon && userDropdown) {
+
+        userIcon.addEventListener("click", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            userDropdown.classList.toggle("show");
+        });
+
+        userDropdown.addEventListener("click", function (event) {
+            event.stopPropagation();
+        });
+
         document.addEventListener("click", function () {
             userDropdown.classList.remove("show");
         });
     }
 
 
-    /* =========================
-       MOBILE MENU
-    ========================= */
-
+    /* MOBILE MENU */
     const menuBtn = document.querySelector(".menu-btn");
     const nav = document.querySelector("header nav");
 
@@ -1399,17 +1415,12 @@ document.addEventListener("DOMContentLoaded", function () {
             nav.classList.toggle("active");
         });
 
-        nav.addEventListener("click", function (event) {
-            event.stopPropagation();
-        });
-
-        document.addEventListener("click", function () {
-            nav.classList.remove("active");
-        });
     }
 
+});
+</script>
+
     <script src="vimeo-movies.js"></script>
-<script src="source-movies.js"></script>
 </body>
 </html>
 
