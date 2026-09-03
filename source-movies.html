@@ -937,7 +937,7 @@ nav a.active{
  <nav>
     <a href="index.html" >Home</a>
     <a href="poster.html">Movies</a>
-    <a href="source-movies.html" class="active>Free Movies</a>
+    <a href="source-movies.html" class="active">Free Movies</a>
     <a href="shorts.html">Shorts</a>
     <a href="favorite.html">Favorites</a>
     <a href="about.html">About</a>
@@ -1124,62 +1124,35 @@ nav a.active{
 
 <script>
 
-const movieGrid =
-    document.getElementById("movieGrid");
+const movieGrid = document.getElementById("movieGrid");
+const searchInput = document.getElementById("movieSearch");
+const emptyState = document.getElementById("emptyState");
+const playerModal = document.getElementById("playerModal");
+const videoContainer = document.getElementById("videoContainer");
+const playerTitle = document.getElementById("playerTitle");
 
-const searchInput =
-    document.getElementById("movieSearch");
-
-const emptyState =
-    document.getElementById("emptyState");
-
-const playerModal =
-    document.getElementById("playerModal");
-
-const videoContainer =
-    document.getElementById("videoContainer");
-
-const playerTitle =
-    document.getElementById("playerTitle");
-
-
-/* =========================
-   RENDER MOVIES
-========================= */
-
-function renderMovies(list){
-
+function renderMovies(list) {
     movieGrid.innerHTML = "";
 
-    if(!list.length){
-
+    if (!list.length) {
         emptyState.style.display = "block";
-
         return;
-
     }
 
     emptyState.style.display = "none";
 
     list.forEach(movie => {
-
-        const card =
-        document.createElement("div");
+        const card = document.createElement("div");
 
         card.className = "movie-card";
 
         card.innerHTML = `
-
             <div class="poster-wrap">
-
-                <img
-                    src="${movie.poster}"
-                    alt="${movie.title}">
+                <img src="${movie.poster}" alt="${movie.title}">
 
                 <span class="source-badge">
                     VIMEO
                 </span>
-
             </div>
 
             <div class="movie-info">
@@ -1187,16 +1160,11 @@ function renderMovies(list){
                 <h3>${movie.title}</h3>
 
                 <div class="movie-meta">
-
                     <span>${movie.year}</span>
-
                     <span>⭐ ${movie.rating}</span>
-
                 </div>
 
-                <p>
-                    ${movie.genre}
-                </p>
+                <p>${movie.genre}</p>
 
                 <a
                     href="#"
@@ -1212,101 +1180,88 @@ function renderMovies(list){
         `;
 
         movieGrid.appendChild(card);
-
     });
-
 }
 
+function openMovie(id) {
 
-/* =========================
-   OPEN MOVIE
-========================= */
+    const movie = vimeoMovies.find(
+        m => m.id === id
+    );
 
-function openMovie(id){
+    if (!movie) return;
 
-    const movie =
-        vimeoMovies.find(
-            m => m.id === id
-        );
-
-    if(!movie) return;
-
-    playerTitle.textContent =
-        movie.title;
+    playerTitle.textContent = movie.title;
 
     videoContainer.innerHTML = `
-
         <iframe
             src="https://player.vimeo.com/video/${movie.vimeoId}?autoplay=1&title=0&byline=0&portrait=0"
             allow="autoplay; fullscreen; picture-in-picture"
             allowfullscreen>
         </iframe>
-
     `;
 
     playerModal.classList.add("active");
 
     document.body.style.overflow = "hidden";
-
 }
 
+function openFeaturedMovie() {
 
-/* =========================
-   FEATURED MOVIE
-========================= */
-
-function openFeaturedMovie(){
-
-    if(vimeoMovies.length){
-
+    if (vimeoMovies.length) {
         openMovie(vimeoMovies[0].id);
-
     }
 
 }
 
-
-/* =========================
-   CLOSE PLAYER
-========================= */
-
-function closePlayer(){
+function closePlayer() {
 
     playerModal.classList.remove("active");
 
     videoContainer.innerHTML = "";
 
     document.body.style.overflow = "";
-
 }
 
+searchInput.addEventListener("input", function () {
 
-/* =========================
-   SEARCH
-========================= */
+    const query = this.value.toLowerCase().trim();
 
-searchInput.addEventListener(
-    "input",
-    function(){
+    const filtered = vimeoMovies.filter(movie =>
+        movie.title.toLowerCase().includes(query)
+    );
 
-        const query =
-            this.value
-            .toLowerCase()
-            .trim();
+    renderMovies(filtered);
+});
 
-        const filtered =
-            vimeoMovies.filter(movie =>
 
-                movie.title
-                    .toLowerCase()
-                    .includes(query)
+    const userIcon = document.getElementById("userIcon");
+const userDropdown = document.getElementById("userDropdown");
 
-            );
+if (userIcon && userDropdown) {
 
-        renderMovies(filtered);
+    userIcon.addEventListener("click", function (e) {
 
-    }
-);
+        e.stopPropagation();
+
+        userDropdown.classList.toggle("active");
+
+    });
+
+    userDropdown.addEventListener("click", function (e) {
+
+        e.stopPropagation();
+
+    });
+
+    document.addEventListener("click", function () {
+
+        userDropdown.classList.remove("active");
+
+    });
+
+}
+</script>
 
 
  <script src="vimeo-movies.js"></script>
