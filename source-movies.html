@@ -803,6 +803,88 @@ nav a.active{
     }
 
 }
+    /* USER MENU */
+
+.user-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.user-icon {
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    font-size: 21px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: 0.3s;
+}
+
+.user-icon:hover {
+    background: #e50914;
+    border-color: #e50914;
+    box-shadow: 0 0 15px rgba(229,9,20,0.5);
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 52px;
+    right: 0;
+
+    width: 180px;
+
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+
+    display: none;
+    z-index: 100000;
+}
+
+.user-dropdown.active {
+    display: block;
+}
+
+.user-dropdown a,
+.user-dropdown button {
+    width: 100%;
+    display: block;
+
+    padding: 13px 16px;
+
+    background: transparent;
+    border: none;
+
+    color: #fff;
+    text-decoration: none;
+
+    text-align: left;
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.user-dropdown a:hover,
+.user-dropdown button:hover {
+    background: #e50914;
+    color: #fff;
+}
 
 </style>
 
