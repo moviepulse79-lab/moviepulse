@@ -7,291 +7,810 @@ export default async (req) => {
       parseInt(url.searchParams.get("page") || "1", 10)
     );
 
-    // Get catalog
-    const catalogUrl =
+    const requestedCategory =
+      url.searchParams.get("category") || null;
+
+    /* =========================
+       OSHAKUR CATALOG
+    ========================= */
+
+    let catalogUrl =
       `https://www.oshakurfilms.com/movies?page=${page}`;
+
+    if (requestedCategory) {
+      catalogUrl +=
+        `&category=${encodeURIComponent(requestedCategory)}`;
+    }
 
     const catalogResponse = await fetch(catalogUrl, {
       headers: {
         "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36"
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+        "Accept":
+          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
       }
     });
 
     if (!catalogResponse.ok) {
       throw new Error(
-        `Catalog returned ${catalogResponse.status}`
+        `OSHAkur catalog returned ${catalogResponse.status}`
       );
     }
 
-    const catalogHtml = await catalogResponse.text();
+    const catalogHtml =
+      await catalogResponse.text();
 
-    // Discover movie URLs
-    const hrefRegex =
-      /href=["']([^"']*\/watch\/[^"'?#]+)["']/gi;
+
+    /* =========================
+       FIND MOVIE LINKS
+    ========================= */
 
     const movieUrls = [];
     const seen = new Set();
 
+    const hrefRegex =
+      /href=["']([^"']*\/watch\/[^"'?#]+)["']/gi;
+
     let match;
 
-    while ((match = hrefRegex.exec(catalogHtml)) !== null) {
-      const sourceUrl = new URL(
-        match[1],
+    while (
+      (match = hrefRegex.exec(catalogHtml)) !== null
+    ) {
+
+      const rawHref = match[1];
+
+      const absoluteUrl = new URL(
+        rawHref,
         "https://www.oshakurfilms.com"
-      ).href
-        .split("?")[0]
-        .split("#")[0];
+      ).href;
 
-      if (seen.has(sourceUrl)) continue;
+      const cleanUrl =
+        absoluteUrl
+          .split("?")[0]
+          .split("#")[0];
 
-      seen.add(sourceUrl);
-      movieUrls.push(sourceUrl);
+
+      if (
+        !cleanUrl.includes(
+          "oshakurfilms.com/watch/"
+        )
+      ) {
+        continue;
+      }
+
+
+      if (seen.has(cleanUrl)) {
+        continue;
+      }
+
+
+      seen.add(cleanUrl);
+
+      movieUrls.push(cleanUrl);
     }
 
-    // Import each movie
+
+    /* =========================
+       IMPORT MOVIES
+    ========================= */
+
     const movies = [];
 
-    for (const sourceUrl of movieUrls) {
-      try {
-        const movieResponse = await fetch(sourceUrl, {
-          headers: {
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36"
-          }
-        });
+    for (
+      const sourceUrl of movieUrls
+    ) {
 
-        if (!movieResponse.ok) {
-          movies.push({
-            sourceUrl,
-            success: false,
-            error: `Movie returned ${movieResponse.status}`
+      try {
+
+        const movieResponse =
+          await fetch(sourceUrl, {
+            headers: {
+              "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+              "Accept":
+                "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            }
           });
 
+
+        if (!movieResponse.ok) {
           continue;
         }
 
-        const html = await movieResponse.text();
 
-        const movie = extractMovie(html, sourceUrl);
+        const html =
+          await movieResponse.text();
+
+
+        /* =========================
+           TITLE
+        ========================= */
+
+        const title =
+          extractMeta(
+            html,
+            "og:title"
+          ) ||
+          extractTitleTag(html) ||
+          "Untitled";
+
+
+        /* =========================
+           POSTER
+        ========================= */
+
+        const poster =
+          extractMeta(
+            html,
+            "og:image"
+          ) || null;
+
+
+        /* =========================
+           SUMMARY
+        ========================= */
+
+        const summary =
+          extractMovieSummary(html) ||
+          extractMeta(
+            html,
+            "description"
+          ) ||
+          "No description available.";
+
+
+        /* =========================
+           CATEGORY
+        ========================= */
+
+        const category =
+          extractCategory(
+            html,
+            requestedCategory
+          );
+
+
+        /* =========================
+           WATCH URL
+        ========================= */
+
+        const watchUrl =
+          extractWatchUrl(html);
+
+
+        /* =========================
+           MOVIE OBJECT
+        ========================= */
 
         movies.push({
-          success: true,
-          ...movie
+
+          title: cleanText(title),
+
+          poster: poster
+            ? decodeHtml(poster)
+            : null,
+
+          summary:
+            cleanText(summary),
+
+          category:
+            category || "Other",
+
+          watchUrl:
+            watchUrl || null,
+
+          /*
+             We intentionally do NOT
+             extract duration here.
+
+             OSHAkur pages may contain
+             preview/player durations that
+             are not the movie runtime.
+          */
+
+          duration: null,
+
+          sourceUrl
+
         });
 
-      } catch (error) {
-        movies.push({
+
+      } catch (movieError) {
+
+        console.error(
+          "Movie import failed:",
           sourceUrl,
-          success: false,
-          error: error.message
-        });
+          movieError.message
+        );
+
       }
+
     }
 
+
     return json({
+
       success: true,
+
       page,
-      discovered: movieUrls.length,
-      imported: movies.filter(m => m.success).length,
+
+      category:
+        requestedCategory,
+
+      discovered:
+        movieUrls.length,
+
+      imported:
+        movies.length,
+
       movies
+
     });
 
+
   } catch (error) {
+
+    console.error(
+      "OSHAkur importer error:",
+      error
+    );
+
+
     return json({
+
       success: false,
-      error: error.message
+
+      error:
+        error.message
+
     }, 500);
+
   }
+
 };
 
 
-// ========================================
-// MOVIE EXTRACTION
-// ========================================
+/* =====================================================
+   EXTRACT META
+===================================================== */
 
-function extractMovie(html, sourceUrl) {
+function extractMeta(
+  html,
+  name
+) {
 
-  // TITLE
-  let title = null;
+  const escaped =
+    name.replace(
+      /[-\/\\^$*+?.()|[\]{}]/g,
+      "\\$&"
+    );
 
-  const ogTitle = html.match(
-    /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)/i
-  );
 
-  const titleTag = html.match(
-    /<title[^>]*>([\s\S]*?)<\/title>/i
-  );
+  const regex =
+    new RegExp(
+      `<meta[^>]+(?:property|name)=["']${escaped}["'][^>]+content=["']([^"']*)["'][^>]*>`,
+      "i"
+    );
 
-  if (ogTitle) {
-    title = decode(ogTitle[1]).trim();
-  } else if (titleTag) {
-    title = decode(titleTag[1])
-      .replace(/\s*\|\s*OSHAkur.*$/i, "")
-      .trim();
+
+  const match =
+    html.match(regex);
+
+
+  if (match) {
+    return decodeHtml(match[1]);
   }
 
 
-  // POSTER
-  let poster = null;
+  /*
+     Also support reversed
+     attribute order.
+  */
 
-  const ogImage = html.match(
-    /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)/i
-  );
+  const reverseRegex =
+    new RegExp(
+      `<meta[^>]+content=["']([^"']*)["'][^>]+(?:property|name)=["']${escaped}["'][^>]*>`,
+      "i"
+    );
 
-  if (ogImage) {
-    poster = decode(ogImage[1]).trim();
+
+  const reverseMatch =
+    html.match(reverseRegex);
+
+
+  return reverseMatch
+    ? decodeHtml(reverseMatch[1])
+    : null;
+}
+
+
+/* =====================================================
+   TITLE TAG
+===================================================== */
+
+function extractTitleTag(html) {
+
+  const match =
+    html.match(
+      /<title[^>]*>([\s\S]*?)<\/title>/i
+    );
+
+
+  return match
+    ? decodeHtml(match[1])
+    : null;
+}
+
+
+/* =====================================================
+   MOVIE SUMMARY
+===================================================== */
+
+function extractMovieSummary(html) {
+
+  /*
+     Try common description containers
+     used by movie detail pages.
+  */
+
+  const patterns = [
+
+    /<div[^>]+class=["'][^"']*(?:description|summary|synopsis)[^"']*["'][^>]*>([\s\S]*?)<\/div>/i,
+
+    /<p[^>]+class=["'][^"']*(?:description|summary|synopsis)[^"']*["'][^>]*>([\s\S]*?)<\/p>/i,
+
+    /<div[^>]+class=["'][^"']*(?:movie-description|movie-summary)[^"']*["'][^>]*>([\s\S]*?)<\/div>/i
+
+  ];
+
+
+  for (
+    const pattern of patterns
+  ) {
+
+    const match =
+      html.match(pattern);
+
+
+    if (match) {
+
+      const text =
+        stripHtml(match[1]);
+
+
+      if (
+        text.length > 20
+      ) {
+
+        return decodeHtml(
+          text
+        );
+
+      }
+
+    }
+
   }
 
 
-  // SUMMARY
-  let summary = null;
+  return null;
+}
 
-  const description = html.match(
-    /<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)/i
-  );
 
-  if (description) {
-    summary = decode(description[1]).trim();
+/* =====================================================
+   CATEGORY
+===================================================== */
+
+function extractCategory(
+  html,
+  requestedCategory = null
+) {
+
+  /*
+     If the user requested a category
+     from the catalog, use it.
+
+     This is much safer than scanning
+     the whole page for "Action",
+     "Drama", etc.
+  */
+
+  if (requestedCategory) {
+
+    return normalizeCategory(
+      requestedCategory
+    );
+
   }
 
 
-  // CATEGORY
-  let category = null;
+  /*
+     Look for category labels near
+     movie information.
+  */
 
-  const categories = [
+  const patterns = [
+
+    /(?:Category|Genre)\s*[:\-]?\s*<\/?[^>]*>\s*([^<]+)/i,
+
+    /(?:Category|Genre)\s*[:\-]?\s*([^<\n]+)/i,
+
+    /class=["'][^"']*(?:category|genre)[^"']*["'][^>]*>\s*([^<]+)/i
+
+  ];
+
+
+  for (
+    const pattern of patterns
+  ) {
+
+    const match =
+      html.match(pattern);
+
+
+    if (!match) {
+      continue;
+    }
+
+
+    const value =
+      cleanText(
+        stripHtml(
+          match[1]
+        )
+      );
+
+
+    const normalized =
+      normalizeCategory(
+        value
+      );
+
+
+    if (normalized) {
+      return normalized;
+    }
+
+  }
+
+
+  /*
+     Final fallback:
+     inspect links around category
+     structures rather than searching
+     the entire page.
+  */
+
+  const knownCategories = [
     "Action",
     "Drama",
     "Horror",
-    "Romance",
-    "Comedy",
     "Indian",
     "Cartoon",
+    "Romance",
     "Scifi",
     "Others"
   ];
 
-  for (const item of categories) {
 
-    const regex = new RegExp(
-      `\\b${item}\\b`,
-      "i"
-    );
+  for (
+    const category of knownCategories
+  ) {
 
-    if (regex.test(html)) {
-      category = item;
-      break;
+    const regex =
+      new RegExp(
+        `(?:category|genre)[^<]{0,100}${category}`,
+        "i"
+      );
+
+
+    if (
+      regex.test(html)
+    ) {
+
+      return category;
+
     }
+
   }
 
 
-  // WATCH LINK
-  let watchUrl = null;
+  return "Other";
+}
 
-  const externalHosts = [
+
+/* =====================================================
+   WATCH URL
+===================================================== */
+
+function extractWatchUrl(html) {
+
+  const allowedHosts = [
+
     "audinifer.com",
+
     "vibuxer.com",
+
     "streamhg",
+
     "hgcloud.to"
+
   ];
 
-  const urlRegex =
-    /https?:\/\/[^\s"'<>\\]+/gi;
+
+  /*
+     Find every href in the page.
+  */
+
+  const hrefRegex =
+    /href=["']([^"']+)["']/gi;
+
 
   let match;
 
-  while ((match = urlRegex.exec(html)) !== null) {
 
-    let found = match[0]
-      .replace(/&amp;/g, "&")
-      .replace(/[),.;]+$/, "");
+  while (
+    (match = hrefRegex.exec(html)) !== null
+  ) {
+
+    let href =
+      decodeHtml(
+        match[1]
+      );
+
+
+    /*
+       Ignore local links.
+    */
 
     if (
-      externalHosts.some(host =>
-        found.toLowerCase().includes(host)
-      )
+      !/^https?:\/\//i.test(href)
     ) {
-      watchUrl = found;
-      break;
+      continue;
     }
-  }
 
 
-  // ALSO CHECK HREFS
-  if (!watchUrl) {
+    const lower =
+      href.toLowerCase();
 
-    const hrefRegex =
-      /href=["']([^"']+)["']/gi;
 
-    while ((match = hrefRegex.exec(html)) !== null) {
+    const allowed =
+      allowedHosts.some(
+        host =>
+          lower.includes(host)
+      );
 
-      let href = decode(match[1]);
 
-      if (
-        externalHosts.some(host =>
-          href.toLowerCase().includes(host)
-        )
-      ) {
-
-        watchUrl =
-          new URL(href, sourceUrl).href;
-
-        break;
-      }
+    if (!allowed) {
+      continue;
     }
+
+
+    return href;
+
   }
 
 
-  // DURATION
-  let duration = null;
-
-  const durationRegex =
-    /\b(\d{1,2}:\d{2}(?::\d{2})?)\b/;
-
-  const durationMatch =
-    html.match(durationRegex);
-
-  if (durationMatch) {
-    duration = durationMatch[1];
-  }
-
-
-  return {
-    title,
-    poster,
-    summary,
-    category,
-    watchUrl,
-    duration,
-    sourceUrl
-  };
+  return null;
 }
 
 
-// ========================================
-// HELPERS
-// ========================================
+/* =====================================================
+   NORMALIZE CATEGORY
+===================================================== */
 
-function decode(value) {
-  return value
-    .replace(/&amp;/gi, "&")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;/gi, "'")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">");
+function normalizeCategory(
+  value
+) {
+
+  if (!value) {
+    return null;
+  }
+
+
+  const text =
+    cleanText(
+      decodeHtml(value)
+    );
+
+
+  const lower =
+    text.toLowerCase();
+
+
+  if (
+    lower.includes("action")
+  ) {
+    return "Action";
+  }
+
+
+  if (
+    lower.includes("drama")
+  ) {
+    return "Drama";
+  }
+
+
+  if (
+    lower.includes("horror")
+  ) {
+    return "Horror";
+  }
+
+
+  if (
+    lower.includes("indian")
+  )
+  {
+    return "Indian";
+  }
+
+
+  if (
+    lower.includes("cartoon")
+  ) {
+    return "Cartoon";
+  }
+
+
+  if (
+    lower.includes("romance")
+  ) {
+    return "Romance";
+  }
+
+
+  if (
+    lower.includes("scifi") ||
+    lower.includes("sci-fi") ||
+    lower.includes("sci fi")
+  ) {
+    return "Scifi";
+  }
+
+
+  if (
+    lower.includes("other")
+  ) {
+    return "Others";
+  }
+
+
+  return null;
 }
 
 
-function json(data, status = 200) {
+/* =====================================================
+   STRIP HTML
+===================================================== */
+
+function stripHtml(
+  value
+) {
+
+  return String(value || "")
+    .replace(
+      /<script[\s\S]*?<\/script>/gi,
+      ""
+    )
+    .replace(
+      /<style[\s\S]*?<\/style>/gi,
+      ""
+    )
+    .replace(
+      /<[^>]+>/g,
+      " "
+    )
+    .replace(
+      /\s+/g,
+      " "
+    )
+    .trim();
+}
+
+
+/* =====================================================
+   CLEAN TEXT
+===================================================== */
+
+function cleanText(
+  value
+) {
+
+  return decodeHtml(
+    String(value || "")
+  )
+    .replace(
+      /\s+/g,
+      " "
+    )
+    .trim();
+
+}
+
+
+/* =====================================================
+   HTML ENTITIES
+===================================================== */
+
+function decodeHtml(
+  value
+) {
+
+  return String(value || "")
+
+    .replace(
+      /&amp;/g,
+      "&"
+    )
+
+    .replace(
+      /&quot;/g,
+      '"'
+    )
+
+    .replace(
+      /&#39;|&#x27;/gi,
+      "'"
+    )
+
+    .replace(
+      /&lt;/g,
+      "<"
+    )
+
+    .replace(
+      /&gt;/g,
+      ">"
+    )
+
+    .replace(
+      /&nbsp;/g,
+      " "
+    )
+
+    .replace(
+      /&#x2F;/gi,
+      "/"
+    );
+
+}
+
+
+/* =====================================================
+   JSON RESPONSE
+===================================================== */
+
+function json(
+  data,
+  status = 200
+) {
+
   return new Response(
-    JSON.stringify(data),
+
+    JSON.stringify(
+      data,
+      null,
+      2
+    ),
+
     {
+
       status,
+
       headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=300"
+
+        "Content-Type":
+          "application/json",
+
+        "Cache-Control":
+          "public, max-age=300"
+
       }
+
     }
+
   );
+
 }
