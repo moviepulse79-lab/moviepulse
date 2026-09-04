@@ -912,6 +912,34 @@ nav a.active{
     color: #fff;
 }
 
+    .load-more-container {
+    display: flex;
+    justify-content: center;
+    margin: 35px 0 50px;
+}
+
+.load-more-btn {
+    background: #e50914;
+    color: #fff;
+    border: none;
+    padding: 13px 30px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.load-more-btn:hover {
+    background: #ff1e1e;
+    transform: translateY(-2px);
+}
+
+.load-more-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
 </style>
 
 </head>
@@ -1054,6 +1082,12 @@ nav a.active{
 
 </section>
 
+    <div class="load-more-container">
+    <button id="loadMoreBtn" class="load-more-btn">
+        Load More
+    </button>
+</div>
+
 
 <!-- =========================
      PLAYER
@@ -1139,18 +1173,33 @@ const playerTitle = document.getElementById("playerTitle");
 // LOAD MOVIES FROM SUPABASE CACHE
 // ===============================
 
-async function loadMovies() {
+async function loadMovies(page = 1) {
+
+    if (loading || (!hasMoreMovies && page !== 1)) {
+        return;
+    }
+
+    loading = true;
+
+    if (loadMoreBtn) {
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.textContent = "Loading...";
+    }
 
     try {
 
-        movieGrid.innerHTML = `
-            <div style="width:100%;text-align:center;padding:40px;">
-                Loading movies...
-            </div>
-        `;
+        if (page === 1) {
+
+            movieGrid.innerHTML = `
+                <div style="width:100%;text-align:center;padding:40px;">
+                    Loading movies...
+                </div>
+            `;
+
+        }
 
         const response = await fetch(
-            "/.netlify/functions/oshakur-movies"
+            `/.netlify/functions/oshakur-movies?page=${page}&limit=${moviesPerPage}`
         );
 
         if (!response.ok) {
@@ -1165,7 +1214,8 @@ async function loadMovies() {
             );
         }
 
-        oshakurMovies = (data.movies || []).map(movie => ({
+
+        const newMovies = (data.movies || []).map(movie => ({
 
             id: movie.id,
 
@@ -1195,9 +1245,51 @@ async function loadMovies() {
 
         }));
 
+
+        // First page = replace
+        if (page === 1) {
+
+            oshakurMovies = newMovies;
+
+        }
+
+        // Next pages = add to existing movies
+        else {
+
+            oshakurMovies = [
+                ...oshakurMovies,
+                ...newMovies
+            ];
+
+        }
+
+
+        // Render ALL loaded movies
         renderMovies(oshakurMovies);
 
         updateFeaturedMovie();
+
+
+        currentPage = page;
+
+        hasMoreMovies = data.hasNext;
+
+
+        if (loadMoreBtn) {
+
+            if (hasMoreMovies) {
+
+                loadMoreBtn.style.display = "block";
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.textContent = "Load More";
+
+            } else {
+
+                loadMoreBtn.style.display = "none";
+
+            }
+
+        }
 
     } catch (error) {
 
@@ -1206,15 +1298,30 @@ async function loadMovies() {
             error
         );
 
-        movieGrid.innerHTML = "";
+        if (page === 1) {
 
-        emptyState.style.display = "block";
+            movieGrid.innerHTML = "";
 
-        emptyState.innerHTML = `
-            <p>
-                Unable to load movies right now.
-            </p>
-        `;
+            emptyState.style.display = "block";
+
+            emptyState.innerHTML = `
+                <p>
+                    Unable to load movies right now.
+                </p>
+            `;
+
+        }
+
+        if (loadMoreBtn) {
+
+            loadMoreBtn.disabled = false;
+            loadMoreBtn.textContent = "Try Again";
+
+        }
+
+    } finally {
+
+        loading = false;
 
     }
 
@@ -1716,10 +1823,28 @@ if (menuBtn && nav) {
 
 
 // ===============================
+// LOAD MORE BUTTON
+// ===============================
+
+if (loadMoreBtn) {
+
+    loadMoreBtn.addEventListener(
+        "click",
+        function () {
+
+            loadMovies(currentPage + 1);
+
+        }
+    );
+
+}
+
+
+// ===============================
 // START
 // ===============================
 
-loadMovies();
+loadMovies(1);
 
 </script>
 
