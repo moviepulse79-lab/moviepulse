@@ -1,6 +1,15 @@
-
 export default async (req) => {
   try {
+    const url = new URL(req.url);
+
+    const requestedPage = parseInt(
+      url.searchParams.get("page") || "1",
+      10
+    );
+
+    const page = Math.max(1, requestedPage);
+    const pageSize = 24;
+
     const supabaseUrl =
       process.env.SUPABASE_URL;
 
@@ -13,223 +22,107 @@ export default async (req) => {
       );
     }
 
-    const url = new URL(req.url);
-
     /*
-      Import ONE OSHAkur API page per request.
-
-      Example:
-      /.netlify/functions/oshakur-import?page=1
-      /.netlify/functions/oshakur-import?page=2
+    =========================================================
+    HELPERS
+    =========================================================
     */
 
-    const page = Math.max(
-      1,
-      parseInt(
-        url.searchParams.get("page") || "1",
-        10
-      )
-    );
+    function cleanText(text) {
+      if (!text) return "";
 
-    const pageSize = 24;
-
-    const apiBase =
-      "https://api.oshakurfilms.com/api/movies";
-
-    let imported = 0;
-    let skipped = 0;
-    let errors = 0;
-
-    /*
-      --------------------------------------------------
-      Helper: clean text
-      --------------------------------------------------
-    */
-
-    const cleanText = (value) => {
-      return String(value || "")
+      return text
         .replace(/<[^>]*>/g, " ")
+        .replace(/&nbsp;/gi, " ")
+        .replace(/&amp;/gi, "&")
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
         .replace(/\s+/g, " ")
         .trim();
-    };
+    }
 
-    /*
-      --------------------------------------------------
-      Helper: convert duration to HH:MM:SS
-      --------------------------------------------------
-    */
+    function normalizeDuration(value) {
+      if (!value) return null;
 
-    const normalizeDuration = (value) => {
-      if (!value) {
-        return null;
-      }
-
-      const text =
-        String(value)
-          .trim()
-          .replace(/\s+/g, " ");
+      const text = String(value).trim();
 
       /*
-        Already formatted:
+       * HH:MM:SS
+       */
+      let match = text.match(
+        /\b(\d{1,2}):(\d{2}):(\d{2})\b/
+      );
 
-        01:57:15
-        57:15
-        1:02:33
-      */
-
-      const colonMatch =
-        text.match(
-          /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/
-        );
-
-      if (colonMatch) {
-        if (colonMatch[3]) {
-          return (
-            `${colonMatch[1].padStart(2, "0")}:` +
-            `${colonMatch[2]}:` +
-            `${colonMatch[3]}`
-          );
-        }
-
-        return (
-          `00:${colonMatch[1].padStart(2, "0")}:` +
-          `${colonMatch[2]}`
-        );
+      if (match) {
+        return `${match[1].padStart(2, "0")}:${match[2]}:${match[3]}`;
       }
 
       /*
-        Look for text such as:
+       * MM:SS
+       */
+      match = text.match(
+        /\b(\d{1,3}):(\d{2})\b/
+      );
 
-        1h 57m
-        1h 57min
-        117 min
-        117 minutes
-        1 hour 57 minutes
-      */
-
-      let hours = 0;
-      let minutes = 0;
-      let seconds = 0;
-
-      const hourMatch =
-        text.match(
-          /(\d+(?:\.\d+)?)\s*(?:h|hr|hrs|hour|hours)\b/i
-        );
-
-      const minuteMatch =
-        text.match(
-          /(\d+(?:\.\d+)?)\s*(?:m|min|mins|minute|minutes)\b/i
-        );
-
-      const secondMatch =
-        text.match(
-          /(\d+(?:\.\d+)?)\s*(?:s|sec|secs|second|seconds)\b/i
-        );
-
-      if (hourMatch) {
-        hours =
-          Math.floor(
-            Number(hourMatch[1])
-          );
+      if (match) {
+        return `00:${match[1].padStart(2, "0")}:${match[2]}`;
       }
 
-      if (minuteMatch) {
-        minutes =
-          Math.floor(
-            Number(minuteMatch[1])
-          );
+      /*
+       * ISO duration:
+       * PT2H10M11S
+       */
+      match = text.match(
+        /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/i
+      );
+
+      if (match) {
+        const hours = String(match[1] || 0).padStart(2, "0");
+        const minutes = String(match[2] || 0).padStart(2, "0");
+        const seconds = String(match[3] || 0).padStart(2, "0");
+
+        return `${hours}:${minutes}:${seconds}`;
       }
 
-      if (secondMatch) {
-        seconds =
-          Math.floor(
-            Number(secondMatch[1])
-          );
-      }
+      /*
+       * "2h 10m 11s"
+       */
+      match = text.match(
+        /(?:(\d+)\s*h)?\s*(?:(\d+)\s*m)?\s*(?:(\d+)\s*s)?/i
+      );
 
       if (
-        hourMatch ||
-        minuteMatch ||
-        secondMatch
+        match &&
+        (match[1] || match[2] || match[3])
       ) {
-        return (
-          `${String(hours).padStart(2, "0")}:` +
-          `${String(minutes).padStart(2, "0")}:` +
-          `${String(seconds).padStart(2, "0")}`
-        );
-      }
+        const hours = String(match[1] || 0).padStart(2, "0");
+        const minutes = String(match[2] || 0).padStart(2, "0");
+        const seconds = String(match[3] || 0).padStart(2, "0");
 
-      /*
-        ISO 8601 duration:
-
-        PT1H57M15S
-      */
-
-      const isoMatch =
-        text.match(
-          /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/i
-        );
-
-      if (isoMatch) {
-        hours =
-          Number(isoMatch[1] || 0);
-
-        minutes =
-          Number(isoMatch[2] || 0);
-
-        seconds =
-          Number(isoMatch[3] || 0);
-
-        return (
-          `${String(hours).padStart(2, "0")}:` +
-          `${String(minutes).padStart(2, "0")}:` +
-          `${String(seconds).padStart(2, "0")}`
-        );
+        return `${hours}:${minutes}:${seconds}`;
       }
 
       return null;
-    };
+    }
 
-    /*
-      --------------------------------------------------
-      Helper: extract duration from HTML
-      --------------------------------------------------
-    */
+    function extractDuration(html) {
+      if (!html) return null;
 
-    const extractDuration = (html) => {
-
-      /*
-        Check common HTML metadata first.
-      */
-
-      const durationPatterns = [
-
-        /<meta[^>]+(?:itemprop|property|name)=["']duration["'][^>]+content=["']([^"']+)["']/i,
-
-        /<meta[^>]+content=["']([^"']+)["'][^>]+(?:itemprop|property|name)=["']duration["']/i,
-
+      const patterns = [
         /"duration"\s*:\s*"([^"]+)"/i,
-
         /"duration"\s*:\s*'([^']+)'/i,
-
         /data-duration=["']([^"']+)["']/i,
-
-        /class=["'][^"']*duration[^"']*["'][^>]*>\s*([^<]+)/i
+        /duration=["']([^"']+)["']/i,
+        /<meta[^>]+property=["']video:duration["'][^>]+content=["']([^"']+)["']/i,
+        /<meta[^>]+name=["']duration["'][^>]+content=["']([^"']+)["']/i
       ];
 
-      for (
-        const pattern of durationPatterns
-      ) {
-
-        const match =
-          html.match(pattern);
+      for (const pattern of patterns) {
+        const match = html.match(pattern);
 
         if (match) {
-
           const duration =
-            normalizeDuration(
-              match[1]
-            );
+            normalizeDuration(match[1]);
 
           if (duration) {
             return duration;
@@ -238,83 +131,32 @@ export default async (req) => {
       }
 
       /*
-        Search visible text for formats like:
+       * Search visible page text for:
+       * 02:10:11
+       * 1:57:15
+       */
+      const timeMatches = html.match(
+        /\b\d{1,2}:\d{2}:\d{2}\b/g
+      );
 
-        Duration: 01:57:15
-        Duration 1h 57m
-      */
-
-      const visibleText =
-        html
-          .replace(
-            /<script[\s\S]*?<\/script>/gi,
-            " "
-          )
-          .replace(
-            /<style[\s\S]*?<\/style>/gi,
-            " "
-          )
-          .replace(
-            /<[^>]*>/g,
-            " "
-          )
-          .replace(
-            /\s+/g,
-            " "
-          );
-
-      const visibleMatch =
-        visibleText.match(
-          /duration\s*[:\-]?\s*([0-9]{1,2}:[0-9]{2}(?::[0-9]{2})?|(?:\d+\s*(?:h|hr|hrs|hour|hours)\s*)?(?:\d+\s*(?:m|min|mins|minute|minutes))?(?:\s*\d+\s*(?:s|sec|secs|second|seconds))?)/i
-        );
-
-      if (visibleMatch) {
-
-        const duration =
-          normalizeDuration(
-            visibleMatch[1]
-          );
-
-        if (duration) {
-          return duration;
-        }
-      }
-
-      /*
-        Search for plain HH:MM:SS patterns.
-
-        We deliberately require the first number
-        to be 0-9 hours to avoid grabbing dates.
-      */
-
-      const timeMatch =
-        visibleText.match(
-          /\b(\d{1,2}:\d{2}:\d{2})\b/
-        );
-
-      if (timeMatch) {
+      if (timeMatches?.length) {
         return normalizeDuration(
-          timeMatch[1]
+          timeMatches[0]
         );
       }
 
       return null;
-    };
+    }
 
-    /*
-      --------------------------------------------------
-      Helper: find watch URL
-      --------------------------------------------------
-    */
-
-    const findWatchUrl = (html) => {
+    function findWatchUrl(html) {
+      if (!html) return null;
 
       /*
-        These are the hosts we currently accept.
-
-        We only save the public external watch/embed
-        URL found on the source page.
-      */
+       * Find all URLs in the OSHAkur page.
+       */
+      const urls = html.match(
+        /https?:\/\/[^\s"'<>\\]+/gi
+      ) || [];
 
       const allowedHosts = [
         "audinifer.com",
@@ -323,169 +165,192 @@ export default async (req) => {
         "hgcloud.to"
       ];
 
-      /*
-        Known ad/redirect hosts that must not be saved.
-      */
-
       const blockedHosts = [
-        "3xyy.com",
-        "afu.php"
+        "3xyy.com"
       ];
 
-      const urlRegex =
-        /https?:\/\/[^\s"'<>\\]+/gi;
-
-      const foundUrls =
-        html.match(urlRegex) || [];
-
-      for (
-        const rawUrl of foundUrls
-      ) {
-
-        let cleanUrl =
-          rawUrl
-            .replace(
-              /\\u0026/g,
-              "&"
-            )
-            .replace(
-              /\\\//g,
-              "/"
-            )
-            .replace(
-              /&amp;/g,
-              "&"
-            )
-            .replace(
-              /[)"',]+$/g,
-              ""
-            );
+      for (let rawUrl of urls) {
+        let candidate = rawUrl
+          .replace(/&amp;/g, "&")
+          .replace(/[),.;]+$/g, "");
 
         try {
-
           const parsed =
-            new URL(cleanUrl);
+            new URL(candidate);
 
           const hostname =
-            parsed.hostname
-              .toLowerCase();
-
-          const fullUrl =
-            cleanUrl.toLowerCase();
+            parsed.hostname.toLowerCase();
 
           /*
-            Block known advertisement URLs.
-          */
-
+           * Block known advertisement URLs.
+           */
           if (
             blockedHosts.some(
-              blocked =>
-                hostname.includes(blocked) ||
-                fullUrl.includes(blocked)
+              host =>
+                hostname === host ||
+                hostname.endsWith(`.${host}`)
             )
           ) {
             continue;
           }
 
-          /*
-            Accept only our allowed hosts.
-          */
-
           if (
-            allowedHosts.some(
-              allowed =>
-                hostname === allowed ||
-                hostname.endsWith(
-                  `.${allowed}`
-                ) ||
-                hostname.includes(
-                  allowed
-                )
-            )
+            parsed.pathname
+              .toLowerCase()
+              .includes("afu.php")
           ) {
-            return cleanUrl;
+            continue;
           }
 
-        } catch {
           /*
-            Ignore malformed URLs.
-          */
+           * Only accept known watch hosts.
+           */
+          const allowed =
+            allowedHosts.some(host =>
+              hostname === host ||
+              hostname.endsWith(`.${host}`) ||
+              hostname.includes(host)
+            );
+
+          if (!allowed) {
+            continue;
+          }
+
+          return parsed.href;
+
+        } catch {
+          continue;
         }
       }
 
       return null;
-    };
-
-    /*
-      --------------------------------------------------
-      Get movies already in Supabase
-      --------------------------------------------------
-    */
-
-    const existingResponse =
-      await fetch(
-        `${supabaseUrl}/rest/v1/oshakur_movies?select=source_url`,
-        {
-          headers: {
-            apikey: serviceKey,
-            Authorization:
-              `Bearer ${serviceKey}`,
-            Accept:
-              "application/json"
-          }
-        }
-      );
-
-    if (!existingResponse.ok) {
-      throw new Error(
-        `Could not read existing movies: ${existingResponse.status}`
-      );
     }
 
-    const existingMovies =
-      await existingResponse.json();
+    async function getExistingUrls() {
+      const existing = new Set();
 
-    const existingUrls =
-      new Set(
-        existingMovies
-          .map(
-            movie =>
-              movie.source_url
-          )
-          .filter(Boolean)
-      );
+      let offset = 0;
+      const batchSize = 1000;
 
-    /*
-      --------------------------------------------------
-      Fetch ONE OSHAkur API page
-      --------------------------------------------------
-    */
+      while (true) {
+        const endpoint =
+          `${supabaseUrl}/rest/v1/oshakur_movies` +
+          `?select=source_url` +
+          `&source_url=not.is.null` +
+          `&limit=${batchSize}` +
+          `&offset=${offset}`;
 
-    console.log(
-      `Importing OSHAkur page ${page}`
-    );
+        const response =
+          await fetch(endpoint, {
+            headers: {
+              apikey: serviceKey,
+              Authorization:
+                `Bearer ${serviceKey}`,
+              Accept: "application/json"
+            }
+          });
 
-    const apiUrl =
-      `${apiBase}?page=${page}` +
-      `&size=${pageSize}` +
-      `&isPublished=true` +
-      `&sortBy=createdAt` +
-      `&sortDirection=desc`;
+        if (!response.ok) {
+          const text =
+            await response.text();
 
-    const apiResponse =
-      await fetch(
-        apiUrl,
-        {
-          headers: {
-            Accept:
-              "application/json"
+          throw new Error(
+            `Failed to read existing movies: ${response.status} ${text}`
+          );
+        }
+
+        const rows =
+          await response.json();
+
+        for (const row of rows) {
+          if (row.source_url) {
+            existing.add(
+              row.source_url
+            );
           }
         }
+
+        if (rows.length < batchSize) {
+          break;
+        }
+
+        offset += batchSize;
+      }
+
+      return existing;
+    }
+
+    /*
+    =========================================================
+    LOAD EXISTING MOVIES
+    =========================================================
+    */
+
+    const existingUrls =
+      await getExistingUrls();
+
+    /*
+    =========================================================
+    FETCH EXACT OSHAKUR PAGE
+    =========================================================
+    */
+
+    const apiUrl =
+      new URL(
+        "https://api.oshakurfilms.com/api/movies"
       );
 
+    apiUrl.searchParams.set(
+      "page",
+      String(page)
+    );
+
+    apiUrl.searchParams.set(
+      "size",
+      String(pageSize)
+    );
+
+    apiUrl.searchParams.set(
+      "isPublished",
+      "true"
+    );
+
+    apiUrl.searchParams.set(
+      "sortBy",
+      "createdAt"
+    );
+
+    apiUrl.searchParams.set(
+      "sortDirection",
+      "desc"
+    );
+
+    /*
+     * Cache-busting parameter.
+     * This helps prevent an intermediary cache
+     * from returning an old page.
+     */
+    apiUrl.searchParams.set(
+      "_",
+      Date.now().toString()
+    );
+
+    const apiResponse =
+      await fetch(apiUrl.href, {
+        headers: {
+          Accept:
+            "application/json",
+          "User-Agent":
+            "Mozilla/5.0 MoviePulse Importer"
+        }
+      });
+
     if (!apiResponse.ok) {
+      const text =
+        await apiResponse.text();
+
       throw new Error(
-        `OSHAkur API returned ${apiResponse.status}`
+        `OSHAkur API returned ${apiResponse.status}: ${text}`
       );
     }
 
@@ -493,97 +358,78 @@ export default async (req) => {
       await apiResponse.json();
 
     /*
-      Support the response formats
-      returned by OSHAkur.
+    =========================================================
+    READ API PAGINATION
+    =========================================================
     */
 
-    const apiMovies =
-      apiData?.data ||
-      apiData?.movies ||
-      apiData?.items ||
-      [];
+    const movies =
+      Array.isArray(apiData.data)
+        ? apiData.data
+        : Array.isArray(apiData.movies)
+          ? apiData.movies
+          : Array.isArray(apiData.items)
+            ? apiData.items
+            : [];
 
-    if (
-      !Array.isArray(apiMovies)
-    ) {
-      throw new Error(
-        "OSHAkur API returned an invalid movie list"
-      );
-    }
+    const totalPages =
+      Number(apiData.totalPages) ||
+      1;
+
+    const currentApiPage =
+      Number(apiData.currentPage) ||
+      page;
+
+    const apiHasNext =
+      apiData.hasNext === true ||
+      currentApiPage < totalPages;
 
     /*
-      --------------------------------------------------
-      Detect total pages
-      --------------------------------------------------
+    =========================================================
+    IMPORT
+    =========================================================
     */
 
-    let totalPages =
-      Number(
-        apiData?.totalPages ||
-        apiData?.pagination?.totalPages ||
-        apiData?.meta?.totalPages ||
-        0
-      );
+    let imported = 0;
+    let skipped = 0;
+    let errors = 0;
+
+    const skippedReasons = {
+      duplicate: 0,
+      noLinks: 0,
+      noWatchUrl: 0,
+      invalid: 0
+    };
 
     /*
-      If the API doesn't expose totalPages,
-      estimate it from total/count fields.
-    */
+     * Protect against the API returning the same page.
+     */
+    const pageSourceUrls = new Set();
 
-    if (!totalPages) {
-
-      const total =
-        Number(
-          apiData?.total ||
-          apiData?.pagination?.total ||
-          apiData?.meta?.total ||
-          0
-        );
-
-      if (total > 0) {
-        totalPages =
-          Math.ceil(
-            total / pageSize
-          );
-      }
-    }
-
-    /*
-      Final fallback.
-
-      If this page contains fewer than pageSize
-      movies, assume this is the final page.
-    */
-
-    if (!totalPages) {
-
-      totalPages =
-        apiMovies.length < pageSize
-          ? page
-          : page + 1;
-    }
-
-    /*
-      --------------------------------------------------
-      Process this page
-      --------------------------------------------------
-    */
-
-    for (
-      const apiMovie of apiMovies
-    ) {
+    for (const apiMovie of movies) {
 
       try {
 
-        const slug =
-          apiMovie?.slug;
+        if (!apiMovie) {
+          skipped++;
+          skippedReasons.invalid++;
+          continue;
+        }
 
-        /*
-          No slug = cannot build source page.
-        */
+        const title =
+          cleanText(
+            apiMovie.title ||
+            "Untitled"
+          );
+
+        const slug =
+          String(
+            apiMovie.slug || ""
+          ).trim();
 
         if (!slug) {
           skipped++;
+          skippedReasons.invalid++;
           continue;
         }
 
@@ -591,123 +437,130 @@ export default async (req) => {
           `https://www.oshakurfilms.com/watch/${slug}`;
 
         /*
-          Skip duplicates.
-        */
-
+         * Prevent duplicate movies inside
+         * the same API response.
+         */
         if (
-          existingUrls.has(
-            sourceUrl
-          )
+          pageSourceUrls.has(sourceUrl)
         ) {
           skipped++;
+          skippedReasons.duplicate++;
+          continue;
+        }
+
+        pageSourceUrls.add(sourceUrl);
+
+        /*
+         * Already imported?
+         */
+        if (
+          existingUrls.has(sourceUrl)
+        ) {
+          skipped++;
+          skippedReasons.duplicate++;
           continue;
         }
 
         /*
-          If OSHAkur says there are no links,
-          don't waste a request.
-        */
-
+         * OSHAkur says there are no links.
+         */
         if (
-          !apiMovie.linksCount ||
-          Number(
-            apiMovie.linksCount
-          ) <= 0
+          Number(apiMovie.linksCount || 0) <= 0
         ) {
           skipped++;
+          skippedReasons.noLinks++;
           continue;
         }
 
         /*
-          Fetch the public OSHAkur movie page.
+        =====================================================
+        FETCH MOVIE PAGE
+        =====================================================
         */
 
-        const pageResponse =
-          await fetch(
-            sourceUrl,
-            {
+        let moviePageResponse;
+
+        try {
+          moviePageResponse =
+            await fetch(sourceUrl, {
               headers: {
+                Accept:
+                  "text/html,application/xhtml+xml",
                 "User-Agent":
-                  "Mozilla/5.0 (compatible; MoviePulseImporter/1.0)"
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
               }
-            }
+            });
+        } catch (pageError) {
+          console.error(
+            `Failed to fetch ${title}:`,
+            pageError
           );
 
-        if (!pageResponse.ok) {
-          console.log(
-            `Skipping ${apiMovie.title}: source page returned ${pageResponse.status}`
+          errors++;
+          continue;
+        }
+
+        if (!moviePageResponse.ok) {
+          console.error(
+            `Movie page returned ${moviePageResponse.status}: ${title}`
           );
 
-          skipped++;
+          errors++;
           continue;
         }
 
         const html =
-          await pageResponse.text();
+          await moviePageResponse.text();
 
         /*
-          Find an allowed external watch URL.
+        =====================================================
+        FIND REAL WATCH URL
+        =====================================================
         */
 
         const watchUrl =
           findWatchUrl(html);
 
         /*
-          IMPORTANT:
-
-          Movies without a real watch URL
-          are NOT inserted into Supabase.
-        */
-
+         * IMPORTANT:
+         * Movies without a real watch link
+         * are NEVER inserted.
+         */
         if (!watchUrl) {
-
-          console.log(
-            `Skipping ${apiMovie.title}: no valid watch link`
-          );
-
           skipped++;
+          skippedReasons.noWatchUrl++;
           continue;
         }
 
         /*
-          Extract duration.
+        =====================================================
+        DURATION
+        =====================================================
         */
 
         const duration =
           extractDuration(html);
 
         /*
-          Clean description.
-        */
-
-        const description =
-          cleanText(
-            apiMovie.description ||
-            ""
-          );
-
-        /*
-          Build database record.
+        =====================================================
+        BUILD MOVIE
+        =====================================================
         */
 
         const movie = {
+          source_url: sourceUrl,
 
-          source_url:
-            sourceUrl,
-
-          title:
-            cleanText(
-              apiMovie.title ||
-              "Untitled"
-            ),
+          title,
 
           poster:
             apiMovie.imgUrl ||
             null,
 
           summary:
-            description ||
-            "No description available.",
+            cleanText(
+              apiMovie.description ||
+              "No description available."
+            ),
 
           category:
             cleanText(
@@ -719,13 +572,13 @@ export default async (req) => {
             watchUrl,
 
           duration:
-            duration
+            duration || null
         };
 
         /*
-          ------------------------------------------------
-          Insert into Supabase
-          ------------------------------------------------
+        =====================================================
+        INSERT INTO SUPABASE
+        =====================================================
         */
 
         const insertResponse =
@@ -735,8 +588,7 @@ export default async (req) => {
               method: "POST",
 
               headers: {
-                apikey:
-                  serviceKey,
+                apikey: serviceKey,
 
                 Authorization:
                   `Bearer ${serviceKey}`,
@@ -753,55 +605,48 @@ export default async (req) => {
             }
           );
 
-        /*
-          Duplicate / unique constraint.
-        */
-
-        if (
-          insertResponse.status === 409
-        ) {
-
-          skipped++;
-
-          existingUrls.add(
-            sourceUrl
-          );
-
-          continue;
-        }
-
-        if (
-          !insertResponse.ok
-        ) {
+        if (!insertResponse.ok) {
 
           const errorText =
             await insertResponse.text();
 
+          /*
+           * Duplicate created between our
+           * initial check and insert.
+           */
+          if (
+            insertResponse.status === 409
+          ) {
+            skipped++;
+            skippedReasons.duplicate++;
+            existingUrls.add(sourceUrl);
+            continue;
+          }
+
           console.error(
-            `Insert failed for ${movie.title}:`,
+            `Supabase insert failed for ${title}:`,
             errorText
           );
 
           errors++;
-
           continue;
         }
 
         imported++;
 
-        existingUrls.add(
-          sourceUrl
-        );
+        /*
+         * Remember it during this invocation.
+         */
+        existingUrls.add(sourceUrl);
 
         console.log(
-          `Imported: ${movie.title}` +
-          `${duration ? ` (${duration})` : ""}`
+          `Imported: ${title}`
         );
 
       } catch (movieError) {
 
         console.error(
-          "Movie processing error:",
+          "Movie import error:",
           movieError
         );
 
@@ -810,24 +655,9 @@ export default async (req) => {
     }
 
     /*
-      --------------------------------------------------
-      Determine next page
-      --------------------------------------------------
-    */
-
-    const hasNext =
-      page < totalPages &&
-      apiMovies.length > 0;
-
-    const nextPage =
-      hasNext
-        ? page + 1
-        : null;
-
-    /*
-      --------------------------------------------------
-      Return result
-      --------------------------------------------------
+    =========================================================
+    RESULT
+    =========================================================
     */
 
     return new Response(
@@ -840,10 +670,13 @@ export default async (req) => {
 
           page,
 
+          apiCurrentPage:
+            currentApiPage,
+
           pageSize,
 
           moviesOnPage:
-            apiMovies.length,
+            movies.length,
 
           totalPages,
 
@@ -853,9 +686,15 @@ export default async (req) => {
 
           errors,
 
-          hasNext,
+          skippedReasons,
 
-          nextPage
+          hasNext:
+            apiHasNext,
+
+          nextPage:
+            apiHasNext
+              ? currentApiPage + 1
+              : null
         },
         null,
         2
@@ -876,7 +715,7 @@ export default async (req) => {
   } catch (error) {
 
     console.error(
-      "OSHAkur import error:",
+      "OSHAkur importer error:",
       error
     );
 
@@ -886,7 +725,7 @@ export default async (req) => {
           success: false,
           error:
             error.message ||
-            "Unknown error"
+            "Unknown importer error"
         },
         null,
         2
