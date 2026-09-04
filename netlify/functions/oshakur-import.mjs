@@ -358,14 +358,18 @@ function extractCategory(html) {
 
 
 function extractWatchUrl(html) {
-  const regex =
-    /href=["']([^"']+)["']/gi;
+  const regex = /href=["']([^"']+)["']/gi;
 
   const allowedHosts = [
     "audinifer.com",
     "vibuxer.com",
     "streamhg",
     "hgcloud.to"
+  ];
+
+  const blockedHosts = [
+    "3xyy.com",
+    "afu.php"
   ];
 
   let match;
@@ -378,11 +382,22 @@ function extractWatchUrl(html) {
       );
 
       const host = href.hostname.toLowerCase();
+      const fullUrl = href.href.toLowerCase();
 
+      // 🚫 Never use advertising/redirect URLs
+      if (
+        blockedHosts.some(blocked =>
+          host.includes(blocked) ||
+          fullUrl.includes(blocked)
+        )
+      ) {
+        continue;
+      }
+
+      // ✅ Only accept actual supported video hosts
       if (
         allowedHosts.some(
-          allowed =>
-            host.includes(allowed)
+          allowed => host.includes(allowed)
         )
       ) {
         return href.href;
