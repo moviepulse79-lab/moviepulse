@@ -1160,6 +1160,13 @@ nav a.active{
 
 let oshakurMovies = [];
 
+let currentPage = 1;
+const moviesPerPage = 24;
+let loading = false;
+let hasMoreMovies = true;
+
+const loadMoreBtn = document.getElementById("loadMoreBtn");
+
 const movieGrid = document.getElementById("movieGrid");
 const movieSearch = document.getElementById("movieSearch");
 const emptyState = document.getElementById("emptyState");
@@ -1167,7 +1174,6 @@ const emptyState = document.getElementById("emptyState");
 const playerModal = document.getElementById("playerModal");
 const videoContainer = document.getElementById("videoContainer");
 const playerTitle = document.getElementById("playerTitle");
-
 
 // ===============================
 // LOAD MOVIES FROM SUPABASE CACHE
