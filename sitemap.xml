@@ -11,6 +11,11 @@
   <url><loc>https://moviepulse247.netlify.app/contact.html</loc></url>
   <url><loc>https://moviepulse247.netlify.app/terms.html</loc></url>
   <url><loc>https://moviepulse247.netlify.app/disclaimer.html</loc></url>
+  <url>
+    <loc>https://www.moviepulse.site/source-movies.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+</url>
 
   <!-- MOVIES -->
    <url><loc>https://moviepulse247.netlify.app/trailer.html?id=83</loc></url>
