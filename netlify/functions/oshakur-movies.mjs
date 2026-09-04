@@ -8,7 +8,7 @@ export default async () => {
     }
 
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/oshakur_movies?select=*&order=updated_at.desc`,
+     `${supabaseUrl}/rest/v1/oshakur_movies?select=*&watch_url=not.is.null&order=updated_at.desc`,
       {
         headers: {
           apikey: serviceKey,
