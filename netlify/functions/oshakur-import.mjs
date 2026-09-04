@@ -148,83 +148,169 @@ export default async (req) => {
       return null;
     }
 
-    function findWatchUrl(html) {
-      if (!html) return null;
+function findWatchUrl(html) {
+  if (!html) return null;
+
+  /*
+   * Find all URLs in the OSHAkur page.
+   */
+  const urls = html.match(
+    /https?:\/\/[^\s"'<>\\]+/gi
+  ) || [];
+
+  /*
+   * Hosts that are allowed to contain the actual
+   * movie/watch page.
+   */
+  const allowedHosts = [
+    "audinifer.com",
+    "vibuxer.com",
+    "streamhg",
+    "hgcloud.to"
+  ];
+
+  /*
+   * Known advertising / redirect destinations.
+   */
+  const blockedHosts = [
+    "3xyy.com",
+    "cacklegrievingtank.com",
+    "gigglemagnetismunaired.com",
+    "winner.rw"
+  ];
+
+  /*
+   * Known advertising redirect paths.
+   */
+  const blockedPaths = [
+    "afu.php"
+  ];
+
+  /*
+   * Parameters commonly used by redirect/ad URLs.
+   */
+  const blockedParams = [
+    "redirect",
+    "redir",
+    "click",
+    "clickid",
+    "target",
+    "destination",
+    "dest"
+  ];
+
+  for (let rawUrl of urls) {
+
+    let candidate = rawUrl
+      .replace(/&amp;/gi, "&")
+      .replace(/[),.;]+$/g, "");
+
+    try {
+
+      const parsed = new URL(candidate);
+
+      const hostname =
+        parsed.hostname
+          .toLowerCase()
+          .replace(/^www\./, "");
 
       /*
-       * Find all URLs in the OSHAkur page.
+       * BLOCK BAD HOSTS
        */
-      const urls = html.match(
-        /https?:\/\/[^\s"'<>\\]+/gi
-      ) || [];
-
-      const allowedHosts = [
-        "audinifer.com",
-        "vibuxer.com",
-        "streamhg",
-        "hgcloud.to"
-      ];
-
-      const blockedHosts = [
-        "3xyy.com"
-      ];
-
-      for (let rawUrl of urls) {
-        let candidate = rawUrl
-          .replace(/&amp;/g, "&")
-          .replace(/[),.;]+$/g, "");
-
-        try {
-          const parsed =
-            new URL(candidate);
-
-          const hostname =
-            parsed.hostname.toLowerCase();
-
-          /*
-           * Block known advertisement URLs.
-           */
-          if (
-            blockedHosts.some(
-              host =>
-                hostname === host ||
-                hostname.endsWith(`.${host}`)
-            )
-          ) {
-            continue;
-          }
-
-          if (
-            parsed.pathname
-              .toLowerCase()
-              .includes("afu.php")
-          ) {
-            continue;
-          }
-
-          /*
-           * Only accept known watch hosts.
-           */
-          const allowed =
-            allowedHosts.some(host =>
-              hostname === host ||
-              hostname.endsWith(`.${host}`) ||
-              hostname.includes(host)
-            );
-
-          if (!allowed) {
-            continue;
-          }
-
-          return parsed.href;
-
-        } catch {
-          continue;
-        }
+      if (
+        blockedHosts.some(
+          host =>
+            hostname === host ||
+            hostname.endsWith(`.${host}`)
+        )
+      ) {
+        continue;
       }
 
-      return null;
+      /*
+       * BLOCK AD PATHS
+       */
+      const pathname =
+        parsed.pathname.toLowerCase();
+
+      if (
+        blockedPaths.some(
+          path => pathname.includes(path)
+        )
+      ) {
+        continue;
+      }
+
+      /*
+       * BLOCK OBVIOUS REDIRECT PARAMETERS
+       */
+      const hasBlockedParameter =
+        blockedParams.some(
+          param =>
+            parsed.searchParams.has(param)
+        );
+
+      if (hasBlockedParameter) {
+        continue;
+      }
+
+      /*
+       * ONLY ACCEPT APPROVED WATCH HOSTS
+       */
+      const allowed =
+        allowedHosts.some(host => {
+
+          /*
+           * Exact domain match.
+           */
+          if (hostname === host) {
+            return true;
+          }
+
+          /*
+           * Subdomain match.
+           */
+          if (hostname.endsWith(`.${host}`)) {
+            return true;
+          }
+
+          /*
+           * streamhg can appear as a longer hostname.
+           */
+          if (
+            host === "streamhg" &&
+            hostname.includes("streamhg")
+          ) {
+            return true;
+          }
+
+          return false;
+        });
+
+      if (!allowed) {
+        continue;
+      }
+
+      /*
+       * Valid HTTPS/HTTP watch URL.
+       */
+      if (
+        parsed.protocol !== "https:" &&
+        parsed.protocol !== "http:"
+      ) {
+        continue;
+      }
+
+      return parsed.href;
+
+    } catch {
+      continue;
     }
+  }
+
+  return null;
+}
+
 
     async function getExistingUrls() {
       const existing = new Set();
@@ -394,12 +480,13 @@ export default async (req) => {
     let skipped = 0;
     let errors = 0;
 
-    const skippedReasons = {
-      duplicate: 0,
-      noLinks: 0,
-      noWatchUrl: 0,
-      invalid: 0
-    };
+  const skippedReasons = {
+  duplicate: 0,
+  noLinks: 0,
+  noWatchUrl: 0,
+  blockedWatchUrl: 0,
+  invalid: 0
+};
 
     /*
      * Protect against the API returning the same page.
