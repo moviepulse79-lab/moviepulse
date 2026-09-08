@@ -1501,21 +1501,20 @@ function openMovie(id) {
     playerTitle.textContent =
         movie.title;
 
+videoContainer.innerHTML = `
 
-    videoContainer.innerHTML = `
+    <iframe
+        src="${escapeHtml(
+            convertToEmbedUrl(movie.watchUrl)
+        )}"
+        width="100%"
+        height="100%"
+        frameborder="0"
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowfullscreen
+    ></iframe>
 
-        <iframe
-            src="${escapeHtml(
-                convertToEmbedUrl(movie.watchUrl)
-            )}"
-            width="100%"
-            height="100%"
-            frameborder="0"
-            allowfullscreen
-            allow="autoplay; fullscreen"
-        ></iframe>
-
-    `;
+`;
 
 
     playerModal.classList.add("active");
