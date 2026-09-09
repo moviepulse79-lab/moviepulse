@@ -1480,10 +1480,22 @@ async function loadMovies(page = 1) {
         }));
 
 
-      // Show only the current page
-oshakurMovies = newMovies;
+ 
 
+// Keep previous movies and add the new ones
+if (page === 1) {
+    oshakurMovies = newMovies;
+    movieGrid.innerHTML = "";
+} else {
+    oshakurMovies = [
+        ...oshakurMovies,
+        ...newMovies
+    ];
+}
+
+// Render all movies loaded so far
 renderMovies(oshakurMovies);
+
 
         updateFeaturedMovie();
 
