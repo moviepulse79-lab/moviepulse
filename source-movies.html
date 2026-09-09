@@ -1069,6 +1069,75 @@ nav a.active{
     width: 100vw;
     height: 100vh;
 }
+.watchlist-btn {
+    width: 100%;
+    margin-top: 8px;
+    padding: 9px 10px;
+    border: 1px solid #333;
+    border-radius: 7px;
+    background: #181818;
+    color: #ccc;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .25s ease;
+}
+
+.watchlist-btn:hover {
+    border-color: #e50914;
+    color: #fff;
+    background: #222;
+}
+
+.watchlist-btn.added {
+    border-color: #e50914;
+    background: rgba(229, 9, 20, 0.12);
+    color: #ff3b3b;
+}
+
+.watchlist-btn.added:hover {
+    background: #e50914;
+    color: #fff;
+}
+
+.watchlist-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.watchlist-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #111;
+    border: 1px solid #333;
+    color: #ddd;
+    padding: 10px 17px;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .25s ease;
+}
+
+.watchlist-toggle:hover,
+.watchlist-toggle.active {
+    background: #e50914;
+    border-color: #e50914;
+    color: #fff;
+}
+
+.watchlist-count {
+    color: #888;
+    font-size: 12px;
+}
+
 </style>
 
 </head>
@@ -1198,8 +1267,16 @@ nav a.active{
             placeholder="Search available movies...">
 
     </div>
+<div class="watchlist-bar">
+    <button id="watchlistToggle" class="watchlist-toggle" type="button">
+        <i class="fa-solid fa-bookmark"></i>
+        My Watchlist
+    </button>
 
-
+    <span id="watchlistCount" class="watchlist-count">
+        0 movies saved
+    </span>
+</div>
     <div class="movie-grid" id="movieGrid"></div>
 
 
@@ -1505,7 +1582,8 @@ function renderMovies(movies) {
 
     movies.forEach(movie => {
 
-        const card = document.createElement("div");
+        const card =
+            document.createElement("div");
 
         card.className = "movie-card";
 
@@ -1529,6 +1607,10 @@ function renderMovies(movies) {
             !!movie.watchUrl;
 
 
+        const saved =
+            isInWatchlist(movie.id);
+
+
         card.innerHTML = `
 
             <div class="movie-poster">
@@ -1540,29 +1622,33 @@ function renderMovies(movies) {
                     onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'"
                 >
 
-               
-
                 <div class="movie-overlay">
 
                     ${
                         hasWatch
 
                         ? `
+
                             <button
                                 class="watch-btn"
-                                onclick="openMovie('${movie.id}')"
-                            >
+                                onclick="openMovie('${movie.id}')">
+
                                 ▶ Watch
+
                             </button>
+
                         `
 
                         : `
+
                             <span
                                 class="watch-btn"
-                                style="opacity:.6;cursor:not-allowed;"
-                            >
+                                style="opacity:.6;cursor:not-allowed;">
+
                                 Not Available
+
                             </span>
+
                         `
                     }
 
@@ -1577,6 +1663,7 @@ function renderMovies(movies) {
                     ${escapeHtml(movie.title)}
                 </h3>
 
+
                 <div class="movie-meta">
 
                     <span>
@@ -1589,6 +1676,19 @@ function renderMovies(movies) {
 
                 </div>
 
+
+                <button
+                    class="watchlist-btn ${saved ? "added" : ""}"
+                    onclick="toggleWatchlist('${movie.id}')">
+
+                    ${
+                        saved
+                        ? "❤️ Remove from Watchlist"
+                        : "♡ Add to Watchlist"
+                    }
+
+                </button>
+
             </div>
 
         `;
@@ -1597,6 +1697,9 @@ function renderMovies(movies) {
         movieGrid.appendChild(card);
 
     });
+
+
+    updateWatchlistCount();
 
 }
 
@@ -1763,7 +1866,24 @@ if (movieSearch) {
                 });
 
 
-            renderMovies(filtered);
+           if (showingWatchlist) {
+
+    const savedIds =
+        getWatchlist();
+
+    const filteredWatchlist =
+        filtered.filter(movie =>
+            savedIds.includes(movie.id) ||
+            savedIds.includes(String(movie.id))
+        );
+
+    renderMovies(filteredWatchlist);
+
+} else {
+
+    renderMovies(filtered);
+
+}
 
         }
     );
@@ -2028,7 +2148,247 @@ if (fullscreenButton) {
     });
 
 }
+// ===============================
+// WATCHLIST
+// ===============================
 
+const WATCHLIST_KEY =
+    "moviepulse_agasobanuye_watchlist";
+
+
+function getWatchlist() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(WATCHLIST_KEY)
+        ) || [];
+
+    } catch {
+
+        return [];
+
+    }
+
+}
+
+
+function saveWatchlist(list) {
+
+    localStorage.setItem(
+        WATCHLIST_KEY,
+        JSON.stringify(list)
+    );
+
+}
+
+
+function isInWatchlist(id) {
+
+    const list =
+        getWatchlist();
+
+    return list.some(
+        item => String(item) === String(id)
+    );
+
+}
+
+
+function toggleWatchlist(id) {
+
+    let list =
+        getWatchlist();
+
+
+    const index =
+        list.findIndex(
+            item => String(item) === String(id)
+        );
+
+
+    if (index === -1) {
+
+        list.push(id);
+
+    } else {
+
+        list.splice(index, 1);
+
+    }
+
+
+    saveWatchlist(list);
+
+
+    renderMovies(
+        getCurrentlyDisplayedMovies()
+    );
+
+
+    updateWatchlistCount();
+
+}
+
+
+function updateWatchlistCount() {
+
+    const count =
+        getWatchlist().length;
+
+
+    const countElement =
+        document.getElementById(
+            "watchlistCount"
+        );
+
+
+    if (!countElement) {
+        return;
+    }
+
+
+    countElement.textContent =
+        count === 1
+            ? "1 movie saved"
+            : `${count} movies saved`;
+
+}
+
+
+// ===============================
+// CURRENT MOVIE LIST
+// ===============================
+
+function getCurrentlyDisplayedMovies() {
+
+    const query =
+        movieSearch
+            ? movieSearch.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    if (!query) {
+
+        return oshakurMovies;
+
+    }
+
+
+    return oshakurMovies.filter(movie => {
+
+        return (
+
+            movie.title
+                .toLowerCase()
+                .includes(query)
+
+            ||
+
+            movie.category
+                .toLowerCase()
+                .includes(query)
+
+        );
+
+    });
+
+}
+
+
+// ===============================
+// SHOW WATCHLIST
+// ===============================
+
+let showingWatchlist = false;
+
+
+const watchlistToggle =
+    document.getElementById(
+        "watchlistToggle"
+    );
+
+
+if (watchlistToggle) {
+
+    watchlistToggle.addEventListener(
+        "click",
+        function () {
+
+            showingWatchlist =
+                !showingWatchlist;
+
+
+            this.classList.toggle(
+                "active",
+                showingWatchlist
+            );
+
+
+            if (showingWatchlist) {
+
+                const savedIds =
+                    getWatchlist();
+
+
+                const savedMovies =
+                    oshakurMovies.filter(
+                        movie =>
+                            savedIds.includes(
+                                movie.id
+                            ) ||
+                            savedIds.includes(
+                                String(movie.id)
+                            )
+                    );
+
+
+                renderMovies(
+                    savedMovies
+                );
+
+
+                if (!savedMovies.length) {
+
+                    emptyState.style.display =
+                        "block";
+
+                    emptyState.innerHTML = `
+
+                        <i class="fa-solid fa-heart"></i>
+
+                        <h3>
+                            Your watchlist is empty
+                        </h3>
+
+                        <p>
+                            Add movies to your watchlist
+                            and they will appear here.
+                        </p>
+
+                    `;
+
+                }
+
+            } else {
+
+                renderMovies(
+                    getCurrentlyDisplayedMovies()
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// Update count when page loads
+
+updateWatchlistCount();
 // ===============================
 // START
 // ===============================
