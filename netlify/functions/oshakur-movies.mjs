@@ -1,4 +1,4 @@
-export default async () => {
+export default async (request) => {
   try {
     const supabaseUrl = process.env.SUPABASE_URL;
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -7,13 +7,34 @@ export default async () => {
       throw new Error("Supabase environment variables are missing");
     }
 
+    // Get pagination values from the frontend
+    const url = new URL(request.url);
+
+    const page = Math.max(
+      parseInt(url.searchParams.get("page") || "1", 10),
+      1
+    );
+
+    const limit = Math.min(
+      Math.max(
+        parseInt(url.searchParams.get("limit") || "12", 10),
+        1
+      ),
+      50
+    );
+
+    // Calculate which movies to fetch
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+
     const response = await fetch(
-     `${supabaseUrl}/rest/v1/oshakur_movies?select=*&watch_url=not.is.null&order=updated_at.desc`,
+      `${supabaseUrl}/rest/v1/oshakur_movies?select=*&watch_url=not.is.null&order=updated_at.desc&range=${from}-${to}`,
       {
         headers: {
           apikey: serviceKey,
           Authorization: `Bearer ${serviceKey}`,
-          Accept: "application/json"
+          Accept: "application/json",
+          Prefer: "count=exact"
         }
       }
     );
@@ -28,10 +49,32 @@ export default async () => {
 
     const movies = await response.json();
 
+    // Supabase gives the total number in Content-Range
+    const contentRange = response.headers.get("content-range");
+
+    let total = null;
+
+    if (contentRange) {
+      const match = contentRange.match(/\/(\d+)$/);
+
+      if (match) {
+        total = parseInt(match[1], 10);
+      }
+    }
+
+    const hasNext =
+      total !== null
+        ? to + 1 < total
+        : movies.length === limit;
+
     return new Response(
       JSON.stringify({
         success: true,
+        page,
+        limit,
         count: movies.length,
+        total,
+        hasNext,
         movies
       }),
       {
