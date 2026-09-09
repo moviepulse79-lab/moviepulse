@@ -1385,7 +1385,8 @@ nav a.active{
     
 
 <script>
-
+ 
+let allOshakurMovies = [];
 let oshakurMovies = [];
 
 let currentPage = 1;
@@ -1480,26 +1481,10 @@ async function loadMovies(page = 1) {
         }));
 
 
-        // First page = replace
-        if (page === 1) {
+      // Show only the current page
+oshakurMovies = newMovies;
 
-            oshakurMovies = newMovies;
-
-        }
-
-        // Next pages = add to existing movies
-        else {
-
-            oshakurMovies = [
-                ...oshakurMovies,
-                ...newMovies
-            ];
-
-        }
-
-
-        // Render ALL loaded movies
-        renderMovies(oshakurMovies);
+renderMovies(oshakurMovies);
 
         updateFeaturedMovie();
 
