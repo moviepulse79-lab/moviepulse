@@ -7,7 +7,6 @@ export default async (request) => {
       throw new Error("Supabase environment variables are missing");
     }
 
-    // Get pagination values from the frontend
     const url = new URL(request.url);
 
     const page = Math.max(
@@ -23,21 +22,25 @@ export default async (request) => {
       50
     );
 
-    // Calculate which movies to fetch
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/oshakur_movies?select=*&watch_url=not.is.null&order=updated_at.desc&range=${from}-${to}`,
-      {
-        headers: {
-          apikey: serviceKey,
-          Authorization: `Bearer ${serviceKey}`,
-          Accept: "application/json",
-          Prefer: "count=exact"
-        }
+    const supabaseApiUrl =
+      `${supabaseUrl}/rest/v1/oshakur_movies` +
+      `?select=*` +
+      `&watch_url=not.is.null` +
+      `&order=updated_at.desc` +
+      `&limit=${limit}` +
+      `&offset=${from}`;
+
+    const response = await fetch(supabaseApiUrl, {
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        Accept: "application/json",
+        Prefer: "count=exact"
       }
-    );
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -49,7 +52,6 @@ export default async (request) => {
 
     const movies = await response.json();
 
-    // Supabase gives the total number in Content-Range
     const contentRange = response.headers.get("content-range");
 
     let total = null;
@@ -64,7 +66,7 @@ export default async (request) => {
 
     const hasNext =
       total !== null
-        ? to + 1 < total
+        ? from + movies.length < total
         : movies.length === limit;
 
     return new Response(
@@ -87,7 +89,6 @@ export default async (request) => {
     );
 
   } catch (error) {
-
     console.error("OSHAkur movies API error:", error);
 
     return new Response(
