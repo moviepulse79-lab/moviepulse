@@ -1197,6 +1197,40 @@ let hasNextMovies = true;
 
 let showingWatchlist = false;
 
+// ==========================================
+// HERO MOVIE ROTATION
+// ==========================================
+
+let featuredIndex = 0;
+let featuredRotationTimer = null;
+
+function startHeroRotation() {
+
+    // Clear any previous timer
+    if (featuredRotationTimer) {
+        clearInterval(featuredRotationTimer);
+    }
+
+    // Nothing to rotate
+    if (agasobanuyeMovies.length <= 1) {
+        return;
+    }
+
+    featuredRotationTimer = setInterval(() => {
+
+        featuredIndex++;
+
+        if (
+            featuredIndex >=
+            agasobanuyeMovies.length
+        ) {
+            featuredIndex = 0;
+        }
+
+        updateFeaturedMovie(featuredIndex);
+
+    }, 60000); // 60 seconds
+}
 
 // ==========================================
 // LOAD MOVIES FROM NETLIFY FUNCTION
