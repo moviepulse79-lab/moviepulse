@@ -47,11 +47,9 @@ export default async (req) => {
     const movies = [];
     const seen = new Set();
 
-    /*
-    --------------------------------------------------
-    FIND MOVIE LINKS
-    --------------------------------------------------
-    */
+    // ==========================================
+    // FIND MOVIE LINKS
+    // ==========================================
 
     const hrefRegex =
       /href=["']([^"']*\/movies\/[^"'?#]+)["']/gi;
@@ -60,10 +58,8 @@ export default async (req) => {
 
     while ((match = hrefRegex.exec(html)) !== null) {
 
-      let href = match[1];
-
       const sourceUrl = new URL(
-        href,
+        match[1],
         "https://agasobanuyefree.com"
       ).href;
 
@@ -73,10 +69,7 @@ export default async (req) => {
 
       const parsed = new URL(cleanUrl);
 
-      /*
-      ONLY allow Agasobanuye FREE
-      */
-
+      // Only Agasobanuye FREE
       if (
         parsed.hostname !== "agasobanuyefree.com" &&
         parsed.hostname !== "www.agasobanuyefree.com"
@@ -84,34 +77,25 @@ export default async (req) => {
         continue;
       }
 
-      /*
-      Only movie detail URLs
-      */
-
-      const pathParts = parsed.pathname
+      const parts = parsed.pathname
         .split("/")
         .filter(Boolean);
 
+      // Must be /movies/slug
       if (
-        pathParts.length !== 2 ||
-        pathParts[0] !== "movies"
+        parts.length !== 2 ||
+        parts[0] !== "movies"
       ) {
         continue;
       }
 
-      const slug = pathParts[1];
+      const slug = parts[1];
 
       if (!slug || seen.has(slug)) {
         continue;
       }
 
       seen.add(slug);
-
-      /*
-      --------------------------------------------------
-      TITLE
-      --------------------------------------------------
-      */
 
       let title = slug
         .replace(/-by-[^-]+$/i, "")
@@ -120,14 +104,12 @@ export default async (req) => {
 
       movies.push({
         id: slug,
-
         title,
 
         poster: "",
-
         summary: "",
-
         category: "Agasobanuye",
+        duration: "",
 
         sourceUrl: cleanUrl,
 
@@ -138,23 +120,17 @@ export default async (req) => {
           `${cleanUrl}/watch/server/2`
       });
 
-      /*
-      Stop collecting after enough movies.
-      */
-
       if (movies.length >= limit) {
         break;
       }
     }
 
-    /*
-    --------------------------------------------------
-    GET POSTERS + DETAILS
-    --------------------------------------------------
-    */
+    // ==========================================
+    // FETCH MOVIE DETAILS
+    // ==========================================
 
     const detailedMovies = await Promise.all(
-      movies.map(async (movie) => {
+      movies.map(async movie => {
 
         try {
 
@@ -178,81 +154,171 @@ export default async (req) => {
           const detailHtml =
             await detailResponse.text();
 
-          /*
-          ------------------------------------------------
-          FIND POSTER
-          ------------------------------------------------
-          */
+          // ========================================
+          // POSTER
+          // ========================================
 
           let poster = "";
 
-          const imageRegex =
-            /<img[^>]+(?:src|data-src|data-lazy-src)=["']([^"']+)["'][^>]*>/gi;
+          // 1. Open Graph image
+          const ogImage =
+            detailHtml.match(
+              /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i
+            );
 
-          let imageMatch;
-
-          const images = [];
-
-          while (
-            (imageMatch =
-              imageRegex.exec(detailHtml)) !== null
-          ) {
-
-            let imageUrl =
-              imageMatch[1];
-
-            if (
-              !imageUrl ||
-              imageUrl.startsWith("data:")
-            ) {
-              continue;
-            }
-
-            imageUrl = new URL(
-              imageUrl,
-              movie.sourceUrl
-            ).href;
-
-            images.push(imageUrl);
+          if (ogImage) {
+            poster = ogImage[1];
           }
 
-          /*
-          Prefer images that look like movie posters.
-          */
+          // 2. Reverse attribute order
+          if (!poster) {
 
-          poster =
-            images.find(src =>
-              /poster|movie|cover|thumbnail|uploads|storage/i
-                .test(src)
-            ) ||
-            images.find(src =>
-              /\.(jpg|jpeg|png|webp)(\?|$)/i.test(src)
-            ) ||
-            "";
+            const ogImageReverse =
+              detailHtml.match(
+                /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i
+              );
 
-          /*
-          ------------------------------------------------
-          FIND DESCRIPTION
-          ------------------------------------------------
-          */
+            if (ogImageReverse) {
+              poster = ogImageReverse[1];
+            }
+          }
+
+          // 3. Twitter image
+          if (!poster) {
+
+            const twitterImage =
+              detailHtml.match(
+                /<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i
+              );
+
+            if (twitterImage) {
+              poster = twitterImage[1];
+            }
+          }
+
+          // 4. JSON-LD image
+          if (!poster) {
+
+            const jsonLdMatches =
+              detailHtml.match(
+                /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi
+              );
+
+            if (jsonLdMatches) {
+
+              for (const block of jsonLdMatches) {
+
+                try {
+
+                  const jsonText =
+                    block
+                      .replace(
+                        /<script[^>]*>/i,
+                        ""
+                      )
+                      .replace(
+                        /<\/script>/i,
+                        ""
+                      )
+                      .trim();
+
+                  const json =
+                    JSON.parse(jsonText);
+
+                  if (
+                    json &&
+                    typeof json.image === "string"
+                  ) {
+                    poster = json.image;
+                    break;
+                  }
+
+                  if (
+                    json &&
+                    Array.isArray(json.image) &&
+                    json.image.length
+                  ) {
+                    poster = json.image[0];
+                    break;
+                  }
+
+                } catch {
+                  // Ignore invalid JSON-LD
+                }
+              }
+            }
+          }
+
+          // 5. Normal images
+          if (!poster) {
+
+            const imageRegex =
+              /<img[^>]+(?:src|data-src|data-lazy-src)=["']([^"']+)["'][^>]*>/gi;
+
+            let imageMatch;
+
+            const possibleImages = [];
+
+            while (
+              (imageMatch =
+                imageRegex.exec(detailHtml)) !== null
+            ) {
+
+              const imageUrl =
+                imageMatch[1];
+
+              if (
+                !imageUrl ||
+                imageUrl.startsWith("data:")
+              ) {
+                continue;
+              }
+
+              possibleImages.push(
+                new URL(
+                  imageUrl,
+                  movie.sourceUrl
+                ).href
+              );
+            }
+
+            poster =
+              possibleImages.find(src =>
+                /poster|cover|thumbnail|movie/i.test(src)
+              ) ||
+              possibleImages.find(src =>
+                /\.(jpg|jpeg|png|webp)(\?|$)/i.test(src)
+              ) ||
+              "";
+          }
+
+          // Make poster absolute
+          if (poster) {
+            poster = new URL(
+              poster,
+              movie.sourceUrl
+            ).href;
+          }
+
+          // ========================================
+          // DESCRIPTION
+          // ========================================
 
           let summary = "";
 
-          const descriptionMatch =
+          const description =
             detailHtml.match(
               /<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i
             );
 
-          if (descriptionMatch) {
+          if (description) {
             summary =
-              descriptionMatch[1].trim();
+              description[1].trim();
           }
 
-          /*
-          ------------------------------------------------
-          FIND TITLE
-          ------------------------------------------------
-          */
+          // ========================================
+          // TITLE
+          // ========================================
 
           const titleMatch =
             detailHtml.match(
@@ -261,17 +327,37 @@ export default async (req) => {
 
           if (titleMatch) {
 
-            const pageTitle =
+            let pageTitle =
               titleMatch[1]
                 .replace(/\s+/g, " ")
                 .trim();
 
-            if (
-              pageTitle &&
-              !/agasobanuye/i.test(pageTitle)
-            ) {
+            // Remove site name
+            pageTitle =
+              pageTitle
+                .replace(
+                  /\s*[-|–]\s*Agasobanuye.*$/i,
+                  ""
+                )
+                .trim();
+
+            if (pageTitle) {
               movie.title = pageTitle;
             }
+          }
+
+          // ========================================
+          // CATEGORY
+          // ========================================
+
+          const categoryMatch =
+            detailHtml.match(
+              /(?:Genre|Category)[^<]{0,50}<\/[^>]+>\s*<[^>]+>([^<]+)/i
+            );
+
+          if (categoryMatch) {
+            movie.category =
+              categoryMatch[1].trim();
           }
 
           return {
@@ -283,7 +369,8 @@ export default async (req) => {
         } catch (error) {
 
           console.error(
-            `Failed to inspect ${movie.sourceUrl}`,
+            "Movie detail error:",
+            movie.sourceUrl,
             error
           );
 
@@ -291,12 +378,6 @@ export default async (req) => {
         }
       })
     );
-
-    /*
-    --------------------------------------------------
-    RESPONSE
-    --------------------------------------------------
-    */
 
     return json({
       success: true,
@@ -336,11 +417,9 @@ export default async (req) => {
 };
 
 
-/*
-==================================================
-JSON RESPONSE
-==================================================
-*/
+// ==========================================
+// JSON
+// ==========================================
 
 function json(data, status = 200) {
 
