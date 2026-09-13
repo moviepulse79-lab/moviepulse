@@ -125,8 +125,10 @@ export default async (req) => {
         duration: "",
         sourceUrl: cleanUrl,
         watchUrl: `${cleanUrl}/watch`,
+        server1Url: "",
         server2Url: `${cleanUrl}/watch/server/2`,
-        playerUrl: ""
+        playerUrl: "",
+        playerType: ""
       });
 
       if (movies.length >= limit) {
@@ -290,8 +292,6 @@ export default async (req) => {
 
           let realTitle = "";
 
-          // H1
-
           const h1Match =
             detailHtml.match(
               /<h1[^>]*>([\s\S]*?)<\/h1>/i
@@ -305,8 +305,6 @@ export default async (req) => {
                 .replace(/\s+/g, " ")
                 .trim();
           }
-
-          // OG title
 
           if (!realTitle) {
 
@@ -323,8 +321,6 @@ export default async (req) => {
             }
           }
 
-          // Reverse OG title
-
           if (!realTitle) {
 
             const ogTitleReverse =
@@ -339,8 +335,6 @@ export default async (req) => {
                   .trim();
             }
           }
-
-          // Page title
 
           if (!realTitle) {
 
@@ -421,16 +415,29 @@ export default async (req) => {
           }
 
           // ======================================
-          // PLAYER URL
+          // PLAYER EXTRACTION
+          // SERVER 1 MP4 FIRST
+          // SERVER 2 ABYSSPLAYER FALLBACK
           // ======================================
 
           let playerUrl = "";
+          let playerType = "";
+
+          let server1Url = "";
+          let server2PlayerUrl = "";
+
+          // ======================================
+          // SERVER 1
+          // ======================================
 
           try {
 
-            const playerResponse =
+            const server1UrlPage =
+              `${movie.sourceUrl}/watch/server/1`;
+
+            const server1Response =
               await fetch(
-                movie.server2Url,
+                server1UrlPage,
                 {
                   headers: {
                     "User-Agent":
@@ -445,75 +452,333 @@ export default async (req) => {
                 }
               );
 
-            if (playerResponse.ok) {
+            if (server1Response.ok) {
 
-              const playerHtml =
-                await playerResponse.text();
+              const server1Html =
+                await server1Response.text();
 
-              // Find iframe
+              // ==================================
+              // FIND DIRECT MP4 URL
+              // ==================================
 
-              const iframeRegex =
-                /<iframe[^>]+src=["']([^"']+)["']/gi;
+              const mp4Matches =
+                server1Html.match(
+                  /https?:\/\/[^"'\\\s<>]+\.mp4(?:\?[^"'\\\s<>]*)?/gi
+                );
 
-              let iframeMatch;
-
-              while (
-                (iframeMatch =
-                  iframeRegex.exec(playerHtml)) !== null
+              if (
+                mp4Matches &&
+                mp4Matches.length
               ) {
 
-                try {
+                for (
+                  const foundUrl
+                  of mp4Matches
+                ) {
 
-                  const iframeUrl =
-                    new URL(
-                      iframeMatch[1],
-                      movie.server2Url
-                    ).href;
+                  try {
 
-                  const host =
-                    new URL(
-                      iframeUrl
-                    ).hostname
-                      .toLowerCase();
+                    const cleanMp4 =
+                      foundUrl
+                        .replace(
+                          /&amp;/g,
+                          "&"
+                        )
+                        .replace(
+                          /\\\//g,
+                          "/"
+                        );
 
-                  if (
-                    host.includes(
-                      "abyssplayer.com"
-                    )
-                  ) {
+                    const parsedMp4 =
+                      new URL(cleanMp4);
 
-                    playerUrl =
-                      iframeUrl;
+                    const host =
+                      parsedMp4.hostname
+                        .toLowerCase();
 
-                    break;
-                  }
+                    if (
+                      host ===
+                        "media.agasobanuyenow.com" ||
+                      host.endsWith(
+                        ".agasobanuyenow.com"
+                      )
+                    ) {
 
-                } catch {}
+                      server1Url =
+                        parsedMp4.href;
+
+                      break;
+                    }
+
+                  } catch {}
+                }
               }
 
-              // Search raw URL
+              // ==================================
+              // VIDEO SRC FALLBACK
+              // ==================================
 
-              if (!playerUrl) {
+              if (!server1Url) {
 
-                const abyssMatch =
-                  playerHtml.match(
-                    /https?:\/\/(?:www\.)?abyssplayer\.com\/[^"'\\<\s]+/i
+                const videoMatch =
+                  server1Html.match(
+                    /<video[^>]+src=["']([^"']+)["']/i
                   );
 
-                if (abyssMatch) {
-                  playerUrl =
-                    abyssMatch[0];
+                if (videoMatch) {
+
+                  try {
+
+                    const videoUrl =
+                      new URL(
+                        videoMatch[1],
+                        server1UrlPage
+                      );
+
+                    const host =
+                      videoUrl.hostname
+                        .toLowerCase();
+
+                    if (
+                      host ===
+                        "media.agasobanuyenow.com" ||
+                      host.endsWith(
+                        ".agasobanuyenow.com"
+                      )
+                    ) {
+
+                      server1Url =
+                        videoUrl.href;
+                    }
+
+                  } catch {}
+                }
+              }
+
+              // ==================================
+              // SOURCE TAG FALLBACK
+              // ==================================
+
+              if (!server1Url) {
+
+                const sourceMatch =
+                  server1Html.match(
+                    /<source[^>]+src=["']([^"']+\.mp4[^"']*)["']/i
+                  );
+
+                if (sourceMatch) {
+
+                  try {
+
+                    const sourceUrl =
+                      new URL(
+                        sourceMatch[1],
+                        server1UrlPage
+                      );
+
+                    const host =
+                      sourceUrl.hostname
+                        .toLowerCase();
+
+                    if (
+                      host ===
+                        "media.agasobanuyenow.com" ||
+                      host.endsWith(
+                        ".agasobanuyenow.com"
+                      )
+                    ) {
+
+                      server1Url =
+                        sourceUrl.href;
+                    }
+
+                  } catch {}
+                }
+              }
+
+              // ==================================
+              // HTML LINK FALLBACK
+              // ==================================
+
+              if (!server1Url) {
+
+                const linkRegex =
+                  /href=["']([^"']+\.mp4(?:\?[^"']*)?)["']/gi;
+
+                let linkMatch;
+
+                while (
+                  (linkMatch =
+                    linkRegex.exec(
+                      server1Html
+                    )) !== null
+                ) {
+
+                  try {
+
+                    const mediaUrl =
+                      new URL(
+                        linkMatch[1],
+                        server1UrlPage
+                      );
+
+                    const host =
+                      mediaUrl.hostname
+                        .toLowerCase();
+
+                    if (
+                      host ===
+                        "media.agasobanuyenow.com" ||
+                      host.endsWith(
+                        ".agasobanuyenow.com"
+                      )
+                    ) {
+
+                      server1Url =
+                        mediaUrl.href;
+
+                      break;
+                    }
+
+                  } catch {}
                 }
               }
             }
 
-          } catch (playerError) {
+          } catch (server1Error) {
 
             console.error(
-              "Player extraction failed:",
-              movie.server2Url,
-              playerError
+              "Server 1 extraction failed:",
+              movie.sourceUrl,
+              server1Error
             );
+          }
+
+          // ======================================
+          // SERVER 2 ABYSSPLAYER FALLBACK
+          // ======================================
+
+          if (!server1Url) {
+
+            try {
+
+              const playerResponse =
+                await fetch(
+                  movie.server2Url,
+                  {
+                    headers: {
+                      "User-Agent":
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
+                      "Accept":
+                        "text/html,application/xhtml+xml,*/*;q=0.8",
+
+                      "Accept-Language":
+                        "en-US,en;q=0.9"
+                    }
+                  }
+                );
+
+              if (playerResponse.ok) {
+
+                const playerHtml =
+                  await playerResponse.text();
+
+                // ==================================
+                // FIND ABYSS IFRAME
+                // ==================================
+
+                const iframeRegex =
+                  /<iframe[^>]+src=["']([^"']+)["']/gi;
+
+                let iframeMatch;
+
+                while (
+                  (iframeMatch =
+                    iframeRegex.exec(
+                      playerHtml
+                    )) !== null
+                ) {
+
+                  try {
+
+                    const iframeUrl =
+                      new URL(
+                        iframeMatch[1],
+                        movie.server2Url
+                      ).href;
+
+                    const host =
+                      new URL(
+                        iframeUrl
+                      ).hostname
+                        .toLowerCase();
+
+                    if (
+                      host ===
+                        "abyssplayer.com" ||
+                      host.endsWith(
+                        ".abyssplayer.com"
+                      )
+                    ) {
+
+                      server2PlayerUrl =
+                        iframeUrl;
+
+                      break;
+                    }
+
+                  } catch {}
+                }
+
+                // ==================================
+                // RAW ABYSS URL FALLBACK
+                // ==================================
+
+                if (!server2PlayerUrl) {
+
+                  const abyssMatch =
+                    playerHtml.match(
+                      /https?:\/\/(?:www\.)?abyssplayer\.com\/[^"'\\<\s]+/i
+                    );
+
+                  if (abyssMatch) {
+
+                    server2PlayerUrl =
+                      abyssMatch[0];
+                  }
+                }
+              }
+
+            } catch (playerError) {
+
+              console.error(
+                "Server 2 extraction failed:",
+                movie.server2Url,
+                playerError
+              );
+            }
+          }
+
+          // ======================================
+          // CHOOSE PLAYER
+          // ======================================
+
+          if (server1Url) {
+
+            playerUrl =
+              server1Url;
+
+            playerType =
+              "mp4";
+
+          } else if (server2PlayerUrl) {
+
+            playerUrl =
+              server2PlayerUrl;
+
+            playerType =
+              "iframe";
           }
 
           // ======================================
@@ -523,17 +788,25 @@ export default async (req) => {
           return {
             ...movie,
 
-            title: realTitle,
+            title:
+              realTitle,
 
             poster,
 
             summary,
 
-            category: movieCategory,
+            category:
+              movieCategory,
 
             duration,
 
-            playerUrl
+            playerUrl,
+
+            playerType,
+
+            server1Url,
+
+            server2PlayerUrl
           };
 
         } catch (error) {
@@ -558,7 +831,8 @@ export default async (req) => {
     return json({
       success: true,
 
-      source: "Agasobanuye FREE",
+      source:
+        "Agasobanuye FREE",
 
       page,
 
@@ -587,7 +861,10 @@ export default async (req) => {
     return json(
       {
         success: false,
-        error: error.message,
+
+        error:
+          error.message,
+
         movies: []
       },
       500
