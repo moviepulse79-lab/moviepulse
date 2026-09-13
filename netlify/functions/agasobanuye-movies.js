@@ -23,6 +23,10 @@ export default async (req) => {
         ? `&category=${encodeURIComponent(category)}`
         : "");
 
+    // ==========================================
+    // FETCH MOVIE LIST
+    // ==========================================
+
     const response = await fetch(targetUrl, {
       headers: {
         "User-Agent":
@@ -58,18 +62,29 @@ export default async (req) => {
 
     while ((match = hrefRegex.exec(html)) !== null) {
 
-      const sourceUrl = new URL(
-        match[1],
-        "https://agasobanuyefree.com"
-      ).href;
+      let sourceUrl;
+
+      try {
+        sourceUrl = new URL(
+          match[1],
+          "https://agasobanuyefree.com"
+        ).href;
+      } catch {
+        continue;
+      }
 
       const cleanUrl = sourceUrl
         .split("?")[0]
         .split("#")[0];
 
-      const parsed = new URL(cleanUrl);
+      let parsed;
 
-      // Only Agasobanuye FREE
+      try {
+        parsed = new URL(cleanUrl);
+      } catch {
+        continue;
+      }
+
       if (
         parsed.hostname !== "agasobanuyefree.com" &&
         parsed.hostname !== "www.agasobanuyefree.com"
@@ -81,7 +96,6 @@ export default async (req) => {
         .split("/")
         .filter(Boolean);
 
-      // Must be /movies/slug
       if (
         parts.length !== 2 ||
         parts[0] !== "movies"
@@ -97,7 +111,7 @@ export default async (req) => {
 
       seen.add(slug);
 
-      let title = slug
+      const title = slug
         .replace(/-by-[^-]+$/i, "")
         .replace(/-/g, " ")
         .replace(/\b\w/g, c => c.toUpperCase());
@@ -105,20 +119,13 @@ export default async (req) => {
       movies.push({
         id: slug,
         title,
-
         poster: "",
         summary: "",
-        category: "Agasobanuye",
+        category: "Movie",
         duration: "",
-
         sourceUrl: cleanUrl,
-
-        watchUrl:
-          `${cleanUrl}/watch`,
-
-        server2Url:
-          `${cleanUrl}/watch/server/2`,
-
+        watchUrl: `${cleanUrl}/watch`,
+        server2Url: `${cleanUrl}/watch/server/2`,
         playerUrl: ""
       });
 
@@ -128,17 +135,18 @@ export default async (req) => {
     }
 
     // ==========================================
-    // FETCH MOVIE DETAILS
+    // FETCH DETAILS FOR EACH MOVIE
     // ==========================================
 
     const detailedMovies = await Promise.all(
+
       movies.map(async movie => {
 
         try {
 
-          // ========================================
-          // MOVIE DETAIL PAGE
-          // ========================================
+          // ======================================
+          // FETCH MOVIE DETAIL PAGE
+          // ======================================
 
           const detailResponse = await fetch(
             movie.sourceUrl,
@@ -160,13 +168,12 @@ export default async (req) => {
           const detailHtml =
             await detailResponse.text();
 
-          // ========================================
+          // ======================================
           // POSTER
-          // ========================================
+          // ======================================
 
           let poster = "";
 
-          // 1. Open Graph image
           const ogImage =
             detailHtml.match(
               /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i
@@ -176,7 +183,6 @@ export default async (req) => {
             poster = ogImage[1];
           }
 
-          // 2. Reverse attribute order
           if (!poster) {
 
             const ogImageReverse =
@@ -189,7 +195,6 @@ export default async (req) => {
             }
           }
 
-          // 3. Twitter image
           if (!poster) {
 
             const twitterImage =
@@ -202,60 +207,8 @@ export default async (req) => {
             }
           }
 
-          // 4. JSON-LD image
-          if (!poster) {
+          // Normal images fallback
 
-            const jsonLdMatches =
-              detailHtml.match(
-                /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi
-              );
-
-            if (jsonLdMatches) {
-
-              for (const block of jsonLdMatches) {
-
-                try {
-
-                  const jsonText =
-                    block
-                      .replace(
-                        /<script[^>]*>/i,
-                        ""
-                      )
-                      .replace(
-                        /<\/script>/i,
-                        ""
-                      )
-                      .trim();
-
-                  const json =
-                    JSON.parse(jsonText);
-
-                  if (
-                    json &&
-                    typeof json.image === "string"
-                  ) {
-                    poster = json.image;
-                    break;
-                  }
-
-                  if (
-                    json &&
-                    Array.isArray(json.image) &&
-                    json.image.length
-                  ) {
-                    poster = json.image[0];
-                    break;
-                  }
-
-                } catch {
-                  // Ignore invalid JSON-LD
-                }
-              }
-            }
-          }
-
-          // 5. Normal images
           if (!poster) {
 
             const imageRegex =
@@ -294,7 +247,7 @@ export default async (req) => {
 
             poster =
               possibleImages.find(src =>
-                /poster|cover|thumbnail|movie/i.test(src)
+                /poster|cover|thumbnail/i.test(src)
               ) ||
               possibleImages.find(src =>
                 /\.(jpg|jpeg|png|webp)(\?|$)/i.test(src)
@@ -302,23 +255,19 @@ export default async (req) => {
               "";
           }
 
-          // Make poster absolute
           if (poster) {
 
             try {
-
-              poster =
-                new URL(
-                  poster,
-                  movie.sourceUrl
-                ).href;
-
+              poster = new URL(
+                poster,
+                movie.sourceUrl
+              ).href;
             } catch {}
           }
 
-          // ========================================
-          // DESCRIPTION
-          // ========================================
+          // ======================================
+          // SUMMARY
+          // ======================================
 
           let summary = "";
 
@@ -335,13 +284,14 @@ export default async (req) => {
                 .trim();
           }
 
-          // ========================================
-          // REAL MOVIE TITLE
-          // ========================================
+          // ======================================
+          // REAL TITLE
+          // ======================================
 
           let realTitle = "";
 
-          // 1. Main H1
+          // H1
+
           const h1Match =
             detailHtml.match(
               /<h1[^>]*>([\s\S]*?)<\/h1>/i
@@ -356,7 +306,8 @@ export default async (req) => {
                 .trim();
           }
 
-          // 2. Open Graph title
+          // OG title
+
           if (!realTitle) {
 
             const ogTitle =
@@ -365,7 +316,6 @@ export default async (req) => {
               );
 
             if (ogTitle) {
-
               realTitle =
                 ogTitle[1]
                   .replace(/\s+/g, " ")
@@ -373,7 +323,8 @@ export default async (req) => {
             }
           }
 
-          // 3. Reverse OG title
+          // Reverse OG title
+
           if (!realTitle) {
 
             const ogTitleReverse =
@@ -382,7 +333,6 @@ export default async (req) => {
               );
 
             if (ogTitleReverse) {
-
               realTitle =
                 ogTitleReverse[1]
                   .replace(/\s+/g, " ")
@@ -390,7 +340,8 @@ export default async (req) => {
             }
           }
 
-          // 4. Page title
+          // Page title
+
           if (!realTitle) {
 
             const titleMatch =
@@ -405,42 +356,45 @@ export default async (req) => {
                   .replace(/<[^>]+>/g, "")
                   .replace(/\s+/g, " ")
                   .trim();
-
-              realTitle =
-                realTitle
-                  .replace(
-                    /\s*[-|–]\s*Agasobanuye.*$/i,
-                    ""
-                  )
-                  .replace(
-                    /\s*[-|–]\s*Agasobanuye\s*FREE.*$/i,
-                    ""
-                  )
-                  .trim();
             }
           }
 
-          // 5. Slug fallback
+          // ======================================
+          // REMOVE SITE NAME FROM TITLE
+          // ======================================
+
+          realTitle =
+            realTitle
+              .replace(
+                /\s*[-|–]\s*Agasobanuye\s*FREE.*$/i,
+                ""
+              )
+              .replace(
+                /\s*[-|–]\s*Agasobanuye.*$/i,
+                ""
+              )
+              .replace(
+                /\s*\|\s*Agasobanuye.*$/i,
+                ""
+              )
+              .trim();
+
           if (!realTitle) {
             realTitle =
               movie.title ||
               "Untitled Movie";
           }
 
-          // Save title
-          movie.title = realTitle;
-
-          // ========================================
+          // ======================================
           // CATEGORY
-          // ========================================
+          // ======================================
+
+          let movieCategory = "Movie";
 
           const categoryMatch =
             detailHtml.match(
               /(?:Genre|Category)[^<]{0,50}<\/[^>]+>\s*<[^>]+>([^<]+)/i
             );
-
-          let movieCategory =
-            "Agasobanuye";
 
           if (categoryMatch) {
 
@@ -450,34 +404,31 @@ export default async (req) => {
                 .trim();
           }
 
-          // ========================================
+          // ======================================
           // DURATION
-          // ========================================
+          // ======================================
 
           let duration = "";
 
           const durationMatch =
             detailHtml.match(
-              /(?:Duration|Runtime)[^<]{0,80}(?:<[^>]+>){0,3}\s*([^<]{2,30})/i
+              /(?:Duration|Runtime)[^<]{0,100}(\d{1,3}\s*(?:min|mins|minutes|h|hr|hrs))/i
             );
 
           if (durationMatch) {
-
             duration =
-              durationMatch[1]
-                .replace(/\s+/g, " ")
-                .trim();
+              durationMatch[1].trim();
           }
 
-          // ==========================================
-          // GET REAL ABYSSPLAYER EMBED URL
-          // ==========================================
+          // ======================================
+          // PLAYER URL
+          // ======================================
 
           let playerUrl = "";
 
           try {
 
-            const server2Response =
+            const playerResponse =
               await fetch(
                 movie.server2Url,
                 {
@@ -494,23 +445,21 @@ export default async (req) => {
                 }
               );
 
-            if (server2Response.ok) {
+            if (playerResponse.ok) {
 
-              const server2Html =
-                await server2Response.text();
+              const playerHtml =
+                await playerResponse.text();
 
-              // ======================================
-              // 1. NORMAL IFRAME
-              // ======================================
+              // Find iframe
 
-              const iframeMatches =
-                server2Html.matchAll(
-                  /<iframe\b[^>]*\bsrc\s*=\s*["']([^"']+)["']/gi
-                );
+              const iframeRegex =
+                /<iframe[^>]+src=["']([^"']+)["']/gi;
 
-              for (
-                const iframeMatch
-                of iframeMatches
+              let iframeMatch;
+
+              while (
+                (iframeMatch =
+                  iframeRegex.exec(playerHtml)) !== null
               ) {
 
                 try {
@@ -521,17 +470,15 @@ export default async (req) => {
                       movie.server2Url
                     ).href;
 
-                  const iframeHost =
+                  const host =
                     new URL(
                       iframeUrl
                     ).hostname
                       .toLowerCase();
 
                   if (
-                    iframeHost ===
-                      "abyssplayer.com" ||
-                    iframeHost.endsWith(
-                      ".abyssplayer.com"
+                    host.includes(
+                      "abyssplayer.com"
                     )
                   ) {
 
@@ -544,42 +491,18 @@ export default async (req) => {
                 } catch {}
               }
 
-              // ======================================
-              // 2. SEARCH RAW HTML
-              // ======================================
+              // Search raw URL
 
               if (!playerUrl) {
 
                 const abyssMatch =
-                  server2Html.match(
-                    /https?:\/\/(?:www\.)?abyssplayer\.com\/[A-Za-z0-9_-]+/i
+                  playerHtml.match(
+                    /https?:\/\/(?:www\.)?abyssplayer\.com\/[^"'\\<\s]+/i
                   );
 
                 if (abyssMatch) {
                   playerUrl =
                     abyssMatch[0];
-                }
-              }
-
-              // ======================================
-              // 3. SEARCH ESCAPED URL
-              // ======================================
-
-              if (!playerUrl) {
-
-                const escapedMatch =
-                  server2Html.match(
-                    /https?:\\\/\\\/(?:www\.)?abyssplayer\.com\\\/[A-Za-z0-9_-]+/i
-                  );
-
-                if (escapedMatch) {
-
-                  playerUrl =
-                    escapedMatch[0]
-                      .replace(
-                        /\\\//g,
-                        "/"
-                      );
                 }
               }
             }
@@ -593,23 +516,20 @@ export default async (req) => {
             );
           }
 
-          // ========================================
+          // ======================================
           // RETURN COMPLETE MOVIE
-          // ========================================
+          // ======================================
 
           return {
-
             ...movie,
 
-            title:
-              realTitle,
+            title: realTitle,
 
             poster,
 
             summary,
 
-            category:
-              movieCategory,
+            category: movieCategory,
 
             duration,
 
@@ -626,7 +546,9 @@ export default async (req) => {
 
           return movie;
         }
+
       })
+
     );
 
     // ==========================================
@@ -634,11 +556,9 @@ export default async (req) => {
     // ==========================================
 
     return json({
-
       success: true,
 
-      source:
-        "Agasobanuye FREE",
+      source: "Agasobanuye FREE",
 
       page,
 
