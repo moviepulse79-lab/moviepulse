@@ -171,35 +171,31 @@ nav a.active{
     background:#e50914;
 }
 
-
-/* ================= HERO ================= */
 .watch-hero{
-
-    min-height:520px;
+    min-height:360px;
 
     display:flex;
     align-items:center;
 
-    padding:70px 7%;
+    padding:45px 7%;
 
     background:
         linear-gradient(
             to right,
-            rgba(0,0,0,1),
-            rgba(0,0,0,.8),
-            rgba(0,0,0,.25)
+            rgba(0,0,0,0.98),
+            rgba(0,0,0,0.72),
+            rgba(0,0,0,0.25)
         ),
         var(--hero-image);
 
     background-size:cover;
-
     background-position:center;
 
-    transition:
-        background-image 1s ease-in-out;
+    transition:background-image 1s ease-in-out;
 
     position:relative;
 }
+
 
 
 .hero-content{
@@ -207,51 +203,25 @@ nav a.active{
 }
 
 .hero-tagline{
-
-    display:inline-block;
-
-    margin-bottom:15px;
-
-    padding:8px 18px;
-
-    border-radius:30px;
-
-    background:rgba(255,255,255,.08);
-
-    color:#ff3b3b;
-
-    font-size:13px;
-
-    font-weight:700;
-
+    font-size:12px;
     letter-spacing:2px;
 }
 
-.hero-content h1{
-
-    font-size:4rem;
-
-    margin-bottom:20px;
+.watch-hero h1{
+    font-size:42px;
+    line-height:1.1;
+    margin:10px 0;
 }
-
-.hero-content p{
-
-    color:#ddd;
-
-    line-height:1.8;
-
-    margin-bottom:25px;
+.watch-hero p{
+    max-width:520px;
+    font-size:15px;
+    line-height:1.6;
+    margin:12px 0 20px;
 }
 
 .hero-meta{
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:10px;
-
-    margin-bottom:25px;
+    font-size:13px;
+    margin:8px 0;
 }
 
 .hero-meta span{
@@ -299,6 +269,26 @@ nav a.active{
     transform:translateY(-2px);
 }
 
+    @media (max-width:700px){
+
+    .watch-hero{
+        min-height:320px;
+        padding:35px 20px;
+    }
+
+    .watch-hero h1{
+        font-size:30px;
+    }
+
+    .watch-hero p{
+        font-size:14px;
+        max-width:100%;
+    }
+
+    .hero-tagline{
+        font-size:10px;
+    }
+}
 
 /* ================= MOVIES ================= */
 
@@ -1553,17 +1543,41 @@ function openMovie(id) {
     playerTitle.textContent =
         movie.title;
 
+const playerUrl = movie.playerUrl;
 
-    const playerUrl =
-        movie.server2Url ||
-        movie.watchUrl;
-
-
+if (!playerUrl) {
     videoContainer.innerHTML = `
+        <div style="
+            height:100%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            padding:30px;
+            color:#fff;
+        ">
+            <div>
+                <i class="fa-solid fa-circle-exclamation"
+                   style="font-size:40px;color:#e50914;margin-bottom:15px;"></i>
 
+                <h3>Player unavailable</h3>
+
+                <p style="color:#aaa;">
+                    This movie does not currently have an available
+                    streaming player.
+                </p>
+            </div>
+        </div>
+    `;
+
+    playerModal.classList.add("active");
+    return;
+}
+
+      videoContainer.innerHTML = `
         <iframe
             src="${escapeHtml(playerUrl)}"
-            title="${escapeHtml(movie.title)}"
+            title="${escapeHtml(movie.title || "Movie")}"
             width="100%"
             height="100%"
             frameborder="0"
@@ -1572,18 +1586,9 @@ function openMovie(id) {
             loading="lazy"
             referrerpolicy="strict-origin-when-cross-origin"
         ></iframe>
-
     `;
 
-
-    playerModal.classList.add(
-        "active"
-    );
-
-
-    document.body.style.overflow =
-        "hidden";
-
+    playerModal.classList.add("active");
 }
 
 // ==========================================
