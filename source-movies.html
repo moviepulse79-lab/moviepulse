@@ -1148,10 +1148,7 @@ nav a.active{
 
 </footer>
 
-
-
 <script>
-
 
 // ==========================================
 // ELEMENTS
@@ -1181,6 +1178,7 @@ const videoContainer =
 const closePlayerBtn =
     document.getElementById("closePlayer");
 
+
 // ==========================================
 // AGASOBANUYE MOVIES
 // ==========================================
@@ -1197,479 +1195,19 @@ let hasNextMovies = true;
 
 let showingWatchlist = false;
 
+
 // ==========================================
 // HERO MOVIE ROTATION
 // ==========================================
 
 let featuredIndex = 0;
-let featuredRotationTimer = null;
-
-function startHeroRotation() {
-
-    // Clear any previous timer
-    if (featuredRotationTimer) {
-        clearInterval(featuredRotationTimer);
-    }
-
-    // Nothing to rotate
-    if (agasobanuyeMovies.length <= 1) {
-        return;
-    }
-
-    featuredRotationTimer = setInterval(() => {
-
-        featuredIndex++;
-
-        if (
-            featuredIndex >=
-            agasobanuyeMovies.length
-        ) {
-            featuredIndex = 0;
-        }
-
-        updateFeaturedMovie(featuredIndex);
-
-    }, 60000); // 60 seconds
-}
-
-// ==========================================
-// LOAD MOVIES FROM NETLIFY FUNCTION
-// ==========================================
-
-async function loadMovies(page = 1) {
-
-    if (loadingMovies) {
-        return;
-    }
-
-    if (page > 1 && !hasNextMovies) {
-        return;
-    }
-
-    loadingMovies = true;
-
-    if (loadMoreBtn) {
-        loadMoreBtn.disabled = true;
-        loadMoreBtn.textContent = "Loading...";
-    }
-
-    try {
-
-        const response = await fetch(
-            `/.netlify/functions/agasobanuye-movies?page=${page}&limit=${moviesPerPage}`,
-            {
-                headers: {
-                    "Accept": "application/json"
-                }
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error(
-                `Movie API returned ${response.status}`
-            );
-        }
-
-        const data = await response.json();
-
-        if (!data.success) {
-            throw new Error(
-                data.error || "Failed to load movies"
-            );
-        }
-
-        const movies = Array.isArray(data.movies)
-            ? data.movies
-            : [];
-
-
-        /*
-          Prevent duplicate movies when loading
-          additional pages.
-        */
-
-        const existingIds =
-            new Set(
-                agasobanuyeMovies.map(
-                    movie => String(movie.id)
-                )
-            );
-
-
-        const newMovies =
-            movies.filter(
-                movie =>
-                    !existingIds.has(
-                        String(movie.id)
-                    )
-            );
-
-
-        if (page === 1) {
-            agasobanuyeMovies = newMovies;
-        } else {
-            agasobanuyeMovies.push(
-                ...newMovies
-            );
-        }
-
-
-        currentPage = page;
-
-        hasNextMovies =
-            data.hasNext === true;
-
-
-        renderMovies(
-            getCurrentlyDisplayedMovies()
-        );
-
-
-       updateFeaturedMovie();
-
-startHeroRotation();
-
-
-        /*
-          Show/hide Load More button.
-        */
-
-        if (loadMoreBtn) {
-
-            loadMoreBtn.style.display =
-                hasNextMovies
-                    ? "block"
-                    : "none";
-
-        }
-
-
-    } catch (error) {
-
-        console.error(
-            "Failed to load Agasobanuye movies:",
-            error
-        );
-
-
-        if (page === 1) {
-
-            agasobanuyeMovies = [];
-
-            renderMovies([]);
-
-        }
-
-
-        if (loadMoreBtn) {
-
-            loadMoreBtn.style.display =
-                "block";
-
-            loadMoreBtn.textContent =
-                "Try Again";
-
-        }
-
-
-    } finally {
-
-        loadingMovies = false;
-
-        if (loadMoreBtn) {
-
-            loadMoreBtn.disabled = false;
-
-            if (hasNextMovies) {
-
-                loadMoreBtn.textContent =
-                    "Load More";
-
-            }
-
-        }
-
-    }
-
-}
-// RENDER MOVIES
-// ==========================================
-
-function renderMovies(movies){
-
-    if(!movieGrid){
-        return;
-    }
-
-
-    movieGrid.innerHTML = "";
-
-
-    if(!movies.length){
-
-        emptyState.style.display =
-            "block";
-
-        return;
-
-    }
-
-
-    emptyState.style.display =
-        "none";
-
-
-    movies.forEach(movie => {
-
-
-        const card =
-            document.createElement("div");
-
-
-        card.className =
-            "movie-card";
-
-
-        const saved =
-            isInWatchlist(movie.id);
-
-
-        const posterHtml =
-            movie.poster
-            ? `
-
-                <img
-                    src="${escapeHtml(movie.poster)}"
-                    alt="${escapeHtml(movie.title)}"
-                    loading="lazy"
-                    onerror="this.parentElement.innerHTML='<div class=&quot;poster-placeholder&quot;><i class=&quot;fa-solid fa-film&quot;></i><span>No Poster</span></div>'"
-                >
-
-            `
-            : `
-
-                <div class="poster-placeholder">
-
-                    <i class="fa-solid fa-film"></i>
-
-                    <span>
-                        Poster Coming Soon
-                    </span>
-
-                </div>
-
-            `;
-
-
-        card.innerHTML = `
-
-
-            <div class="movie-poster">
-
-
-                ${posterHtml}
-
-
-                <div class="movie-overlay">
-
-
-                    <button
-                        class="watch-btn"
-                        onclick="openMovie('${escapeHtml(movie.id)}')"
-                    >
-
-                        <i class="fa-solid fa-play"></i>
-
-                        Watch
-
-                    </button>
-
-
-                </div>
-
-
-            </div>
-
-
-
-            <div class="movie-info">
-
-
-                <h3>
-
-                    ${escapeHtml(movie.title)}
-
-                </h3>
-
-
-                <div class="movie-meta">
-
-                    <span>
-
-                        ${escapeHtml(movie.category || "Other")}
-
-                    </span>
-
-
-                    <span>
-
-                        ${escapeHtml(movie.duration || "—")}
-
-                    </span>
-
-                </div>
-
-
-                <button
-                    class="watchlist-btn ${saved ? "added" : ""}"
-                    onclick="toggleWatchlist('${escapeHtml(movie.id)}')"
-                >
-
-                    ${
-                        saved
-                        ? "❤️ Remove from Watchlist"
-                        : "♡ Add to Watchlist"
-                    }
-
-                </button>
-
-
-            </div>
-
-
-        `;
-
-
-        movieGrid.appendChild(card);
-
-
-    });
-
-
-    updateWatchlistCount();
-
-}
-
-
-// ==========================================
-// OPEN MOVIE
-// ==========================================
-
-function openMovie(id) {
-
-    const movie =
-        agasobanuyeMovies.find(
-            movie =>
-                String(movie.id) ===
-                String(id)
-        );
-
-
-    if (!movie) {
-
-        alert("Movie not found.");
-
-        return;
-
-    }
-
-
-    playerTitle.textContent =
-        movie.title;
-
-const playerUrl = movie.playerUrl;
-
-if (!playerUrl) {
-    videoContainer.innerHTML = `
-        <div style="
-            height:100%;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            text-align:center;
-            padding:30px;
-            color:#fff;
-        ">
-            <div>
-                <i class="fa-solid fa-circle-exclamation"
-                   style="font-size:40px;color:#e50914;margin-bottom:15px;"></i>
-
-                <h3>Player unavailable</h3>
-
-                <p style="color:#aaa;">
-                    This movie does not currently have an available
-                    streaming player.
-                </p>
-            </div>
-        </div>
-    `;
-
-    playerModal.classList.add("active");
-    return;
-}
-
-      videoContainer.innerHTML = `
-        <iframe
-            src="${escapeHtml(playerUrl)}"
-            title="${escapeHtml(movie.title || "Movie")}"
-            width="100%"
-            height="100%"
-            frameborder="0"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen
-            loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin"
-        ></iframe>
-    `;
-
-    playerModal.classList.add("active");
-}
-
-// ==========================================
-// CLOSE PLAYER
-// ==========================================
-
-function closePlayer(){
-
-
-    if(playerModal){
-
-        playerModal.classList.remove(
-            "active"
-        );
-
-    }
-
-
-    if(videoContainer){
-
-        videoContainer.innerHTML = "";
-
-    }
-
-
-    document.body.style.overflow = "";
-
-}
-
-
-if(closePlayerBtn){
-
-    closePlayerBtn.addEventListener(
-        "click",
-        closePlayer
-    );
-
-}
-
-// ==========================================
-// FEATURED MOVIE
-// ==========================================
-
-let featuredIndex = 0;
 
 let featuredRotationTimer = null;
 
+
+// ==========================================
+// UPDATE FEATURED MOVIE
+// ==========================================
 
 function updateFeaturedMovie(index = null){
 
@@ -1677,13 +1215,6 @@ function updateFeaturedMovie(index = null){
         return;
     }
 
-
-    /*
-    If an index was supplied,
-    use it.
-
-    Otherwise use current index.
-    */
 
     if(index !== null){
 
@@ -1729,10 +1260,6 @@ function updateFeaturedMovie(index = null){
         );
 
 
-    // ========================================
-    // TITLE
-    // ========================================
-
     if(heroTitle){
 
         heroTitle.textContent =
@@ -1741,10 +1268,6 @@ function updateFeaturedMovie(index = null){
 
     }
 
-
-    // ========================================
-    // DESCRIPTION
-    // ========================================
 
     if(heroDescription){
 
@@ -1755,10 +1278,6 @@ function updateFeaturedMovie(index = null){
     }
 
 
-    // ========================================
-    // CATEGORY
-    // ========================================
-
     if(heroGenre){
 
         heroGenre.textContent =
@@ -1767,10 +1286,6 @@ function updateFeaturedMovie(index = null){
 
     }
 
-
-    // ========================================
-    // DURATION
-    // ========================================
 
     if(heroDuration){
 
@@ -1781,21 +1296,22 @@ function updateFeaturedMovie(index = null){
     }
 
 
-    // ========================================
-    // HERO POSTER
-    // ========================================
-
     if(featured.poster){
 
-        document.documentElement.style
-            .setProperty(
-                "--hero-image",
-                `url("${featured.poster}")`
-            );
+        document.documentElement.style.setProperty(
+            "--hero-image",
+            `url("${featured.poster}")`
+        );
 
     }
 
-    // ==========================================
+
+    window.featuredMovieId =
+        featured.id;
+}
+
+
+// ==========================================
 // START HERO ROTATION
 // ==========================================
 
@@ -1821,7 +1337,6 @@ function startHeroRotation(){
 
     featuredRotationTimer =
         setInterval(
-
             function(){
 
                 featuredIndex++;
@@ -1841,27 +1356,522 @@ function startHeroRotation(){
                 );
 
             },
-
             60000
-
         );
-}
 
-    // ========================================
-    // FEATURED BUTTON
-    // ========================================
-
-    window.featuredMovieId =
-        featured.id;
 }
 
 
 // ==========================================
-// OPEN FEATURED
+// LOAD MOVIES FROM NETLIFY FUNCTION
+// ==========================================
+
+async function loadMovies(page = 1){
+
+    if(loadingMovies){
+        return;
+    }
+
+
+    if(
+        page > 1 &&
+        !hasNextMovies
+    ){
+
+        return;
+
+    }
+
+
+    loadingMovies = true;
+
+
+    if(loadMoreBtn){
+
+        loadMoreBtn.disabled = true;
+
+        loadMoreBtn.textContent =
+            "Loading...";
+
+    }
+
+
+    try{
+
+        const response =
+            await fetch(
+                `/.netlify/functions/agasobanuye-movies?page=${page}&limit=${moviesPerPage}`,
+                {
+                    headers:{
+                        "Accept":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                `Movie API returned ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if(!data.success){
+
+            throw new Error(
+                data.error ||
+                "Failed to load movies"
+            );
+
+        }
+
+
+        const movies =
+            Array.isArray(data.movies)
+                ? data.movies
+                : [];
+
+
+        const existingIds =
+            new Set(
+                agasobanuyeMovies.map(
+                    movie =>
+                        String(movie.id)
+                )
+            );
+
+
+        const newMovies =
+            movies.filter(
+                movie =>
+                    !existingIds.has(
+                        String(movie.id)
+                    )
+            );
+
+
+        if(page === 1){
+
+            agasobanuyeMovies =
+                newMovies;
+
+            featuredIndex = 0;
+
+        }
+        else{
+
+            agasobanuyeMovies.push(
+                ...newMovies
+            );
+
+        }
+
+
+        currentPage =
+            page;
+
+
+        hasNextMovies =
+            data.hasNext === true;
+
+
+        renderMovies(
+            getCurrentlyDisplayedMovies()
+        );
+
+
+        updateFeaturedMovie();
+
+
+        startHeroRotation();
+
+
+        if(loadMoreBtn){
+
+            loadMoreBtn.style.display =
+                hasNextMovies
+                    ? "block"
+                    : "none";
+
+        }
+
+    }
+    catch(error){
+
+        console.error(
+            "Failed to load Agasobanuye movies:",
+            error
+        );
+
+
+        if(page === 1){
+
+            agasobanuyeMovies = [];
+
+            renderMovies([]);
+
+        }
+
+
+        if(loadMoreBtn){
+
+            loadMoreBtn.style.display =
+                "block";
+
+            loadMoreBtn.textContent =
+                "Try Again";
+
+        }
+
+    }
+    finally{
+
+        loadingMovies = false;
+
+
+        if(loadMoreBtn){
+
+            loadMoreBtn.disabled =
+                false;
+
+
+            if(hasNextMovies){
+
+                loadMoreBtn.textContent =
+                    "Load More";
+
+            }
+
+        }
+
+    }
+
+}
+
+
+// ==========================================
+// RENDER MOVIES
+// ==========================================
+
+function renderMovies(movies){
+
+    if(!movieGrid){
+        return;
+    }
+
+
+    movieGrid.innerHTML =
+        "";
+
+
+    if(!movies.length){
+
+        emptyState.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    emptyState.style.display =
+        "none";
+
+
+    movies.forEach(
+        movie => {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "movie-card";
+
+
+            const saved =
+                isInWatchlist(
+                    movie.id
+                );
+
+
+            const posterHtml =
+                movie.poster
+                    ? `
+                        <img
+                            src="${escapeHtml(movie.poster)}"
+                            alt="${escapeHtml(movie.title)}"
+                            loading="lazy"
+                            onerror="this.parentElement.innerHTML='<div class=&quot;poster-placeholder&quot;><i class=&quot;fa-solid fa-film&quot;></i><span>No Poster</span></div>'"
+                        >
+                      `
+                    : `
+                        <div class="poster-placeholder">
+
+                            <i class="fa-solid fa-film"></i>
+
+                            <span>
+                                Poster Coming Soon
+                            </span>
+
+                        </div>
+                      `;
+
+
+            card.innerHTML = `
+
+                <div class="movie-poster">
+
+                    ${posterHtml}
+
+                    <div class="movie-overlay">
+
+                        <button
+                            class="watch-btn"
+                            onclick="openMovie('${escapeHtml(movie.id)}')"
+                        >
+
+                            <i class="fa-solid fa-play"></i>
+
+                            Watch
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="movie-info">
+
+                    <h3>
+                        ${escapeHtml(movie.title)}
+                    </h3>
+
+
+                    <div class="movie-meta">
+
+                        <span>
+                            ${escapeHtml(
+                                movie.category ||
+                                "Other"
+                            )}
+                        </span>
+
+
+                        <span>
+                            ${escapeHtml(
+                                movie.duration ||
+                                "—"
+                            )}
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        class="watchlist-btn ${saved ? "added" : ""}"
+                        onclick="toggleWatchlist('${escapeHtml(movie.id)}')"
+                    >
+
+                        ${
+                            saved
+                                ? "❤️ Remove from Watchlist"
+                                : "♡ Add to Watchlist"
+                        }
+
+                    </button>
+
+                </div>
+
+            `;
+
+
+            movieGrid.appendChild(
+                card
+            );
+
+        }
+    );
+
+
+    updateWatchlistCount();
+
+}
+
+
+// ==========================================
+// OPEN MOVIE
+// ==========================================
+
+function openMovie(id){
+
+    const movie =
+        agasobanuyeMovies.find(
+            movie =>
+                String(movie.id) ===
+                String(id)
+        );
+
+
+    if(!movie){
+
+        alert(
+            "Movie not found."
+        );
+
+        return;
+
+    }
+
+
+    playerTitle.textContent =
+        movie.title ||
+        "Movie";
+
+
+    const playerUrl =
+        movie.playerUrl;
+
+
+    if(!playerUrl){
+
+        videoContainer.innerHTML = `
+
+            <div style="
+                height:100%;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                text-align:center;
+                padding:30px;
+                color:#fff;
+            ">
+
+                <div>
+
+                    <i
+                        class="fa-solid fa-circle-exclamation"
+                        style="
+                            font-size:40px;
+                            color:#e50914;
+                            margin-bottom:15px;
+                        "
+                    ></i>
+
+
+                    <h3>
+                        Player unavailable
+                    </h3>
+
+
+                    <p style="color:#aaa;">
+
+                        This movie does not currently
+                        have an available streaming player.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        playerModal.classList.add(
+            "active"
+        );
+
+        return;
+
+    }
+
+
+    videoContainer.innerHTML = `
+
+        <iframe
+            src="${escapeHtml(playerUrl)}"
+            title="${escapeHtml(
+                movie.title ||
+                "Movie"
+            )}"
+            width="100%"
+            height="100%"
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+
+    `;
+
+
+    playerModal.classList.add(
+        "active"
+    );
+
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+// ==========================================
+// CLOSE PLAYER
+// ==========================================
+
+function closePlayer(){
+
+    if(playerModal){
+
+        playerModal.classList.remove(
+            "active"
+        );
+
+    }
+
+
+    if(videoContainer){
+
+        videoContainer.innerHTML =
+            "";
+
+    }
+
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+if(closePlayerBtn){
+
+    closePlayerBtn.addEventListener(
+        "click",
+        closePlayer
+    );
+
+}
+
+
+// ==========================================
+// OPEN FEATURED MOVIE
 // ==========================================
 
 function openFeaturedMovie(){
-
 
     if(!window.featuredMovieId){
 
@@ -1891,11 +1901,9 @@ if(movieSearch){
         "input",
         function(){
 
-
             renderMovies(
                 getCurrentlyDisplayedMovies()
             );
-
 
         }
     );
@@ -1909,13 +1917,12 @@ if(movieSearch){
 
 function getCurrentlyDisplayedMovies(){
 
-
     const query =
         movieSearch
-        ? movieSearch.value
-            .trim()
-            .toLowerCase()
-        : "";
+            ? movieSearch.value
+                .trim()
+                .toLowerCase()
+            : "";
 
 
     let movies =
@@ -1925,18 +1932,29 @@ function getCurrentlyDisplayedMovies(){
     if(query){
 
         movies =
-            movies.filter(movie =>
+            movies.filter(
+                movie => {
 
-                movie.title
-                    .toLowerCase()
-                    .includes(query)
+                    const title =
+                        String(
+                            movie.title ||
+                            ""
+                        ).toLowerCase();
 
-                ||
 
-                (movie.category || "")
-                    .toLowerCase()
-                    .includes(query)
+                    const category =
+                        String(
+                            movie.category ||
+                            ""
+                        ).toLowerCase();
 
+
+                    return (
+                        title.includes(query) ||
+                        category.includes(query)
+                    );
+
+                }
             );
 
     }
@@ -1949,14 +1967,13 @@ function getCurrentlyDisplayedMovies(){
 
 
         movies =
-            movies.filter(movie =>
-
-                savedIds.some(
-                    id =>
-                        String(id) ===
-                        String(movie.id)
-                )
-
+            movies.filter(
+                movie =>
+                    savedIds.some(
+                        id =>
+                            String(id) ===
+                            String(movie.id)
+                    )
             );
 
     }
@@ -1977,11 +1994,9 @@ if(loadMoreBtn){
         "click",
         function(){
 
-
             loadMovies(
                 currentPage + 1
             );
-
 
         }
     );
@@ -2002,15 +2017,12 @@ function getWatchlist(){
     try{
 
         return JSON.parse(
-
             localStorage.getItem(
                 WATCHLIST_KEY
             )
-
         ) || [];
 
     }
-
     catch{
 
         return [];
@@ -2033,10 +2045,9 @@ function saveWatchlist(list){
 function isInWatchlist(id){
 
     return getWatchlist().some(
-
         item =>
-            String(item) === String(id)
-
+            String(item) ===
+            String(id)
     );
 
 }
@@ -2044,17 +2055,15 @@ function isInWatchlist(id){
 
 function toggleWatchlist(id){
 
-
     const list =
         getWatchlist();
 
 
     const index =
         list.findIndex(
-
             item =>
-                String(item) === String(id)
-
+                String(item) ===
+                String(id)
         );
 
 
@@ -2063,7 +2072,6 @@ function toggleWatchlist(id){
         list.push(id);
 
     }
-
     else{
 
         list.splice(
@@ -2089,7 +2097,6 @@ function toggleWatchlist(id){
 
 function updateWatchlistCount(){
 
-
     const count =
         getWatchlist().length;
 
@@ -2101,19 +2108,14 @@ function updateWatchlistCount(){
 
 
     if(!countElement){
-
         return;
-
     }
 
 
     countElement.textContent =
-
         count === 1
-
-        ? "1 movie saved"
-
-        : `${count} movies saved`;
+            ? "1 movie saved"
+            : `${count} movies saved`;
 
 }
 
@@ -2134,7 +2136,6 @@ if(watchlistToggle){
         "click",
         function(){
 
-
             showingWatchlist =
                 !showingWatchlist;
 
@@ -2148,7 +2149,6 @@ if(watchlistToggle){
             renderMovies(
                 getCurrentlyDisplayedMovies()
             );
-
 
         }
     );
@@ -2172,7 +2172,6 @@ if(fullscreenButton){
         "click",
         async function(){
 
-
             const playerBox =
                 document.querySelector(
                     ".player-box"
@@ -2180,20 +2179,19 @@ if(fullscreenButton){
 
 
             if(!playerBox){
-
                 return;
-
             }
 
 
             try{
 
-                if(!document.fullscreenElement){
+                if(
+                    !document.fullscreenElement
+                ){
 
                     await playerBox.requestFullscreen();
 
                 }
-
                 else{
 
                     await document.exitFullscreen();
@@ -2201,7 +2199,6 @@ if(fullscreenButton){
                 }
 
             }
-
             catch(error){
 
                 console.error(
@@ -2210,7 +2207,6 @@ if(fullscreenButton){
                 );
 
             }
-
 
         }
     );
@@ -2226,15 +2222,14 @@ document.addEventListener(
     "keydown",
     function(event){
 
-
         if(
-            event.key === "Escape"
+            event.key ===
+            "Escape"
         ){
 
             closePlayer();
 
         }
-
 
     }
 );
@@ -2250,15 +2245,14 @@ if(playerModal){
         "click",
         function(event){
 
-
             if(
-                event.target === playerModal
+                event.target ===
+                playerModal
             ){
 
                 closePlayer();
 
             }
-
 
         }
     );
@@ -2322,6 +2316,7 @@ if(userIcon && userDropdown){
 
             event.stopPropagation();
 
+
             userDropdown.classList.toggle(
                 "active"
             );
@@ -2354,17 +2349,34 @@ document.addEventListener(
 
 function escapeHtml(value){
 
-    return String(value || "")
+    return String(
+        value || ""
+    )
 
-        .replace(/&/g,"&amp;")
+    .replace(
+        /&/g,
+        "&amp;"
+    )
 
-        .replace(/</g,"&lt;")
+    .replace(
+        /</g,
+        "&lt;"
+    )
 
-        .replace(/>/g,"&gt;")
+    .replace(
+        />/g,
+        "&gt;"
+    )
 
-        .replace(/"/g,"&quot;")
+    .replace(
+        /"/g,
+        "&quot;"
+    )
 
-        .replace(/'/g,"&#039;");
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
@@ -2377,8 +2389,9 @@ updateWatchlistCount();
 
 loadMovies(1);
 
-
 </script>
+
+
 
 
 </body>
