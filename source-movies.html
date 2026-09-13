@@ -1386,30 +1386,38 @@ nav a.active{
 
 <script>
  
-let oshakurMovies = [];
+let agasobanuyeMovies = [];
+
+
+// ===============================
+// AGASOBANUYE FREE MOVIES
+// ===============================
 
 let currentPage = 1;
 const moviesPerPage = 12;
 let loading = false;
-let hasMoreMovies = true;
+let hasMoreMovies = false;
 
-const loadMoreBtn = document.getElementById("loadMoreBtn");
+const agasobanuyeMoviesData = [
 
-const movieGrid = document.getElementById("movieGrid");
-const movieSearch = document.getElementById("movieSearch");
-const emptyState = document.getElementById("emptyState");
+    {
+        id: "dc-perfect",
+        title: "DC",
+        poster: "",
+        summary:
+            "Rebel Devadas joins forces with Chandra in a dangerous world where passion and peril collide. Their turbulent alliance demands bloodshed and tests loyalties as survival becomes the ultimate stakes in their fight.",
+        category: "Drama",
+        duration: "2h 52m",
+        watchUrl: "https://abyssplayer.com/UBbaewpku",
+        sourceUrl:
+            "https://agasobanuyefree.com/movies/dc-by-perfect/watch/server/2"
+    }
 
-const playerModal = document.getElementById("playerModal");
-const videoContainer = document.getElementById("videoContainer");
-const playerTitle = document.getElementById("playerTitle");
-
-// ===============================
-// LOAD MOVIES FROM SUPABASE CACHE
-// ===============================
+];
 
 async function loadMovies(page = 1) {
 
-    if (loading || (!hasMoreMovies && page !== 1)) {
+    if (loading) {
         return;
     }
 
@@ -1425,85 +1433,61 @@ async function loadMovies(page = 1) {
         if (page === 1) {
 
             movieGrid.innerHTML = `
-                <div style="width:100%;text-align:center;padding:40px;">
+                <div style="
+                    width:100%;
+                    text-align:center;
+                    padding:40px;
+                    color:#aaa;
+                ">
                     Loading movies...
                 </div>
             `;
 
         }
 
-        const response = await fetch(
-            `/.netlify/functions/oshakur-movies?page=${page}&limit=${moviesPerPage}`
+        /*
+         * Agasobanuye Free does not provide a public catalogue
+         * API that we can safely call directly from this page.
+         *
+         * Therefore movies are added to the catalogue above,
+         * while their official source/player URL is retained.
+         */
+
+        const start =
+            (page - 1) * moviesPerPage;
+
+        const end =
+            start + moviesPerPage;
+
+        const newMovies =
+            agasobanuyeMoviesData.slice(start, end);
+
+        if (page === 1) {
+
+            agasobanuyeMovies =
+                newMovies;
+
+            movieGrid.innerHTML = "";
+
+        } else {
+
+            agasobanuyeMovies = [
+                ...agasobanuyeMovies,
+                ...newMovies
+            ];
+
+        }
+
+        renderMovies(
+            agasobanuyeMovies
         );
-
-        if (!response.ok) {
-            throw new Error("Failed to load movies");
-        }
-
-        const data = await response.json();
-
-        if (!data.success) {
-            throw new Error(
-                data.error || "Movie loading failed"
-            );
-        }
-
-
-        const newMovies = (data.movies || []).map(movie => ({
-
-            id: movie.id,
-
-            title: movie.title || "Untitled",
-
-            poster: movie.poster || "",
-
-            summary:
-                movie.summary ||
-                "No description available.",
-
-            category:
-                movie.category ||
-                "Other",
-
-            watchUrl:
-                movie.watch_url ||
-                null,
-
-            sourceUrl:
-                movie.source_url ||
-                "",
-
-            duration:
-                movie.duration ||
-                null
-
-        }));
-
-
- 
-
-// Keep previous movies and add the new ones
-if (page === 1) {
-    oshakurMovies = newMovies;
-    movieGrid.innerHTML = "";
-} else {
-    oshakurMovies = [
-        ...oshakurMovies,
-        ...newMovies
-    ];
-}
-
-// Render all movies loaded so far
-renderMovies(oshakurMovies);
-
 
         updateFeaturedMovie();
 
-
         currentPage = page;
 
-        hasMoreMovies = data.hasNext;
-
+        hasMoreMovies =
+            end < agasobanuyeMoviesData.length;
 
         if (loadMoreBtn) {
 
@@ -1524,7 +1508,7 @@ renderMovies(oshakurMovies);
     } catch (error) {
 
         console.error(
-            "Movie loading error:",
+            "Agasobanuye movie loading error:",
             error
         );
 
@@ -1542,13 +1526,6 @@ renderMovies(oshakurMovies);
 
         }
 
-        if (loadMoreBtn) {
-
-            loadMoreBtn.disabled = false;
-            loadMoreBtn.textContent = "Try Again";
-
-        }
-
     } finally {
 
         loading = false;
@@ -1556,8 +1533,6 @@ renderMovies(oshakurMovies);
     }
 
 }
-
-
 // ===============================
 // RENDER MOVIES
 // ===============================
@@ -1628,11 +1603,7 @@ function renderMovies(movies) {
                            <button
     class="watch-btn"
     onclick="
-        window.open(
-            'https://comparativelykindness.com/pzvmva9d?key=22adb1d32dbdd6e0b2940878b8de97a9',
-            '_blank',
-            'noopener,noreferrer'
-        );
+   
         openMovie('${movie.id}');
     "
 >
