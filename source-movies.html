@@ -173,7 +173,6 @@ nav a.active{
 
 
 /* ================= HERO ================= */
-
 .watch-hero{
 
     min-height:520px;
@@ -188,13 +187,20 @@ nav a.active{
             to right,
             rgba(0,0,0,1),
             rgba(0,0,0,.8),
-            rgba(0,0,0,.3)
+            rgba(0,0,0,.25)
         ),
-        url("https://image.tmdb.org/t/p/original/wCHiaeJQGPTj85cqhN7Y5KVegd0.jpg");
+        var(--hero-image);
 
     background-size:cover;
+
     background-position:center;
+
+    transition:
+        background-image 1s ease-in-out;
+
+    position:relative;
 }
+
 
 .hero-content{
     max-width:700px;
@@ -1295,7 +1301,9 @@ async function loadMovies(page = 1) {
         );
 
 
-        updateFeaturedMovie();
+       updateFeaturedMovie();
+
+startHeroRotation();
 
 
         /*
@@ -1615,27 +1623,47 @@ if(closePlayerBtn){
 
 }
 
-
 // ==========================================
 // FEATURED MOVIE
 // ==========================================
 
-function updateFeaturedMovie(){
+let featuredIndex = 0;
 
+let featuredRotationTimer = null;
+
+
+function updateFeaturedMovie(index = null){
 
     if(!agasobanuyeMovies.length){
-
         return;
+    }
+
+
+    /*
+    If an index was supplied,
+    use it.
+
+    Otherwise use current index.
+    */
+
+    if(index !== null){
+
+        featuredIndex =
+            index %
+            agasobanuyeMovies.length;
 
     }
 
 
     const featured =
-        agasobanuyeMovies.find(
-            movie => movie.watchUrl
-        )
-        ||
-        agasobanuyeMovies[0];
+        agasobanuyeMovies[
+            featuredIndex
+        ];
+
+
+    if(!featured){
+        return;
+    }
 
 
     const heroTitle =
@@ -1662,41 +1690,130 @@ function updateFeaturedMovie(){
         );
 
 
+    // ========================================
+    // TITLE
+    // ========================================
+
     if(heroTitle){
 
         heroTitle.textContent =
-            featured.title;
+            featured.title ||
+            "Agasobanuye Movie";
 
     }
 
+
+    // ========================================
+    // DESCRIPTION
+    // ========================================
 
     if(heroDescription){
 
         heroDescription.textContent =
-            featured.summary || "";
+            featured.summary ||
+            "Watch this Agasobanuye movie on MoviePulse.";
 
     }
 
+
+    // ========================================
+    // CATEGORY
+    // ========================================
 
     if(heroGenre){
 
         heroGenre.textContent =
-            featured.category || "Movie";
+            featured.category ||
+            "Movie";
 
     }
 
+
+    // ========================================
+    // DURATION
+    // ========================================
 
     if(heroDuration){
 
         heroDuration.textContent =
-            featured.duration || "—";
+            featured.duration ||
+            "Agasobanuye";
 
     }
 
 
+    // ========================================
+    // HERO POSTER
+    // ========================================
+
+    if(featured.poster){
+
+        document.documentElement.style
+            .setProperty(
+                "--hero-image",
+                `url("${featured.poster}")`
+            );
+
+    }
+
+    // ==========================================
+// START HERO ROTATION
+// ==========================================
+
+function startHeroRotation(){
+
+    if(featuredRotationTimer){
+
+        clearInterval(
+            featuredRotationTimer
+        );
+
+    }
+
+
+    if(
+        agasobanuyeMovies.length <= 1
+    ){
+
+        return;
+
+    }
+
+
+    featuredRotationTimer =
+        setInterval(
+
+            function(){
+
+                featuredIndex++;
+
+                if(
+                    featuredIndex >=
+                    agasobanuyeMovies.length
+                ){
+
+                    featuredIndex = 0;
+
+                }
+
+
+                updateFeaturedMovie(
+                    featuredIndex
+                );
+
+            },
+
+            60000
+
+        );
+}
+
+    // ========================================
+    // FEATURED BUTTON
+    // ========================================
+
     window.featuredMovieId =
         featured.id;
-
 }
 
 
