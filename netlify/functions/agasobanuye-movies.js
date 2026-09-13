@@ -38,8 +38,10 @@ export default async (req) => {
         headers: {
           "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
           "Accept":
             "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+
           "Accept-Language":
             "en-US,en;q=0.9"
         }
@@ -55,6 +57,12 @@ export default async (req) => {
     const html =
       await response.text();
 
+    /*
+    ============================================================
+    MOVIE CATALOGUE
+    ============================================================
+    */
+
     const movies = [];
     const seen = new Set();
 
@@ -66,7 +74,6 @@ export default async (req) => {
     while (
       (match = hrefRegex.exec(html)) !== null
     ) {
-
       let sourceUrl;
 
       try {
@@ -112,7 +119,8 @@ export default async (req) => {
         continue;
       }
 
-      const slug = parts[1];
+      const slug =
+        parts[1];
 
       if (
         !slug ||
@@ -140,11 +148,17 @@ export default async (req) => {
 
       movies.push({
         id: slug,
+
         title,
+
         poster: "",
+
         summary: "",
+
         category: "Movie",
+
         duration: "",
+
         sourceUrl: cleanUrl,
 
         watchUrl:
@@ -157,7 +171,14 @@ export default async (req) => {
           `${cleanUrl}/watch/server/2`,
 
         playerUrl: "",
-        playerType: ""
+
+        playerType: "",
+
+        server1PlayerUrl: "",
+
+        server2PlayerUrl: "",
+
+        server1VideoUrl: ""
       });
 
       if (
@@ -168,9 +189,632 @@ export default async (req) => {
     }
 
     /*
-    ==========================================================
-    PROCESS MOVIE DETAILS
-    ==========================================================
+    ============================================================
+    HELPERS
+    ============================================================
+    */
+
+    function decodeUrl(value) {
+      if (!value) {
+        return "";
+      }
+
+      let result =
+        value
+          .replace(
+            /&amp;/g,
+            "&"
+          )
+          .replace(
+            /\\\//g,
+            "/"
+          )
+          .replace(
+            /&quot;/g,
+            '"'
+          )
+          .replace(
+            /&#39;/g,
+            "'"
+          )
+          .trim();
+
+      if (
+        result.startsWith("//")
+      ) {
+        result =
+          "https:" +
+          result;
+      }
+
+      return result;
+    }
+
+    function isDownloadUrl(value) {
+      if (!value) {
+        return false;
+      }
+
+      const lower =
+        value.toLowerCase();
+
+      return (
+        lower.includes("/download/") ||
+        lower.includes("download.php") ||
+        lower.includes("download?")
+      );
+    }
+
+    function isPublicMediaUrl(value) {
+      if (!value) {
+        return false;
+      }
+
+      const decoded =
+        decodeUrl(value);
+
+      if (!decoded) {
+        return false;
+      }
+
+      if (
+        isDownloadUrl(decoded)
+      ) {
+        return false;
+      }
+
+      try {
+        const parsed =
+          new URL(decoded);
+
+        if (
+          parsed.protocol !==
+            "http:" &&
+          parsed.protocol !==
+            "https:"
+        ) {
+          return false;
+        }
+
+        const pathname =
+          parsed.pathname
+            .toLowerCase();
+
+        /*
+        Accept normal media files.
+        */
+
+        if (
+          /\.(mp4|m3u8|webm|mov)(?:$|\?)/i.test(
+            pathname
+          )
+        ) {
+          return parsed.href;
+        }
+
+        return false;
+
+      } catch {
+        return false;
+      }
+    }
+
+    function isPublicPlayerUrl(value) {
+      if (!value) {
+        return false;
+      }
+
+      const decoded =
+        decodeUrl(value);
+
+      if (!decoded) {
+        return false;
+      }
+
+      if (
+        isDownloadUrl(decoded)
+      ) {
+        return false;
+      }
+
+      try {
+        const parsed =
+          new URL(decoded);
+
+        if (
+          parsed.protocol !==
+            "http:" &&
+          parsed.protocol !==
+            "https:"
+        ) {
+          return false;
+        }
+
+        /*
+        Only accept recognizable public
+        player/embed URLs.
+
+        We do NOT attempt to bypass
+        protected players.
+        */
+
+        const hostname =
+          parsed.hostname.toLowerCase();
+
+        if (
+          hostname ===
+            "abyssplayer.com" ||
+          hostname.endsWith(
+            ".abyssplayer.com"
+          )
+        ) {
+          return parsed.href;
+        }
+
+        return false;
+
+      } catch {
+        return false;
+      }
+    }
+
+    function absoluteUrl(
+      value,
+      baseUrl
+    ) {
+      if (!value) {
+        return "";
+      }
+
+      try {
+        return new URL(
+          decodeUrl(value),
+          baseUrl
+        ).href;
+      } catch {
+        return "";
+      }
+    }
+
+    /*
+    ============================================================
+    SERVER 1 EXTRACTION
+    ============================================================
+    */
+
+    function extractServer1(html, pageUrl) {
+      if (!html) {
+        return {
+          videoUrl: "",
+          playerUrl: "",
+          playerType: ""
+        };
+      }
+
+      let videoUrl = "";
+
+      let playerUrl = "";
+
+      /*
+      ------------------------------------------------------------
+      1. Explicit video URL variables
+      ------------------------------------------------------------
+      */
+
+      const explicitPatterns = [
+
+        /["']videoUrl["']\s*:\s*["']([^"']+)["']/i,
+
+        /["']video_url["']\s*:\s*["']([^"']+)["']/i,
+
+        /["']videoURL["']\s*:\s*["']([^"']+)["']/i,
+
+        /["']video["']\s*:\s*["']([^"']+)["']/i,
+
+        /["']file["']\s*:\s*["']([^"']+)["']/i,
+
+        /["']src["']\s*:\s*["']([^"']+\.mp4[^"']*)["']/i,
+
+        /Video\s*url\s*:\s*["']([^"']+)["']/i,
+
+        /Video\s*URL\s*:\s*["']([^"']+)["']/i,
+
+        /Video\s*url\s*:\s*([^<\s"'\\]+)/i,
+
+        /https?:\/\/[^"'\\<>\s]+\.m3u8(?:\?[^"'\\<>\s]*)?/i,
+
+        /https?:\/\/[^"'\\<>\s]+\.mp4(?:\?[^"'\\<>\s]*)?/i
+
+      ];
+
+      for (
+        const pattern
+        of explicitPatterns
+      ) {
+        const found =
+          html.match(pattern);
+
+        if (
+          found &&
+          found[1]
+        ) {
+          const candidate =
+            absoluteUrl(
+              found[1],
+              pageUrl
+            );
+
+          const valid =
+            isPublicMediaUrl(
+              candidate
+            );
+
+          if (valid) {
+            videoUrl =
+              valid;
+
+            break;
+          }
+        }
+      }
+
+      /*
+      ------------------------------------------------------------
+      2. <video src="">
+      ------------------------------------------------------------
+      */
+
+      if (!videoUrl) {
+        const videoSrcRegex =
+          /<video\b[^>]*\bsrc=["']([^"']+)["']/gi;
+
+        let found;
+
+        while (
+          (
+            found =
+              videoSrcRegex.exec(
+                html
+              )
+          ) !== null
+        ) {
+          const candidate =
+            absoluteUrl(
+              found[1],
+              pageUrl
+            );
+
+          const valid =
+            isPublicMediaUrl(
+              candidate
+            );
+
+          if (valid) {
+            videoUrl =
+              valid;
+
+            break;
+          }
+        }
+      }
+
+      /*
+      ------------------------------------------------------------
+      3. <source src="">
+      ------------------------------------------------------------
+      */
+
+      if (!videoUrl) {
+        const sourceRegex =
+          /<source\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi;
+
+        let found;
+
+        while (
+          (
+            found =
+              sourceRegex.exec(
+                html
+              )
+          ) !== null
+        ) {
+          const candidate =
+            absoluteUrl(
+              found[1],
+              pageUrl
+            );
+
+          const valid =
+            isPublicMediaUrl(
+              candidate
+            );
+
+          if (valid) {
+            videoUrl =
+              valid;
+
+            break;
+          }
+        }
+      }
+
+      /*
+      ------------------------------------------------------------
+      4. data-src / data-video / data-file
+      ------------------------------------------------------------
+      */
+
+      if (!videoUrl) {
+        const dataPatterns = [
+
+          /\bdata-video=["']([^"']+)["']/gi,
+
+          /\bdata-video-url=["']([^"']+)["']/gi,
+
+          /\bdata-src=["']([^"']+)["']/gi,
+
+          /\bdata-file=["']([^"']+)["']/gi
+
+        ];
+
+        for (
+          const pattern
+          of dataPatterns
+        ) {
+          let found;
+
+          while (
+            (
+              found =
+                pattern.exec(
+                  html
+                )
+            ) !== null
+          ) {
+            const candidate =
+              absoluteUrl(
+                found[1],
+                pageUrl
+              );
+
+            const valid =
+              isPublicMediaUrl(
+                candidate
+              );
+
+            if (valid) {
+              videoUrl =
+                valid;
+
+              break;
+            }
+          }
+
+          if (videoUrl) {
+            break;
+          }
+        }
+      }
+
+      /*
+      ------------------------------------------------------------
+      5. Any visible MP4/M3U8 in Server 1 HTML
+      ------------------------------------------------------------
+      */
+
+      if (!videoUrl) {
+        const mediaRegex =
+          /https?:\/\/[^"'\\<>\s]+?\.(?:mp4|m3u8)(?:\?[^"'\\<>\s]*)?/gi;
+
+        const matches =
+          html.match(
+            mediaRegex
+          ) || [];
+
+        for (
+          const candidate
+          of matches
+        ) {
+          const valid =
+            isPublicMediaUrl(
+              candidate
+            );
+
+          if (valid) {
+            videoUrl =
+              valid;
+
+            break;
+          }
+        }
+      }
+
+      /*
+      ------------------------------------------------------------
+      6. Public Server 1 player iframe
+      ------------------------------------------------------------
+      */
+
+      if (!videoUrl) {
+        const iframeRegex =
+          /<iframe\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi;
+
+        let found;
+
+        while (
+          (
+            found =
+              iframeRegex.exec(
+                html
+              )
+          ) !== null
+        ) {
+          const candidate =
+            absoluteUrl(
+              found[1],
+              pageUrl
+            );
+
+          const valid =
+            isPublicPlayerUrl(
+              candidate
+            );
+
+          if (valid) {
+            playerUrl =
+              valid;
+
+            break;
+          }
+        }
+      }
+
+      /*
+      ------------------------------------------------------------
+      7. Public player URLs written directly in HTML
+      ------------------------------------------------------------
+      */
+
+      if (
+        !videoUrl &&
+        !playerUrl
+      ) {
+        const abyssRegex =
+          /https?:\/\/(?:www\.)?abyssplayer\.com\/[^"'\\<>\s]+/gi;
+
+        const matches =
+          html.match(
+            abyssRegex
+          ) || [];
+
+        for (
+          const candidate
+          of matches
+        ) {
+          const valid =
+            isPublicPlayerUrl(
+              candidate
+            );
+
+          if (valid) {
+            playerUrl =
+              valid;
+
+            break;
+          }
+        }
+      }
+
+      /*
+      ------------------------------------------------------------
+      RESULT
+      ------------------------------------------------------------
+      */
+
+      if (videoUrl) {
+        return {
+          videoUrl,
+          playerUrl: "",
+          playerType: "mp4"
+        };
+      }
+
+      if (playerUrl) {
+        return {
+          videoUrl: "",
+          playerUrl,
+          playerType: "iframe"
+        };
+      }
+
+      return {
+        videoUrl: "",
+        playerUrl: "",
+        playerType: ""
+      };
+    }
+
+    /*
+    ============================================================
+    SERVER 2 EXTRACTION
+    ============================================================
+    */
+
+    function extractServer2(
+      html,
+      pageUrl
+    ) {
+      if (!html) {
+        return "";
+      }
+
+      /*
+      Look for public AbyssPlayer iframe.
+      */
+
+      const iframeRegex =
+        /<iframe\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi;
+
+      let found;
+
+      while (
+        (
+          found =
+            iframeRegex.exec(
+              html
+            )
+        ) !== null
+      ) {
+        const candidate =
+          absoluteUrl(
+            found[1],
+            pageUrl
+          );
+
+        const valid =
+          isPublicPlayerUrl(
+            candidate
+          );
+
+        if (valid) {
+          return valid;
+        }
+      }
+
+      /*
+      Fallback: direct AbyssPlayer URL
+      visible in page HTML.
+      */
+
+      const abyssRegex =
+        /https?:\/\/(?:www\.)?abyssplayer\.com\/[^"'\\<>\s]+/gi;
+
+      const matches =
+        html.match(
+          abyssRegex
+        ) || [];
+
+      for (
+        const candidate
+        of matches
+      ) {
+        const valid =
+          isPublicPlayerUrl(
+            candidate
+          );
+
+        if (valid) {
+          return valid;
+        }
+      }
+
+      return "";
+    }
+
+    /*
+    ============================================================
+    MOVIE DETAILS
+    ============================================================
     */
 
     const detailedMovies =
@@ -181,9 +825,9 @@ export default async (req) => {
             try {
 
               /*
-              ==================================================
-              MOVIE DETAIL PAGE
-              ==================================================
+              ----------------------------------------------------
+              DETAIL PAGE
+              ----------------------------------------------------
               */
 
               const detailResponse =
@@ -193,6 +837,7 @@ export default async (req) => {
                     headers: {
                       "User-Agent":
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
                       "Accept":
                         "text/html,application/xhtml+xml,image/avif,image/webp,*/*;q=0.8"
                     }
@@ -208,11 +853,10 @@ export default async (req) => {
               const detailHtml =
                 await detailResponse.text();
 
-
               /*
-              ==================================================
+              ----------------------------------------------------
               POSTER
-              ==================================================
+              ----------------------------------------------------
               */
 
               let poster = "";
@@ -263,10 +907,12 @@ export default async (req) => {
                 const possibleImages = [];
 
                 while (
-                  (imageMatch =
-                    imageRegex.exec(
-                      detailHtml
-                    )) !== null
+                  (
+                    imageMatch =
+                      imageRegex.exec(
+                        detailHtml
+                      )
+                  ) !== null
                 ) {
 
                   const imageUrl =
@@ -274,20 +920,20 @@ export default async (req) => {
 
                   if (
                     !imageUrl ||
-                    imageUrl.startsWith("data:")
+                    imageUrl.startsWith(
+                      "data:"
+                    )
                   ) {
                     continue;
                   }
 
                   try {
-
                     possibleImages.push(
                       new URL(
                         imageUrl,
                         movie.sourceUrl
                       ).href
                     );
-
                   } catch {}
                 }
 
@@ -308,23 +954,19 @@ export default async (req) => {
               }
 
               if (poster) {
-
                 try {
-
                   poster =
                     new URL(
                       poster,
                       movie.sourceUrl
                     ).href;
-
                 } catch {}
               }
 
-
               /*
-              ==================================================
-              DESCRIPTION
-              ==================================================
+              ----------------------------------------------------
+              SUMMARY
+              ----------------------------------------------------
               */
 
               let summary = "";
@@ -335,7 +977,6 @@ export default async (req) => {
                 );
 
               if (description) {
-
                 summary =
                   description[1]
                     .replace(
@@ -345,11 +986,10 @@ export default async (req) => {
                     .trim();
               }
 
-
               /*
-              ==================================================
+              ----------------------------------------------------
               TITLE
-              ==================================================
+              ----------------------------------------------------
               */
 
               let realTitle = "";
@@ -360,7 +1000,6 @@ export default async (req) => {
                 );
 
               if (h1Match) {
-
                 realTitle =
                   h1Match[1]
                     .replace(
@@ -394,31 +1033,12 @@ export default async (req) => {
 
               if (!realTitle) {
 
-                const ogTitleReverse =
-                  detailHtml.match(
-                    /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i
-                  );
-
-                if (ogTitleReverse) {
-                  realTitle =
-                    ogTitleReverse[1]
-                      .replace(
-                        /\s+/g,
-                        " "
-                      )
-                      .trim();
-                }
-              }
-
-              if (!realTitle) {
-
                 const titleMatch =
                   detailHtml.match(
                     /<title[^>]*>([\s\S]*?)<\/title>/i
                   );
 
                 if (titleMatch) {
-
                   realTitle =
                     titleMatch[1]
                       .replace(
@@ -450,17 +1070,15 @@ export default async (req) => {
                   .trim();
 
               if (!realTitle) {
-
                 realTitle =
                   movie.title ||
                   "Untitled Movie";
               }
 
-
               /*
-              ==================================================
+              ----------------------------------------------------
               CATEGORY
-              ==================================================
+              ----------------------------------------------------
               */
 
               let movieCategory =
@@ -468,11 +1086,10 @@ export default async (req) => {
 
               const categoryMatch =
                 detailHtml.match(
-                  /(?:Genre|Category)[^<]{0,50}<\/[^>]+>\s*<[^>]+>([^<]+)/i
+                  /(?:Genre|Category)[^<]{0,80}<\/[^>]+>\s*<[^>]+>([^<]+)/i
                 );
 
               if (categoryMatch) {
-
                 movieCategory =
                   categoryMatch[1]
                     .replace(
@@ -482,11 +1099,10 @@ export default async (req) => {
                     .trim();
               }
 
-
               /*
-              ==================================================
+              ----------------------------------------------------
               DURATION
-              ==================================================
+              ----------------------------------------------------
               */
 
               let duration = "";
@@ -497,146 +1113,36 @@ export default async (req) => {
                 );
 
               if (durationMatch) {
-
                 duration =
                   durationMatch[1]
                     .trim();
               }
 
-
               /*
-              ==================================================
-              PLAYER VARIABLES
-              ==================================================
+              ====================================================
+              SERVER 1 FIRST
+              ====================================================
               */
-
-              let playerUrl = "";
-              let playerType = "";
 
               let server1VideoUrl = "";
-              let server2PlayerUrl = "";
 
+              let server1PlayerUrl = "";
 
-              /*
-              ==================================================
-              HELPER:
-              VALIDATE A REAL STREAM URL
-              ==================================================
-              */
-
-              function isValidStreamUrl(
-                value
-              ) {
-
-                if (!value) {
-                  return false;
-                }
-
-                let decoded =
-                  value
-                    .replace(
-                      /&amp;/g,
-                      "&"
-                    )
-                    .replace(
-                      /\\\//g,
-                      "/"
-                    )
-                    .trim();
-
-                if (
-                  decoded.startsWith(
-                    "//"
-                  )
-                ) {
-                  decoded =
-                    "https:" +
-                    decoded;
-                }
-
-                let parsedUrl;
-
-                try {
-
-                  parsedUrl =
-                    new URL(
-                      decoded
-                    );
-
-                } catch {
-
-                  return false;
-                }
-
-                const hostname =
-                  parsedUrl.hostname
-                    .toLowerCase();
-
-                /*
-                IMPORTANT:
-                Never use Agasobanuye
-                download URLs.
-                */
-
-                if (
-                  parsedUrl.pathname
-                    .toLowerCase()
-                    .includes(
-                      "/download/"
-                    )
-                ) {
-                  return false;
-                }
-
-                /*
-                Only accept the
-                known media host.
-                */
-
-                if (
-                  hostname !==
-                    "media.agasobanuyenow.com" &&
-                  !hostname.endsWith(
-                    ".agasobanuyenow.com"
-                  )
-                ) {
-                  return false;
-                }
-
-                /*
-                Must look like a
-                video file.
-                */
-
-                if (
-                  !/\.(mp4|m3u8)(\?|$)/i.test(
-                    parsedUrl.pathname
-                  )
-                ) {
-                  return false;
-                }
-
-                return parsedUrl.href;
-              }
-
-
-              /*
-              ==================================================
-              1. FETCH THE PUBLIC WATCH PAGE
-              ==================================================
-              */
+              let server1PlayerType = "";
 
               try {
 
-                const watchResponse =
+                const server1Response =
                   await fetch(
-                    movie.watchUrl,
+                    movie.server1Url,
                     {
                       headers: {
                         "User-Agent":
                           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
                         "Accept":
                           "text/html,application/xhtml+xml,*/*;q=0.8",
+
                         "Accept-Language":
                           "en-US,en;q=0.9"
                       }
@@ -644,547 +1150,232 @@ export default async (req) => {
                   );
 
                 if (
-                  watchResponse.ok
+                  server1Response.ok
                 ) {
 
-                  const watchHtml =
-                    await watchResponse.text();
+                  const server1Html =
+                    await server1Response.text();
 
+                  const server1 =
+                    extractServer1(
+                      server1Html,
+                      movie.server1Url
+                    );
 
-                  /*
-                  ----------------------------------------------
-                  A. Look specifically for:
-                     Video url:
-                  ----------------------------------------------
-                  */
+                  server1VideoUrl =
+                    server1.videoUrl;
 
-                  const videoUrlPatterns = [
+                  server1PlayerUrl =
+                    server1.playerUrl;
 
-                    /Video\s*url\s*:\s*["']([^"']+)["']/i,
+                  server1PlayerType =
+                    server1.playerType;
 
-                    /Video\s*url\s*:\s*([^<\s"'\\]+)/i,
-
-                    /video\s*url[^:]*:\s*["']([^"']+)["']/i,
-
-                    /["']videoUrl["']\s*:\s*["']([^"']+)["']/i,
-
-                    /["']video_url["']\s*:\s*["']([^"']+)["']/i,
-
-                    /["']url["']\s*:\s*["'](https?:\/\/[^"']+\.mp4[^"']*)["']/i
-
-                  ];
-
-
-                  for (
-                    const pattern
-                    of videoUrlPatterns
-                  ) {
-
-                    const found =
-                      watchHtml.match(
-                        pattern
-                      );
-
-                    if (
-                      found &&
-                      found[1]
-                    ) {
-
-                      const valid =
-                        isValidStreamUrl(
-                          found[1]
-                        );
-
-                      if (valid) {
-
-                        server1VideoUrl =
-                          valid;
-
-                        break;
-                      }
-                    }
-                  }
-
-
-                  /*
-                  ----------------------------------------------
-                  B. Look inside video/source tags
-                  ----------------------------------------------
-                  */
-
-                  if (
-                    !server1VideoUrl
-                  ) {
-
-                    const sourcePatterns = [
-
-                      /<video[^>]+src=["']([^"']+)["']/gi,
-
-                      /<source[^>]+src=["']([^"']+)["']/gi,
-
-                      /<video[\s\S]{0,3000}?src=["']([^"']+)["']/gi
-
-                    ];
-
-                    for (
-                      const pattern
-                      of sourcePatterns
-                    ) {
-
-                      let sourceMatch;
-
-                      while (
-                        (
-                          sourceMatch =
-                            pattern.exec(
-                              watchHtml
-                            )
-                        ) !== null
-                      ) {
-
-                        const valid =
-                          isValidStreamUrl(
-                            sourceMatch[1]
-                          );
-
-                        if (valid) {
-
-                          server1VideoUrl =
-                            valid;
-
-                          break;
-                        }
-                      }
-
-                      if (
-                        server1VideoUrl
-                      ) {
-                        break;
-                      }
-                    }
-                  }
-
-
-                  /*
-                  ----------------------------------------------
-                  C. Look for media URL in player config
-                  ----------------------------------------------
-                  */
-
-                  if (
-                    !server1VideoUrl
-                  ) {
-
-                    const mediaMatches =
-                      watchHtml.match(
-                        /https?:\/\/[^"'\\<>\s]+\.mp4(?:\?[^"'\\<>\s]*)?/gi
-                      );
-
-                    if (
-                      mediaMatches
-                    ) {
-
-                      for (
-                        const foundUrl
-                        of mediaMatches
-                      ) {
-
-                        const valid =
-                          isValidStreamUrl(
-                            foundUrl
-                          );
-
-                        if (valid) {
-
-                          server1VideoUrl =
-                            valid;
-
-                          break;
-                        }
-                      }
-                    }
-                  }
                 }
 
               } catch (
-                watchError
+                server1Error
               ) {
 
                 console.error(
-                  "Watch page extraction failed:",
-                  movie.watchUrl,
-                  watchError
+                  "Server 1 extraction failed:",
+                  movie.server1Url,
+                  server1Error
                 );
               }
 
-
               /*
-              ==================================================
-              2. SERVER 1 FALLBACK
-              ==================================================
-              */
-
-              if (
-                !server1VideoUrl
-              ) {
-
-                try {
-
-                  const server1Response =
-                    await fetch(
-                      movie.server1Url,
-                      {
-                        headers: {
-                          "User-Agent":
-                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
-                          "Accept":
-                            "text/html,application/xhtml+xml,*/*;q=0.8",
-                          "Accept-Language":
-                            "en-US,en;q=0.9"
-                        }
-                      }
-                    );
-
-                  if (
-                    server1Response.ok
-                  ) {
-
-                    const server1Html =
-                      await server1Response.text();
-
-
-                    /*
-                    ----------------------------------------------
-                    First: Video URL explicitly exposed
-                    ----------------------------------------------
-                    */
-
-                    const explicitPatterns = [
-
-                      /Video\s*url\s*:\s*["']([^"']+)["']/i,
-
-                      /Video\s*url\s*:\s*([^<\s"'\\]+)/i,
-
-                      /video\s*url[^:]*:\s*["']([^"']+)["']/i,
-
-                      /["']videoUrl["']\s*:\s*["']([^"']+)["']/i,
-
-                      /["']video_url["']\s*:\s*["']([^"']+)["']/i
-
-                    ];
-
-
-                    for (
-                      const pattern
-                      of explicitPatterns
-                    ) {
-
-                      const found =
-                        server1Html.match(
-                          pattern
-                        );
-
-                      if (
-                        found &&
-                        found[1]
-                      ) {
-
-                        const valid =
-                          isValidStreamUrl(
-                            found[1]
-                          );
-
-                        if (valid) {
-
-                          server1VideoUrl =
-                            valid;
-
-                          break;
-                        }
-                      }
-                    }
-
-
-                    /*
-                    ----------------------------------------------
-                    Second: video/source tags
-                    ----------------------------------------------
-                    */
-
-                    if (
-                      !server1VideoUrl
-                    ) {
-
-                      const tagPatterns = [
-
-                        /<video[^>]+src=["']([^"']+)["']/gi,
-
-                        /<source[^>]+src=["']([^"']+)["']/gi
-
-                      ];
-
-
-                      for (
-                        const pattern
-                        of tagPatterns
-                      ) {
-
-                        let found;
-
-                        while (
-                          (
-                            found =
-                              pattern.exec(
-                                server1Html
-                              )
-                          ) !== null
-                        ) {
-
-                          const valid =
-                            isValidStreamUrl(
-                              found[1]
-                            );
-
-                          if (valid) {
-
-                            server1VideoUrl =
-                              valid;
-
-                            break;
-                          }
-                        }
-
-                        if (
-                          server1VideoUrl
-                        ) {
-                          break;
-                        }
-                      }
-                    }
-
-
-                    /*
-                    ----------------------------------------------
-                    Third: absolute MP4 URL
-                    BUT /download/ is rejected.
-                    ----------------------------------------------
-                    */
-
-                    if (
-                      !server1VideoUrl
-                    ) {
-
-                      const mp4Matches =
-                        server1Html.match(
-                          /https?:\/\/[^"'\\<>\s]+\.mp4(?:\?[^"'\\<>\s]*)?/gi
-                        );
-
-                      if (
-                        mp4Matches
-                      ) {
-
-                        for (
-                          const foundUrl
-                          of mp4Matches
-                        ) {
-
-                          const valid =
-                            isValidStreamUrl(
-                              foundUrl
-                            );
-
-                          if (valid) {
-
-                            server1VideoUrl =
-                              valid;
-
-                            break;
-                          }
-                        }
-                      }
-                    }
-                  }
-
-                } catch (
-                  server1Error
-                ) {
-
-                  console.error(
-                    "Server 1 extraction failed:",
-                    movie.server1Url,
-                    server1Error
-                  );
-                }
-              }
-
-
-              /*
-              ==================================================
-              3. SERVER 2 ABYSSPLAYER FALLBACK
-              ==================================================
-              */
-
-              if (
-                !server1VideoUrl
-              ) {
-
-                try {
-
-                  const server2Response =
-                    await fetch(
-                      movie.server2Url,
-                      {
-                        headers: {
-                          "User-Agent":
-                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
-                          "Accept":
-                            "text/html,application/xhtml+xml,*/*;q=0.8",
-                          "Accept-Language":
-                            "en-US,en;q=0.9"
-                        }
-                      }
-                    );
-
-                  if (
-                    server2Response.ok
-                  ) {
-
-                    const server2Html =
-                      await server2Response.text();
-
-
-                    /*
-                    ----------------------------------------------
-                    Find AbyssPlayer iframe
-                    ----------------------------------------------
-                    */
-
-                    const iframeRegex =
-                      /<iframe[^>]+src=["']([^"']+)["']/gi;
-
-                    let iframeMatch;
-
-                    while (
-                      (
-                        iframeMatch =
-                          iframeRegex.exec(
-                            server2Html
-                          )
-                      ) !== null
-                    ) {
-
-                      try {
-
-                        const iframeUrl =
-                          new URL(
-                            iframeMatch[1],
-                            movie.server2Url
-                          ).href;
-
-                        const host =
-                          new URL(
-                            iframeUrl
-                          )
-                            .hostname
-                            .toLowerCase();
-
-                        if (
-                          host ===
-                            "abyssplayer.com" ||
-                          host.endsWith(
-                            ".abyssplayer.com"
-                          )
-                        ) {
-
-                          server2PlayerUrl =
-                            iframeUrl;
-
-                          break;
-                        }
-
-                      } catch {}
-                    }
-
-
-                    /*
-                    ----------------------------------------------
-                    Fallback if iframe is not in normal markup
-                    ----------------------------------------------
-                    */
-
-                    if (
-                      !server2PlayerUrl
-                    ) {
-
-                      const abyssMatch =
-                        server2Html.match(
-                          /https?:\/\/(?:www\.)?abyssplayer\.com\/[^"'\\<\s]+/i
-                        );
-
-                      if (
-                        abyssMatch
-                      ) {
-
-                        server2PlayerUrl =
-                          abyssMatch[0];
-                      }
-                    }
-                  }
-
-                } catch (
-                  server2Error
-                ) {
-
-                  console.error(
-                    "Server 2 extraction failed:",
-                    movie.server2Url,
-                    server2Error
-                  );
-                }
-              }
-
-
-              /*
-              ==================================================
-              4. CHOOSE PLAYER
-              ==================================================
+              ====================================================
+              SERVER 1 RESULT
+              ====================================================
               */
 
               if (
                 server1VideoUrl
               ) {
 
-                playerUrl =
-                  server1VideoUrl;
+                return {
+                  ...movie,
 
-                playerType =
-                  "mp4";
+                  title:
+                    realTitle,
 
-              } else if (
+                  poster,
+
+                  summary,
+
+                  category:
+                    movieCategory,
+
+                  duration,
+
+                  playerUrl:
+                    server1VideoUrl,
+
+                  playerType:
+                    "mp4",
+
+                  server1VideoUrl,
+
+                  server1PlayerUrl,
+
+                  server2PlayerUrl:
+                    "",
+
+                  sourcePriority:
+                    "server1"
+                };
+              }
+
+              /*
+              ====================================================
+              SERVER 1 PUBLIC PLAYER RESULT
+              ====================================================
+              */
+
+              if (
+                server1PlayerUrl
+              ) {
+
+                return {
+                  ...movie,
+
+                  title:
+                    realTitle,
+
+                  poster,
+
+                  summary,
+
+                  category:
+                    movieCategory,
+
+                  duration,
+
+                  playerUrl:
+                    server1PlayerUrl,
+
+                  playerType:
+                    server1PlayerType ||
+                    "iframe",
+
+                  server1VideoUrl:
+                    "",
+
+                  server1PlayerUrl,
+
+                  server2PlayerUrl:
+                    "",
+
+                  sourcePriority:
+                    "server1"
+                };
+              }
+
+              /*
+              ====================================================
+              SERVER 2 FALLBACK
+              ====================================================
+              */
+
+              let server2PlayerUrl =
+                "";
+
+              try {
+
+                const server2Response =
+                  await fetch(
+                    movie.server2Url,
+                    {
+                      headers: {
+                        "User-Agent":
+                          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
+                        "Accept":
+                          "text/html,application/xhtml+xml,*/*;q=0.8",
+
+                        "Accept-Language":
+                          "en-US,en;q=0.9"
+                      }
+                    }
+                  );
+
+                if (
+                  server2Response.ok
+                ) {
+
+                  const server2Html =
+                    await server2Response.text();
+
+                  server2PlayerUrl =
+                    extractServer2(
+                      server2Html,
+                      movie.server2Url
+                    );
+                }
+
+              } catch (
+                server2Error
+              ) {
+
+                console.error(
+                  "Server 2 extraction failed:",
+                  movie.server2Url,
+                  server2Error
+                );
+              }
+
+              /*
+              ====================================================
+              SERVER 2 RESULT
+              ====================================================
+              */
+
+              if (
                 server2PlayerUrl
               ) {
 
-                playerUrl =
-                  server2PlayerUrl;
+                return {
+                  ...movie,
 
-                playerType =
-                  "iframe";
+                  title:
+                    realTitle,
 
-              } else {
+                  poster,
 
-                playerUrl = "";
-                playerType = "";
+                  summary,
+
+                  category:
+                    movieCategory,
+
+                  duration,
+
+                  playerUrl:
+                    server2PlayerUrl,
+
+                  playerType:
+                    "iframe",
+
+                  server1VideoUrl:
+                    "",
+
+                  server1PlayerUrl:
+                    "",
+
+                  server2PlayerUrl,
+
+                  sourcePriority:
+                    "server2"
+                };
               }
 
-
               /*
-              ==================================================
-              RETURN MOVIE
-              ==================================================
+              ====================================================
+              NOTHING AVAILABLE
+              ====================================================
               */
 
               return {
-
                 ...movie,
 
                 title:
@@ -1199,13 +1390,23 @@ export default async (req) => {
 
                 duration,
 
-                playerUrl,
+                playerUrl:
+                  "",
 
-                playerType,
+                playerType:
+                  "",
 
-                server1VideoUrl,
+                server1VideoUrl:
+                  "",
 
-                server2PlayerUrl
+                server1PlayerUrl:
+                  "",
+
+                server2PlayerUrl:
+                  "",
+
+                sourcePriority:
+                  "none"
               };
 
             } catch (
@@ -1224,37 +1425,34 @@ export default async (req) => {
         )
       );
 
-
     /*
-    ==========================================================
+    ============================================================
     RESPONSE
-    ==========================================================
+    ============================================================
     */
 
-    return json(
-      {
-        success: true,
+    return json({
+      success: true,
 
-        source:
-          "Agasobanuye FREE",
+      source:
+        "Agasobanuye FREE",
 
-        page,
+      page,
 
-        limit,
+      limit,
 
-        category:
-          category || null,
+      category:
+        category || null,
 
-        count:
-          detailedMovies.length,
+      count:
+        detailedMovies.length,
 
-        hasNext:
-          detailedMovies.length >= limit,
+      hasNext:
+        detailedMovies.length >= limit,
 
-        movies:
-          detailedMovies
-      }
-    );
+      movies:
+        detailedMovies
+    });
 
   } catch (
     error
@@ -1281,16 +1479,15 @@ export default async (req) => {
 
 
 /*
-==============================================================
-JSON HELPER
-==============================================================
+============================================================
+JSON RESPONSE HELPER
+============================================================
 */
 
 function json(
   data,
   status = 200
 ) {
-
   return new Response(
     JSON.stringify(data),
     {
