@@ -1386,20 +1386,19 @@ nav a.active{
 
 <script>
  
-let agasobanuyeMovies = [];
+
 
 
 // ===============================
 // AGASOBANUYE FREE MOVIES
 // ===============================
-
+let oshakurMovies = [];
 let currentPage = 1;
 const moviesPerPage = 12;
 let loading = false;
 let hasMoreMovies = false;
 
 const agasobanuyeMoviesData = [
-
     {
         id: "dc-perfect",
         title: "DC",
@@ -1412,46 +1411,16 @@ const agasobanuyeMoviesData = [
         sourceUrl:
             "https://agasobanuyefree.com/movies/dc-by-perfect/watch/server/2"
     }
-
 ];
+
 
 async function loadMovies(page = 1) {
 
-    if (loading) {
-        return;
-    }
+    if (loading) return;
 
     loading = true;
 
-    if (loadMoreBtn) {
-        loadMoreBtn.disabled = true;
-        loadMoreBtn.textContent = "Loading...";
-    }
-
     try {
-
-        if (page === 1) {
-
-            movieGrid.innerHTML = `
-                <div style="
-                    width:100%;
-                    text-align:center;
-                    padding:40px;
-                    color:#aaa;
-                ">
-                    Loading movies...
-                </div>
-            `;
-
-        }
-
-        /*
-         * Agasobanuye Free does not provide a public catalogue
-         * API that we can safely call directly from this page.
-         *
-         * Therefore movies are added to the catalogue above,
-         * while their official source/player URL is retained.
-         */
 
         const start =
             (page - 1) * moviesPerPage;
@@ -1459,50 +1428,31 @@ async function loadMovies(page = 1) {
         const end =
             start + moviesPerPage;
 
-        const newMovies =
+        const movies =
             agasobanuyeMoviesData.slice(start, end);
 
+
         if (page === 1) {
-
-            agasobanuyeMovies =
-                newMovies;
-
-            movieGrid.innerHTML = "";
-
-        } else {
-
-            agasobanuyeMovies = [
-                ...agasobanuyeMovies,
-                ...newMovies
-            ];
-
+            oshakurMovies = [];
         }
 
-        renderMovies(
-            agasobanuyeMovies
-        );
 
-        updateFeaturedMovie();
+        oshakurMovies.push(...movies);
 
-        currentPage = page;
 
         hasMoreMovies =
             end < agasobanuyeMoviesData.length;
 
+
+        renderMovies(oshakurMovies);
+
+
+        updateFeaturedMovie();
+
+
         if (loadMoreBtn) {
-
-            if (hasMoreMovies) {
-
-                loadMoreBtn.style.display = "block";
-                loadMoreBtn.disabled = false;
-                loadMoreBtn.textContent = "Load More";
-
-            } else {
-
-                loadMoreBtn.style.display = "none";
-
-            }
-
+            loadMoreBtn.style.display =
+                hasMoreMovies ? "block" : "none";
         }
 
     } catch (error) {
@@ -1512,27 +1462,15 @@ async function loadMovies(page = 1) {
             error
         );
 
-        if (page === 1) {
-
-            movieGrid.innerHTML = "";
-
-            emptyState.style.display = "block";
-
-            emptyState.innerHTML = `
-                <p>
-                    Unable to load movies right now.
-                </p>
-            `;
-
-        }
-
     } finally {
 
         loading = false;
 
     }
-
 }
+
+
+
 // ===============================
 // RENDER MOVIES
 // ===============================
@@ -1552,34 +1490,28 @@ function renderMovies(movies) {
 
 
     movies.forEach(movie => {
+const card = document.createElement("div");
 
-        const card =
-            document.createElement("div");
+card.className = "movie-card";
 
-        card.className = "movie-card";
+const poster =
+    movie.poster ||
+    "https://via.placeholder.com/300x450?text=No+Poster";
 
+const duration =
+    movie.duration ||
+    "—";
 
-        const poster =
-            movie.poster ||
-            "https://via.placeholder.com/300x450?text=No+Poster";
+const category =
+    movie.category ||
+    "Other";
 
+const hasWatch =
+    !!movie.watchUrl;
 
-        const duration =
-            movie.duration ||
-            "—";
-
-
-        const category =
-            movie.category ||
-            "Other";
-
-
-        const hasWatch =
-            !!movie.watchUrl;
-
-
-        const saved =
-            isInWatchlist(movie.id);
+const saved =
+    isInWatchlist(movie.id);
+     
 
 
         card.innerHTML = `
