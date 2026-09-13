@@ -1713,120 +1713,37 @@ function renderMovies(movies){
 // OPEN MOVIE
 // ==========================================
 
-function openMovie(id){
+function openMovie(id) {
 
     const movie =
         agasobanuyeMovies.find(
             movie =>
-                String(movie.id) ===
-                String(id)
+                String(movie.id) === String(id)
         );
 
+    if (!movie) {
 
-    if(!movie){
+        alert("Movie not found.");
 
-        alert(
-            "Movie not found."
+        return;
+    }
+
+    // Open the source movie page
+    if (movie.watchUrl) {
+
+        window.open(
+            movie.watchUrl,
+            "_blank",
+            "noopener,noreferrer"
         );
 
         return;
-
     }
 
-
-    playerTitle.textContent =
-        movie.title ||
-        "Movie";
-
-
-    const playerUrl =
-        movie.playerUrl;
-
-
-    if(!playerUrl){
-
-        videoContainer.innerHTML = `
-
-            <div style="
-                height:100%;
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                text-align:center;
-                padding:30px;
-                color:#fff;
-            ">
-
-                <div>
-
-                    <i
-                        class="fa-solid fa-circle-exclamation"
-                        style="
-                            font-size:40px;
-                            color:#e50914;
-                            margin-bottom:15px;
-                        "
-                    ></i>
-
-
-                    <h3>
-                        Player unavailable
-                    </h3>
-
-
-                    <p style="color:#aaa;">
-
-                        This movie does not currently
-                        have an available streaming player.
-
-                    </p>
-
-                </div>
-
-            </div>
-
-        `;
-
-
-        playerModal.classList.add(
-            "active"
-        );
-
-        return;
-
-    }
-
-
-    videoContainer.innerHTML = `
-
-        <iframe
-            src="${escapeHtml(playerUrl)}"
-            title="${escapeHtml(
-                movie.title ||
-                "Movie"
-            )}"
-            width="100%"
-            height="100%"
-            frameborder="0"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen
-            loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin"
-        ></iframe>
-
-    `;
-
-
-    playerModal.classList.add(
-        "active"
+    alert(
+        "This movie does not currently have an available watch page."
     );
-
-
-    document.body.style.overflow =
-        "hidden";
-
 }
-
 
 // ==========================================
 // CLOSE PLAYER
