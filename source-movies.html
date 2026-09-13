@@ -27,6 +27,10 @@
 
 <style>
 
+/* ==========================================
+   RESET
+========================================== */
+
 *{
     margin:0;
     padding:0;
@@ -55,7 +59,9 @@ img{
 }
 
 
-/* ================= HEADER ================= */
+/* ==========================================
+   HEADER
+========================================== */
 
 header{
     position:sticky;
@@ -103,7 +109,9 @@ nav a.active{
 }
 
 
-/* ================= USER MENU ================= */
+/* ==========================================
+   USER MENU
+========================================== */
 
 .user-menu{
     position:relative;
@@ -148,15 +156,12 @@ nav a.active{
 
 .user-dropdown a,
 .user-dropdown button{
-
     width:100%;
-
     display:block;
 
     padding:13px;
 
     background:none;
-
     border:none;
 
     color:#fff;
@@ -170,6 +175,11 @@ nav a.active{
 .user-dropdown button:hover{
     background:#e50914;
 }
+
+
+/* ==========================================
+   HERO
+========================================== */
 
 .watch-hero{
     min-height:360px;
@@ -196,8 +206,6 @@ nav a.active{
     position:relative;
 }
 
-
-
 .hero-content{
     max-width:700px;
 }
@@ -205,6 +213,8 @@ nav a.active{
 .hero-tagline{
     font-size:12px;
     letter-spacing:2px;
+    color:#ff1f1f;
+    font-weight:600;
 }
 
 .watch-hero h1{
@@ -212,41 +222,39 @@ nav a.active{
     line-height:1.1;
     margin:10px 0;
 }
+
 .watch-hero p{
     max-width:520px;
     font-size:15px;
     line-height:1.6;
     margin:12px 0 20px;
+    color:#ddd;
 }
 
 .hero-meta{
     font-size:13px;
     margin:8px 0;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
 }
 
 .hero-meta span{
-
     background:rgba(255,255,255,.08);
-
     padding:7px 13px;
-
     border-radius:20px;
-
     color:#ccc;
 }
 
 .watch-btn{
-
     display:inline-flex;
 
     align-items:center;
-
     justify-content:center;
 
     gap:10px;
 
     background:#e50914;
-
     color:#fff;
 
     border:none;
@@ -256,7 +264,6 @@ nav a.active{
     border-radius:8px;
 
     font-family:inherit;
-
     font-weight:700;
 
     cursor:pointer;
@@ -269,35 +276,16 @@ nav a.active{
     transform:translateY(-2px);
 }
 
-    @media (max-width:700px){
 
-    .watch-hero{
-        min-height:320px;
-        padding:35px 20px;
-    }
-
-    .watch-hero h1{
-        font-size:30px;
-    }
-
-    .watch-hero p{
-        font-size:14px;
-        max-width:100%;
-    }
-
-    .hero-tagline{
-        font-size:10px;
-    }
-}
-
-/* ================= MOVIES ================= */
+/* ==========================================
+   MOVIES
+========================================== */
 
 .movies-section{
     padding:60px 6%;
 }
 
 .section-title{
-
     font-size:38px;
 
     margin-bottom:10px;
@@ -308,26 +296,22 @@ nav a.active{
 }
 
 .section-desc{
-
     color:#aaa;
-
     margin-bottom:30px;
 }
 
 
-/* ================= SEARCH ================= */
+/* ==========================================
+   SEARCH
+========================================== */
 
 .search-box{
-
     max-width:500px;
-
     position:relative;
-
     margin-bottom:25px;
 }
 
 .search-box input{
-
     width:100%;
 
     padding:15px 20px 15px 45px;
@@ -337,7 +321,6 @@ nav a.active{
     border:1px solid #333;
 
     background:#111;
-
     color:#fff;
 
     outline:none;
@@ -345,12 +328,14 @@ nav a.active{
     font-family:inherit;
 }
 
-.search-box i{
+.search-box input:focus{
+    border-color:#e50914;
+}
 
+.search-box i{
     position:absolute;
 
     left:17px;
-
     top:50%;
 
     transform:translateY(-50%);
@@ -359,25 +344,23 @@ nav a.active{
 }
 
 
-/* ================= WATCHLIST ================= */
+/* ==========================================
+   WATCHLIST
+========================================== */
 
 .watchlist-bar{
-
     display:flex;
 
     justify-content:space-between;
-
     align-items:center;
 
     margin-bottom:25px;
 
     flex-wrap:wrap;
-
     gap:15px;
 }
 
 .watchlist-toggle{
-
     background:#111;
 
     color:#fff;
@@ -403,10 +386,11 @@ nav a.active{
 }
 
 
-/* ================= GRID ================= */
+/* ==========================================
+   GRID
+========================================== */
 
 .movie-grid{
-
     display:grid;
 
     grid-template-columns:
@@ -416,7 +400,6 @@ nav a.active{
 }
 
 .movie-card{
-
     background:#111;
 
     border-radius:12px;
@@ -429,18 +412,15 @@ nav a.active{
 }
 
 .movie-card:hover{
-
     transform:translateY(-7px);
 
     border-color:#e50914;
 }
 
 .movie-poster{
-
     position:relative;
 
     width:100%;
-
     height:270px;
 
     background:#181818;
@@ -449,18 +429,14 @@ nav a.active{
 }
 
 .movie-poster img{
-
     width:100%;
-
     height:100%;
 
     object-fit:cover;
 }
 
 .poster-placeholder{
-
     width:100%;
-
     height:100%;
 
     display:flex;
@@ -468,7 +444,6 @@ nav a.active{
     flex-direction:column;
 
     align-items:center;
-
     justify-content:center;
 
     gap:10px;
@@ -479,14 +454,11 @@ nav a.active{
 }
 
 .poster-placeholder i{
-
     font-size:45px;
-
     color:#333;
 }
 
 .movie-overlay{
-
     position:absolute;
 
     inset:0;
@@ -494,7 +466,6 @@ nav a.active{
     display:flex;
 
     align-items:center;
-
     justify-content:center;
 
     background:rgba(0,0,0,.35);
@@ -513,7 +484,6 @@ nav a.active{
 }
 
 .movie-info h3{
-
     white-space:nowrap;
 
     overflow:hidden;
@@ -524,7 +494,6 @@ nav a.active{
 }
 
 .movie-meta{
-
     display:flex;
 
     justify-content:space-between;
@@ -534,10 +503,11 @@ nav a.active{
     font-size:12px;
 
     margin-bottom:12px;
+
+    gap:10px;
 }
 
 .watchlist-btn{
-
     width:100%;
 
     padding:9px;
@@ -556,17 +526,16 @@ nav a.active{
 }
 
 .watchlist-btn.added{
-
     border-color:#e50914;
-
     color:#ff4b4b;
 }
 
 
-/* ================= LOAD MORE ================= */
+/* ==========================================
+   LOAD MORE
+========================================== */
 
 .load-more-container{
-
     display:flex;
 
     justify-content:center;
@@ -575,7 +544,6 @@ nav a.active{
 }
 
 .load-more-btn{
-
     background:#e50914;
 
     border:none;
@@ -593,11 +561,17 @@ nav a.active{
     font-weight:600;
 }
 
+.load-more-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
 
-/* ================= EMPTY ================= */
+
+/* ==========================================
+   EMPTY
+========================================== */
 
 .empty-state{
-
     text-align:center;
 
     padding:60px 20px;
@@ -607,11 +581,17 @@ nav a.active{
     display:none;
 }
 
+.empty-state i{
+    font-size:45px;
+    margin-bottom:15px;
+}
 
-/* ================= PLAYER ================= */
+
+/* ==========================================
+   PLAYER MODAL
+========================================== */
 
 .player-modal{
-
     position:fixed;
 
     inset:0;
@@ -621,7 +601,6 @@ nav a.active{
     display:none;
 
     align-items:center;
-
     justify-content:center;
 
     padding:20px;
@@ -634,7 +613,6 @@ nav a.active{
 }
 
 .player-box{
-
     width:min(1000px,100%);
 
     background:#0d0d0d;
@@ -642,31 +620,39 @@ nav a.active{
     border-radius:15px;
 
     overflow:hidden;
+
+    box-shadow:0 20px 70px rgba(0,0,0,.7);
 }
 
 .player-header{
-
     display:flex;
 
     justify-content:space-between;
-
     align-items:center;
 
     padding:15px 20px;
+
+    background:#0d0d0d;
+}
+
+.player-header h2{
+    font-size:18px;
+
+    max-width:75%;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 .player-controls{
-
     display:flex;
-
     gap:10px;
 }
 
 .close-player,
 .fullscreen-player{
-
     width:40px;
-
     height:40px;
 
     border:none;
@@ -678,31 +664,49 @@ nav a.active{
     color:#fff;
 
     cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.close-player:hover,
+.fullscreen-player:hover{
+    background:#e50914;
 }
 
 .video-container{
-
     width:100%;
 
     aspect-ratio:16/9;
 
     background:#000;
+
+    position:relative;
 }
 
-.video-container iframe{
-
+.video-container iframe,
+.video-container video{
     width:100%;
-
     height:100%;
 
     border:none;
+
+    display:block;
+
+    background:#000;
+}
+
+.video-container video{
+    object-fit:contain;
 }
 
 
-/* ================= FOOTER ================= */
+/* ==========================================
+   FOOTER
+========================================== */
 
 .site-footer{
-
     margin-top:60px;
 
     background:#0f0f0f;
@@ -715,7 +719,6 @@ nav a.active{
 }
 
 .footer-text{
-
     color:#aaa;
 
     margin:10px auto 20px;
@@ -724,7 +727,6 @@ nav a.active{
 }
 
 .footer-links{
-
     display:flex;
 
     justify-content:center;
@@ -738,19 +740,23 @@ nav a.active{
     color:#aaa;
 }
 
+.footer-links a:hover{
+    color:#e50914;
+}
+
 .footer-copy{
     color:#666;
 }
 
 
-/* ================= MOBILE ================= */
+/* ==========================================
+   MOBILE
+========================================== */
 
 @media(max-width:768px){
 
     header{
-
         height:70px;
-
         padding:10px 20px;
     }
 
@@ -763,13 +769,11 @@ nav a.active{
     }
 
     header nav{
-
         display:none;
 
         position:absolute;
 
         top:70px;
-
         left:0;
 
         width:100%;
@@ -779,6 +783,8 @@ nav a.active{
         flex-direction:column;
 
         gap:0;
+
+        border-bottom:1px solid #222;
     }
 
     header nav.active{
@@ -786,7 +792,6 @@ nav a.active{
     }
 
     header nav a{
-
         width:100%;
 
         padding:15px;
@@ -794,23 +799,41 @@ nav a.active{
         text-align:center;
     }
 
-    .watch-hero{
+    .user-menu{
+        margin:10px auto 15px;
+    }
 
+    .user-dropdown{
+        right:50%;
+        transform:translateX(50%);
+        top:48px;
+    }
+
+    .watch-hero{
         min-height:600px;
 
         padding:100px 20px 50px;
+
+        background-position:center;
     }
 
     .hero-content h1{
         font-size:2.5rem;
     }
 
+    .watch-hero p{
+        font-size:14px;
+    }
+
     .movies-section{
         padding:45px 15px;
     }
 
-    .movie-grid{
+    .section-title{
+        font-size:30px;
+    }
 
+    .movie-grid{
         grid-template-columns:
             repeat(2,minmax(0,1fr));
 
@@ -821,6 +844,62 @@ nav a.active{
         height:220px;
     }
 
+    .movie-info{
+        padding:11px;
+    }
+
+    .movie-info h3{
+        font-size:14px;
+    }
+
+    .movie-meta{
+        font-size:10px;
+    }
+
+    .watchlist-btn{
+        font-size:11px;
+    }
+
+    .player-modal{
+        padding:10px;
+    }
+
+    .player-header{
+        padding:10px 12px;
+    }
+
+    .player-header h2{
+        font-size:14px;
+    }
+
+    .close-player,
+    .fullscreen-player{
+        width:35px;
+        height:35px;
+    }
+
+}
+
+
+/* ==========================================
+   VERY SMALL PHONES
+========================================== */
+
+@media(max-width:420px){
+
+    .movie-grid{
+        gap:10px;
+    }
+
+    .movie-poster{
+        height:205px;
+    }
+
+    .watch-btn{
+        padding:11px 16px;
+        font-size:12px;
+    }
+
 }
 
 </style>
@@ -829,6 +908,10 @@ nav a.active{
 
 <body>
 
+
+<!-- ==========================================
+     HEADER
+========================================== -->
 
 <header>
 
@@ -846,14 +929,20 @@ nav a.active{
     </div>
 
 
-    <div class="menu-btn">☰</div>
+    <div class="menu-btn">
+        ☰
+    </div>
 
 
     <nav>
 
-        <a href="index.html">Home</a>
+        <a href="index.html">
+            Home
+        </a>
 
-        <a href="poster.html">Movies</a>
+        <a href="poster.html">
+            Movies
+        </a>
 
         <a
             href="source-movies.html"
@@ -862,15 +951,21 @@ nav a.active{
             Watch
         </a>
 
-        <a href="favorite.html">Favorites</a>
+        <a href="favorite.html">
+            Favorites
+        </a>
 
-        <a href="about.html">About</a>
+        <a href="about.html">
+            About
+        </a>
 
         <a href="privacy.html">
             Privacy Policy
         </a>
 
-        <a href="contact.html">Contact</a>
+        <a href="contact.html">
+            Contact
+        </a>
 
 
         <div class="user-menu">
@@ -879,6 +974,7 @@ nav a.active{
                 id="userIcon"
                 class="user-icon"
                 aria-label="Account"
+                type="button"
             >
                 👤
             </button>
@@ -906,6 +1002,10 @@ nav a.active{
 </header>
 
 
+
+<!-- ==========================================
+     HERO
+========================================== -->
 
 <section class="watch-hero">
 
@@ -946,6 +1046,7 @@ nav a.active{
         <button
             class="watch-btn"
             onclick="openFeaturedMovie()"
+            type="button"
         >
 
             <i class="fa-solid fa-play"></i>
@@ -959,6 +1060,10 @@ nav a.active{
 </section>
 
 
+
+<!-- ==========================================
+     MOVIES SECTION
+========================================== -->
 
 <section class="movies-section">
 
@@ -976,6 +1081,7 @@ nav a.active{
     </p>
 
 
+    <!-- SEARCH -->
 
     <div class="search-box">
 
@@ -985,11 +1091,13 @@ nav a.active{
             type="text"
             id="movieSearch"
             placeholder="Search available movies..."
+            autocomplete="off"
         >
 
     </div>
 
 
+    <!-- WATCHLIST -->
 
     <div class="watchlist-bar">
 
@@ -1016,6 +1124,7 @@ nav a.active{
     </div>
 
 
+    <!-- MOVIE GRID -->
 
     <div
         class="movie-grid"
@@ -1023,6 +1132,7 @@ nav a.active{
     ></div>
 
 
+    <!-- EMPTY -->
 
     <div
         class="empty-state"
@@ -1031,7 +1141,9 @@ nav a.active{
 
         <i class="fa-solid fa-film"></i>
 
-        <h3>No movies found</h3>
+        <h3>
+            No movies found
+        </h3>
 
         <p>
             Try searching for another movie.
@@ -1040,22 +1152,27 @@ nav a.active{
     </div>
 
 
+    <!-- LOAD MORE -->
 
     <div class="load-more-container">
 
         <button
             id="loadMoreBtn"
             class="load-more-btn"
+            type="button"
         >
             Load More
         </button>
 
     </div>
 
-
 </section>
 
 
+
+<!-- ==========================================
+     PLAYER MODAL
+========================================== -->
 
 <div
     class="player-modal"
@@ -1074,11 +1191,11 @@ nav a.active{
 
             <div class="player-controls">
 
-
                 <button
                     class="fullscreen-player"
                     id="fullscreenPlayer"
                     title="Fullscreen"
+                    type="button"
                 >
 
                     <i class="fas fa-expand"></i>
@@ -1090,6 +1207,7 @@ nav a.active{
                     class="close-player"
                     id="closePlayer"
                     title="Close"
+                    type="button"
                 >
                     ×
                 </button>
@@ -1111,9 +1229,15 @@ nav a.active{
 
 
 
+<!-- ==========================================
+     FOOTER
+========================================== -->
+
 <footer class="site-footer">
 
-    <h3>MoviePulse</h3>
+    <h3>
+        MoviePulse
+    </h3>
 
 
     <p class="footer-text">
@@ -1126,15 +1250,25 @@ nav a.active{
 
     <div class="footer-links">
 
-        <a href="index.html">Home</a>
+        <a href="index.html">
+            Home
+        </a>
 
-        <a href="poster.html">Movies</a>
+        <a href="poster.html">
+            Movies
+        </a>
 
-        <a href="about.html">About</a>
+        <a href="about.html">
+            About
+        </a>
 
-        <a href="privacy.html">Privacy</a>
+        <a href="privacy.html">
+            Privacy
+        </a>
 
-        <a href="contact.html">Contact</a>
+        <a href="contact.html">
+            Contact
+        </a>
 
     </div>
 
@@ -1148,11 +1282,13 @@ nav a.active{
 
 </footer>
 
+
+
 <script>
 
-// ==========================================
-// ELEMENTS
-// ==========================================
+/* ==========================================
+   ELEMENTS
+========================================== */
 
 const movieGrid =
     document.getElementById("movieGrid");
@@ -1179,9 +1315,9 @@ const closePlayerBtn =
     document.getElementById("closePlayer");
 
 
-// ==========================================
-// AGASOBANUYE MOVIES
-// ==========================================
+/* ==========================================
+   AGASOBANUYE MOVIES
+========================================== */
 
 let agasobanuyeMovies = [];
 
@@ -1196,18 +1332,18 @@ let hasNextMovies = true;
 let showingWatchlist = false;
 
 
-// ==========================================
-// HERO MOVIE ROTATION
-// ==========================================
+/* ==========================================
+   HERO
+========================================== */
 
 let featuredIndex = 0;
 
 let featuredRotationTimer = null;
 
 
-// ==========================================
-// UPDATE FEATURED MOVIE
-// ==========================================
+/* ==========================================
+   UPDATE FEATURED MOVIE
+========================================== */
 
 function updateFeaturedMovie(index = null){
 
@@ -1304,16 +1440,25 @@ function updateFeaturedMovie(index = null){
         );
 
     }
+    else{
+
+        document.documentElement.style.setProperty(
+            "--hero-image",
+            "linear-gradient(135deg,#111,#050505)"
+        );
+
+    }
 
 
     window.featuredMovieId =
         featured.id;
+
 }
 
 
-// ==========================================
-// START HERO ROTATION
-// ==========================================
+/* ==========================================
+   HERO ROTATION
+========================================== */
 
 function startHeroRotation(){
 
@@ -1362,9 +1507,9 @@ function startHeroRotation(){
 }
 
 
-// ==========================================
-// LOAD MOVIES FROM NETLIFY FUNCTION
-// ==========================================
+/* ==========================================
+   LOAD MOVIES
+========================================== */
 
 async function loadMovies(page = 1){
 
@@ -1556,9 +1701,9 @@ async function loadMovies(page = 1){
 }
 
 
-// ==========================================
-// RENDER MOVIES
-// ==========================================
+/* ==========================================
+   RENDER MOVIES
+========================================== */
 
 function renderMovies(movies){
 
@@ -1637,6 +1782,7 @@ function renderMovies(movies){
 
                         <button
                             class="watch-btn"
+                            type="button"
                             onclick="openMovie('${escapeHtml(movie.id)}')"
                         >
 
@@ -1680,6 +1826,7 @@ function renderMovies(movies){
 
                     <button
                         class="watchlist-btn ${saved ? "added" : ""}"
+                        type="button"
                         onclick="toggleWatchlist('${escapeHtml(movie.id)}')"
                     >
 
@@ -1709,45 +1856,284 @@ function renderMovies(movies){
 }
 
 
-// ==========================================
-// OPEN MOVIE
-// ==========================================
+/* ==========================================
+   OPEN MOVIE
+========================================== */
 
-function openMovie(id) {
+function openMovie(id){
 
     const movie =
         agasobanuyeMovies.find(
             movie =>
-                String(movie.id) === String(id)
+                String(movie.id) ===
+                String(id)
         );
 
-    if (!movie) {
 
-        alert("Movie not found.");
+    if(!movie){
 
-        return;
-    }
-
-    // Open the source movie page
-    if (movie.watchUrl) {
-
-        window.open(
-            movie.watchUrl,
-            "_blank",
-            "noopener,noreferrer"
+        alert(
+            "Movie not found."
         );
 
         return;
+
     }
 
-    alert(
-        "This movie does not currently have an available watch page."
+
+    if(playerTitle){
+
+        playerTitle.textContent =
+            movie.title ||
+            "Movie";
+
+    }
+
+
+    if(videoContainer){
+
+        videoContainer.innerHTML =
+            "";
+
+    }
+
+
+    /* ======================================
+       SERVER 1 DIRECT MP4
+    ====================================== */
+
+    if(
+        movie.playerType === "mp4" &&
+        movie.playerUrl
+    ){
+
+        videoContainer.innerHTML = `
+
+            <video
+                id="movieVideo"
+                controls
+                playsinline
+                preload="metadata"
+                poster="${escapeHtml(
+                    movie.poster || ""
+                )}"
+            >
+
+                <source
+                    src="${escapeHtml(
+                        movie.playerUrl
+                    )}"
+                    type="video/mp4"
+                >
+
+                Your browser does not support
+                HTML5 video.
+
+            </video>
+
+        `;
+
+    }
+
+
+    /* ======================================
+       SERVER 2 ABYSSPLAYER FALLBACK
+    ====================================== */
+
+    else if(
+        movie.playerType === "iframe" &&
+        movie.playerUrl
+    ){
+
+        videoContainer.innerHTML = `
+
+            <iframe
+
+                src="${escapeHtml(
+                    movie.playerUrl
+                )}"
+
+                title="${escapeHtml(
+                    movie.title ||
+                    "Movie"
+                )}"
+
+                width="100%"
+
+                height="100%"
+
+                frameborder="0"
+
+                allow="
+                    autoplay;
+                    fullscreen;
+                    picture-in-picture
+                "
+
+                allowfullscreen
+
+                loading="lazy"
+
+                referrerpolicy="
+                    strict-origin-when-cross-origin
+                "
+
+            ></iframe>
+
+        `;
+
+    }
+
+
+    /* ======================================
+       GENERIC PLAYER URL FALLBACK
+    ====================================== */
+
+    else if(
+        movie.playerUrl
+    ){
+
+        videoContainer.innerHTML = `
+
+            <iframe
+
+                src="${escapeHtml(
+                    movie.playerUrl
+                )}"
+
+                title="${escapeHtml(
+                    movie.title ||
+                    "Movie"
+                )}"
+
+                width="100%"
+
+                height="100%"
+
+                frameborder="0"
+
+                allow="
+                    autoplay;
+                    fullscreen;
+                    picture-in-picture
+                "
+
+                allowfullscreen
+
+                loading="lazy"
+
+            ></iframe>
+
+        `;
+
+    }
+
+
+    /* ======================================
+       NO PLAYER
+    ====================================== */
+
+    else{
+
+        videoContainer.innerHTML = `
+
+            <div
+                style="
+                    width:100%;
+                    height:100%;
+                    min-height:300px;
+                    display:flex;
+                    flex-direction:column;
+                    align-items:center;
+                    justify-content:center;
+                    gap:12px;
+                    background:#000;
+                    color:#aaa;
+                    text-align:center;
+                    padding:30px;
+                "
+            >
+
+                <i
+                    class="fa-solid fa-circle-exclamation"
+                    style="
+                        font-size:40px;
+                        color:#e50914;
+                    "
+                ></i>
+
+
+                <h3
+                    style="
+                        color:#fff;
+                        margin:0;
+                    "
+                >
+                    Player unavailable
+                </h3>
+
+
+                <p>
+                    This movie currently has no
+                    available streaming player.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* ======================================
+       OPEN MOVIEPULSE MODAL
+    ====================================== */
+
+    playerModal.classList.add(
+        "active"
     );
+
+
+    document.body.style.overflow =
+        "hidden";
+
+
+    /* ======================================
+       TRY PLAYING DIRECT MP4
+    ====================================== */
+
+    if(
+        movie.playerType === "mp4"
+    ){
+
+        const video =
+            document.getElementById(
+                "movieVideo"
+            );
+
+
+        if(video){
+
+            video.play().catch(
+                () => {
+
+                    // Browser autoplay policy
+                    // may require the user to
+                    // press Play.
+
+                }
+            );
+
+        }
+
+    }
+
 }
 
-// ==========================================
-// CLOSE PLAYER
-// ==========================================
+
+/* ==========================================
+   CLOSE PLAYER
+========================================== */
 
 function closePlayer(){
 
@@ -1761,6 +2147,22 @@ function closePlayer(){
 
 
     if(videoContainer){
+
+        const video =
+            videoContainer.querySelector(
+                "video"
+            );
+
+
+        if(video){
+
+            try{
+                video.pause();
+            }
+            catch{}
+
+        }
+
 
         videoContainer.innerHTML =
             "";
@@ -1784,9 +2186,9 @@ if(closePlayerBtn){
 }
 
 
-// ==========================================
-// OPEN FEATURED MOVIE
-// ==========================================
+/* ==========================================
+   FEATURED MOVIE
+========================================== */
 
 function openFeaturedMovie(){
 
@@ -1808,9 +2210,9 @@ function openFeaturedMovie(){
 }
 
 
-// ==========================================
-// SEARCH
-// ==========================================
+/* ==========================================
+   SEARCH
+========================================== */
 
 if(movieSearch){
 
@@ -1828,9 +2230,9 @@ if(movieSearch){
 }
 
 
-// ==========================================
-// GET DISPLAYED MOVIES
-// ==========================================
+/* ==========================================
+   DISPLAYED MOVIES
+========================================== */
 
 function getCurrentlyDisplayedMovies(){
 
@@ -1901,9 +2303,9 @@ function getCurrentlyDisplayedMovies(){
 }
 
 
-// ==========================================
-// LOAD MORE
-// ==========================================
+/* ==========================================
+   LOAD MORE
+========================================== */
 
 if(loadMoreBtn){
 
@@ -1921,9 +2323,9 @@ if(loadMoreBtn){
 }
 
 
-// ==========================================
-// WATCHLIST
-// ==========================================
+/* ==========================================
+   WATCHLIST
+========================================== */
 
 const WATCHLIST_KEY =
     "moviepulse_agasobanuye_watchlist";
@@ -2037,9 +2439,9 @@ function updateWatchlistCount(){
 }
 
 
-// ==========================================
-// WATCHLIST TOGGLE
-// ==========================================
+/* ==========================================
+   WATCHLIST TOGGLE
+========================================== */
 
 const watchlistToggle =
     document.getElementById(
@@ -2073,9 +2475,9 @@ if(watchlistToggle){
 }
 
 
-// ==========================================
-// FULLSCREEN
-// ==========================================
+/* ==========================================
+   FULLSCREEN
+========================================== */
 
 const fullscreenButton =
     document.getElementById(
@@ -2131,9 +2533,9 @@ if(fullscreenButton){
 }
 
 
-// ==========================================
-// ESCAPE KEY
-// ==========================================
+/* ==========================================
+   ESCAPE KEY
+========================================== */
 
 document.addEventListener(
     "keydown",
@@ -2152,9 +2554,9 @@ document.addEventListener(
 );
 
 
-// ==========================================
-// CLICK OUTSIDE PLAYER
-// ==========================================
+/* ==========================================
+   CLICK OUTSIDE PLAYER
+========================================== */
 
 if(playerModal){
 
@@ -2177,9 +2579,9 @@ if(playerModal){
 }
 
 
-// ==========================================
-// MOBILE MENU
-// ==========================================
+/* ==========================================
+   MOBILE MENU
+========================================== */
 
 const menuBtn =
     document.querySelector(
@@ -2209,9 +2611,9 @@ if(menuBtn && nav){
 }
 
 
-// ==========================================
-// USER MENU
-// ==========================================
+/* ==========================================
+   USER MENU
+========================================== */
 
 const userIcon =
     document.getElementById(
@@ -2244,6 +2646,20 @@ if(userIcon && userDropdown){
 }
 
 
+if(userDropdown){
+
+    userDropdown.addEventListener(
+        "click",
+        function(event){
+
+            event.stopPropagation();
+
+        }
+    );
+
+}
+
+
 document.addEventListener(
     "click",
     function(){
@@ -2260,9 +2676,9 @@ document.addEventListener(
 );
 
 
-// ==========================================
-// ESCAPE HTML
-// ==========================================
+/* ==========================================
+   ESCAPE HTML
+========================================== */
 
 function escapeHtml(value){
 
@@ -2298,17 +2714,15 @@ function escapeHtml(value){
 }
 
 
-// ==========================================
-// START
-// ==========================================
+/* ==========================================
+   START
+========================================== */
 
 updateWatchlistCount();
 
 loadMovies(1);
 
 </script>
-
-
 
 
 </body>
