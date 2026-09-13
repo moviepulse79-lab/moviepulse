@@ -901,6 +901,63 @@ nav a.active{
     }
 
 }
+    .movie-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 40px 0 60px;
+}
+
+.movie-pagination button {
+    min-width: 42px;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #151515;
+    color: #fff;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.movie-pagination button:hover {
+    background: #e50914;
+    border-color: #e50914;
+}
+
+.movie-pagination button.active {
+    background: #e50914;
+    border-color: #e50914;
+    color: #fff;
+}
+
+.movie-pagination button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.movie-pagination .dots {
+    color: #777;
+    padding: 0 4px;
+}
+
+@media (max-width: 600px) {
+
+    .movie-pagination {
+        gap: 6px;
+        margin: 30px 0 45px;
+    }
+
+    .movie-pagination button {
+        min-width: 38px;
+        height: 38px;
+        padding: 0 9px;
+    }
+}
 
 </style>
 
@@ -1156,13 +1213,7 @@ nav a.active{
 
     <div class="load-more-container">
 
-        <button
-            id="loadMoreBtn"
-            class="load-more-btn"
-            type="button"
-        >
-            Load More
-        </button>
+       <div id="moviePagination" class="movie-pagination"></div>
 
     </div>
 
@@ -1322,14 +1373,9 @@ const closePlayerBtn =
 let agasobanuyeMovies = [];
 
 let currentPage = 1;
-
 const moviesPerPage = 12;
-
 let loadingMovies = false;
-
 let hasNextMovies = true;
-
-let showingWatchlist = false;
 
 
 /* ==========================================
@@ -1510,36 +1556,20 @@ function startHeroRotation(){
 /* ==========================================
    LOAD MOVIES
 ========================================== */
-
 async function loadMovies(page = 1){
 
     if(loadingMovies){
         return;
     }
 
-
     if(
         page > 1 &&
         !hasNextMovies
     ){
-
         return;
-
     }
-
 
     loadingMovies = true;
-
-
-    if(loadMoreBtn){
-
-        loadMoreBtn.disabled = true;
-
-        loadMoreBtn.textContent =
-            "Loading...";
-
-    }
-
 
     try{
 
@@ -1554,7 +1584,6 @@ async function loadMovies(page = 1){
                 }
             );
 
-
         if(!response.ok){
 
             throw new Error(
@@ -1563,10 +1592,8 @@ async function loadMovies(page = 1){
 
         }
 
-
         const data =
             await response.json();
-
 
         if(!data.success){
 
@@ -1577,46 +1604,21 @@ async function loadMovies(page = 1){
 
         }
 
-
         const movies =
             Array.isArray(data.movies)
                 ? data.movies
                 : [];
 
 
-        const existingIds =
-            new Set(
-                agasobanuyeMovies.map(
-                    movie =>
-                        String(movie.id)
-                )
-            );
+        /*
+         * IMPORTANT:
+         * Pagination means we replace the
+         * current page instead of appending
+         * movies from previous pages.
+         */
 
-
-        const newMovies =
-            movies.filter(
-                movie =>
-                    !existingIds.has(
-                        String(movie.id)
-                    )
-            );
-
-
-        if(page === 1){
-
-            agasobanuyeMovies =
-                newMovies;
-
-            featuredIndex = 0;
-
-        }
-        else{
-
-            agasobanuyeMovies.push(
-                ...newMovies
-            );
-
-        }
+        agasobanuyeMovies =
+            movies;
 
 
         currentPage =
@@ -1627,23 +1629,53 @@ async function loadMovies(page = 1){
             data.hasNext === true;
 
 
+        /*
+         * Render only the current page
+         */
+
         renderMovies(
-            getCurrentlyDisplayedMovies()
+            agasobanuyeMovies
         );
 
 
-        updateFeaturedMovie();
+        /*
+         * Update numbered pagination
+         */
 
+        renderPagination();
+
+
+        /*
+         * Update featured movie
+         */
+
+        featuredIndex = 0;
+
+        updateFeaturedMovie();
 
         startHeroRotation();
 
 
-        if(loadMoreBtn){
+        /*
+         * Scroll to movie section when
+         * changing pages.
+         */
 
-            loadMoreBtn.style.display =
-                hasNextMovies
-                    ? "block"
-                    : "none";
+        if(page > 1){
+
+            const movieSection =
+                document.getElementById(
+                    "movies"
+                );
+
+            if(movieSection){
+
+                movieSection.scrollIntoView({
+                    behavior:"smooth",
+                    block:"start"
+                });
+
+            }
 
         }
 
@@ -1664,43 +1696,184 @@ async function loadMovies(page = 1){
 
         }
 
-
-        if(loadMoreBtn){
-
-            loadMoreBtn.style.display =
-                "block";
-
-            loadMoreBtn.textContent =
-                "Try Again";
-
-        }
-
     }
     finally{
 
         loadingMovies = false;
 
-
-        if(loadMoreBtn){
-
-            loadMoreBtn.disabled =
-                false;
-
-
-            if(hasNextMovies){
-
-                loadMoreBtn.textContent =
-                    "Load More";
-
-            }
-
-        }
-
     }
 
 }
 
+    function renderPagination() {
 
+    if (!moviePagination) {
+        return;
+    }
+
+    /*
+    We need to know whether there is
+    another page.
+
+    With 12 movies per page:
+
+    12 movies = possibly another page
+    fewer than 12 = last page
+    */
+
+    const current =
+        currentPage;
+
+    let totalPages;
+
+    if (
+        agasobanuyeMovies.length <
+        moviesPerPage
+    ) {
+        totalPages =
+            current;
+    } else {
+        totalPages =
+            current + 1;
+    }
+
+    let html = "";
+
+    /*
+    Previous
+    */
+
+    html += `
+        <button
+            type="button"
+            ${current <= 1 ? "disabled" : ""}
+            onclick="goToMoviePage(${current - 1})"
+            aria-label="Previous page"
+        >
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+    `;
+
+    /*
+    Page numbers
+    */
+
+    const pages = [];
+
+    if (totalPages <= 7) {
+
+        for (
+            let i = 1;
+            i <= totalPages;
+            i++
+        ) {
+            pages.push(i);
+        }
+
+    } else {
+
+        pages.push(1);
+
+        if (current > 4) {
+            pages.push("...");
+        }
+
+        const start =
+            Math.max(
+                2,
+                current - 1
+            );
+
+        const end =
+            Math.min(
+                totalPages - 1,
+                current + 1
+            );
+
+        for (
+            let i = start;
+            i <= end;
+            i++
+        ) {
+            pages.push(i);
+        }
+
+        if (
+            current <
+            totalPages - 3
+        ) {
+            pages.push("...");
+        }
+
+        pages.push(
+            totalPages
+        );
+    }
+
+    pages.forEach(
+        page => {
+
+            if (page === "...") {
+
+                html += `
+                    <span class="dots">
+                        ...
+                    </span>
+                `;
+
+                return;
+            }
+
+            html += `
+                <button
+                    type="button"
+                    class="${page === current ? "active" : ""}"
+                    onclick="goToMoviePage(${page})"
+                    ${page === current ? "aria-current='page'" : ""}
+                >
+                    ${page}
+                </button>
+            `;
+        }
+    );
+
+    /*
+    Next
+    */
+
+    html += `
+        <button
+            type="button"
+            ${!hasNextMovies ? "disabled" : ""}
+            onclick="goToMoviePage(${current + 1})"
+            aria-label="Next page"
+        >
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    `;
+
+    moviePagination.innerHTML =
+        html;
+}
+
+    function goToMoviePage(page) {
+
+    if (
+        loadingMovies ||
+        page < 1
+    ) {
+        return;
+    }
+
+    if (
+        page > currentPage &&
+        !hasNextMovies
+    ) {
+        return;
+    }
+
+    loadMovies(page);
+}
 /* ==========================================
    RENDER MOVIES
 ========================================== */
