@@ -374,6 +374,73 @@ export default async (req) => {
             error
           );
 
+
+          // -----------------------------------------
+// GET REAL ABYSSPLAYER EMBED URL
+// -----------------------------------------
+
+let playerUrl = "";
+
+try {
+    const server2Response = await fetch(
+        movie.server2Url,
+        {
+            headers: {
+                "User-Agent":
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+                "Accept":
+                    "text/html,application/xhtml+xml,*/*;q=0.8"
+            }
+        }
+    );
+
+    if (server2Response.ok) {
+
+        const server2Html =
+            await server2Response.text();
+
+        const iframeRegex =
+            /<iframe[^>]+src=["']([^"']+)["']/gi;
+
+        let iframeMatch;
+
+        while (
+            (iframeMatch =
+                iframeRegex.exec(server2Html)) !== null
+        ) {
+
+            try {
+
+                const iframeUrl =
+                    new URL(
+                        iframeMatch[1],
+                        movie.server2Url
+                    ).href;
+
+                const iframeHost =
+                    new URL(iframeUrl).hostname;
+
+                if (
+                    iframeHost === "abyssplayer.com" ||
+                    iframeHost.endsWith(".abyssplayer.com")
+                ) {
+                    playerUrl = iframeUrl;
+                    break;
+                }
+
+            } catch {}
+        }
+    }
+
+} catch (error) {
+
+    console.error(
+        "Player extraction failed:",
+        movie.sourceUrl,
+        error
+    );
+}
+
           return movie;
         }
       })
