@@ -1520,7 +1520,7 @@ const saved =
                     src="${escapeHtml(poster)}"
                     alt="${escapeHtml(movie.title)}"
                     loading="lazy"
-                    onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'"
+                    onerror="this.onerror=null; this.src='';"
                 >
 
                 <div class="movie-overlay">
