@@ -1201,35 +1201,28 @@ let showingWatchlist = false;
 
 const agasobanuyeMoviesData = [
 
+ const agasobanuyeMoviesData = [
+
     {
+        id: "dc-perfect",
 
-        id:"dc-perfect",
+        title: "DC",
 
-        title:"DC",
-
-        /*
-        ADD YOUR REAL POSTER URL HERE
-
-        Example:
-
-        poster:"images/dc.jpg"
-        */
-
-        poster:"",
+        poster:
+            "https://image.tmdb.org/t/p/w500/wCHiaeJQGPTj85cqhN7Y5KVegd0.jpg",
 
         summary:
             "Rebel Devadas joins forces with Chandra in a dangerous world where passion and peril collide.",
 
-        category:"Drama",
+        category: "Drama",
 
-        duration:"2h 52m",
+        duration: "2h 52m",
 
         watchUrl:
             "https://abyssplayer.com/UBbaewpku",
 
         sourceUrl:
             "https://agasobanuyefree.com/movies/dc-by-perfect/watch/server/2"
-
     }
 
 ];
@@ -1453,75 +1446,111 @@ function renderMovies(movies){
 // ==========================================
 // OPEN MOVIE
 // ==========================================
-
 function openMovie(id){
 
-
-    const movie =
-        agasobanuyeMovies.find(
-            movie =>
-                String(movie.id) === String(id)
-        );
-
+    const movie = agasobanuyeMovies.find(
+        movie => String(movie.id) === String(id)
+    );
 
     if(!movie){
 
-        alert(
-            "Movie not found."
-        );
+        alert("Movie not found.");
 
         return;
-
     }
 
-
-    if(!movie.watchUrl){
-
-        alert(
-            "This movie is currently not available."
-        );
-
-        return;
-
-    }
-
-
-    playerTitle.textContent =
-        movie.title;
-
-
-    /*
-    IMPORTANT:
-
-    Some external streaming websites
-    block iframe embedding.
-
-    If the source blocks embedding,
-    MoviePulse cannot bypass their
-    security protection.
-    */
+    playerTitle.textContent = movie.title;
 
     videoContainer.innerHTML = `
 
-        <iframe
-            src="${escapeHtml(movie.watchUrl)}"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen
-        ></iframe>
+        <div style="
+            width:100%;
+            height:100%;
+            min-height:500px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            padding:30px;
+            background:#000;
+        ">
+
+            <i
+                class="fa-solid fa-circle-play"
+                style="
+                    font-size:70px;
+                    color:#e50914;
+                    margin-bottom:20px;
+                "
+            ></i>
+
+            <h2 style="
+                margin-bottom:12px;
+            ">
+                ${escapeHtml(movie.title)}
+            </h2>
+
+            <p style="
+                color:#aaa;
+                max-width:500px;
+                margin-bottom:25px;
+                line-height:1.7;
+            ">
+
+                This movie is hosted by an external
+                streaming source. Open the secure
+                movie player to watch.
+
+            </p>
+
+            <a
+                href="${escapeHtml(movie.watchUrl)}"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="
+                    display:inline-flex;
+                    align-items:center;
+                    gap:10px;
+                    background:#e50914;
+                    color:#fff;
+                    padding:15px 28px;
+                    border-radius:8px;
+                    font-weight:700;
+                    text-decoration:none;
+                    margin-bottom:12px;
+                "
+            >
+
+                <i class="fa-solid fa-play"></i>
+
+                Open Movie Securely
+
+            </a>
+
+            <a
+                href="${escapeHtml(movie.sourceUrl)}"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="
+                    color:#aaa;
+                    font-size:13px;
+                "
+            >
+
+                Try Original Source
+
+            </a>
+
+        </div>
 
     `;
 
+    playerModal.classList.add("active");
 
-    playerModal.classList.add(
-        "active"
-    );
-
-
-    document.body.style.overflow =
-        "hidden";
+    document.body.style.overflow = "hidden";
 
 }
-
 
 // ==========================================
 // CLOSE PLAYER
