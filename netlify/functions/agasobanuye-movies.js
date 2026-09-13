@@ -316,36 +316,102 @@ export default async (req) => {
               description[1].trim();
           }
 
-          // ========================================
-          // TITLE
-          // ========================================
+        // ========================================
+// REAL MOVIE TITLE
+// ========================================
 
-          const titleMatch =
-            detailHtml.match(
-              /<title[^>]*>([\s\S]*?)<\/title>/i
-            );
+let realTitle = "";
 
-          if (titleMatch) {
 
-            let pageTitle =
-              titleMatch[1]
-                .replace(/\s+/g, " ")
-                .trim();
+// 1. Try the main H1
+const h1Match =
+  detailHtml.match(
+    /<h1[^>]*>([\s\S]*?)<\/h1>/i
+  );
 
-            // Remove site name
-            pageTitle =
-              pageTitle
-                .replace(
-                  /\s*[-|–]\s*Agasobanuye.*$/i,
-                  ""
-                )
-                .trim();
+if (h1Match) {
 
-            if (pageTitle) {
-              movie.title = pageTitle;
-            }
-          }
+  realTitle =
+    h1Match[1]
+      .replace(/<[^>]+>/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+}
 
+
+// 2. Try Open Graph title
+if (!realTitle) {
+
+  const ogTitle =
+    detailHtml.match(
+      /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i
+    );
+
+  if (ogTitle) {
+    realTitle =
+      ogTitle[1]
+        .replace(/\s+/g, " ")
+        .trim();
+  }
+}
+
+
+// 3. Try reversed og:title attributes
+if (!realTitle) {
+
+  const ogTitleReverse =
+    detailHtml.match(
+      /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i
+    );
+
+  if (ogTitleReverse) {
+    realTitle =
+      ogTitleReverse[1]
+        .replace(/\s+/g, " ")
+        .trim();
+  }
+}
+
+
+// 4. Finally try the page title
+if (!realTitle) {
+
+  const titleMatch =
+    detailHtml.match(
+      /<title[^>]*>([\s\S]*?)<\/title>/i
+    );
+
+  if (titleMatch) {
+
+    realTitle =
+      titleMatch[1]
+        .replace(/<[^>]+>/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    realTitle =
+      realTitle
+        .replace(
+          /\s*[-|–]\s*Agasobanuye.*$/i,
+          ""
+        )
+        .replace(
+          /\s*[-|–]\s*Agasobanuye\s*FREE.*$/i,
+          ""
+        )
+        .trim();
+  }
+}
+
+
+// 5. Use the slug only if everything above failed
+if (!realTitle) {
+  realTitle = movie.title || "Untitled Movie";
+}
+
+
+// Save the real title
+movie.title = realTitle;
           // ========================================
           // CATEGORY
           // ========================================
