@@ -117,7 +117,9 @@ export default async (req) => {
           `${cleanUrl}/watch`,
 
         server2Url:
-          `${cleanUrl}/watch/server/2`
+          `${cleanUrl}/watch/server/2`,
+
+        playerUrl: ""
       });
 
       if (movies.length >= limit) {
@@ -133,6 +135,10 @@ export default async (req) => {
       movies.map(async movie => {
 
         try {
+
+          // ========================================
+          // MOVIE DETAIL PAGE
+          // ========================================
 
           const detailResponse = await fetch(
             movie.sourceUrl,
@@ -274,12 +280,16 @@ export default async (req) => {
                 continue;
               }
 
-              possibleImages.push(
-                new URL(
-                  imageUrl,
-                  movie.sourceUrl
-                ).href
-              );
+              try {
+
+                possibleImages.push(
+                  new URL(
+                    imageUrl,
+                    movie.sourceUrl
+                  ).href
+                );
+
+              } catch {}
             }
 
             poster =
@@ -294,10 +304,16 @@ export default async (req) => {
 
           // Make poster absolute
           if (poster) {
-            poster = new URL(
-              poster,
-              movie.sourceUrl
-            ).href;
+
+            try {
+
+              poster =
+                new URL(
+                  poster,
+                  movie.sourceUrl
+                ).href;
+
+            } catch {}
           }
 
           // ========================================
@@ -312,106 +328,108 @@ export default async (req) => {
             );
 
           if (description) {
+
             summary =
-              description[1].trim();
+              description[1]
+                .replace(/\s+/g, " ")
+                .trim();
           }
 
-        // ========================================
-// REAL MOVIE TITLE
-// ========================================
+          // ========================================
+          // REAL MOVIE TITLE
+          // ========================================
 
-let realTitle = "";
+          let realTitle = "";
 
+          // 1. Main H1
+          const h1Match =
+            detailHtml.match(
+              /<h1[^>]*>([\s\S]*?)<\/h1>/i
+            );
 
-// 1. Try the main H1
-const h1Match =
-  detailHtml.match(
-    /<h1[^>]*>([\s\S]*?)<\/h1>/i
-  );
+          if (h1Match) {
 
-if (h1Match) {
+            realTitle =
+              h1Match[1]
+                .replace(/<[^>]+>/g, "")
+                .replace(/\s+/g, " ")
+                .trim();
+          }
 
-  realTitle =
-    h1Match[1]
-      .replace(/<[^>]+>/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
-}
+          // 2. Open Graph title
+          if (!realTitle) {
 
+            const ogTitle =
+              detailHtml.match(
+                /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i
+              );
 
-// 2. Try Open Graph title
-if (!realTitle) {
+            if (ogTitle) {
 
-  const ogTitle =
-    detailHtml.match(
-      /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i
-    );
+              realTitle =
+                ogTitle[1]
+                  .replace(/\s+/g, " ")
+                  .trim();
+            }
+          }
 
-  if (ogTitle) {
-    realTitle =
-      ogTitle[1]
-        .replace(/\s+/g, " ")
-        .trim();
-  }
-}
+          // 3. Reverse OG title
+          if (!realTitle) {
 
+            const ogTitleReverse =
+              detailHtml.match(
+                /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i
+              );
 
-// 3. Try reversed og:title attributes
-if (!realTitle) {
+            if (ogTitleReverse) {
 
-  const ogTitleReverse =
-    detailHtml.match(
-      /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i
-    );
+              realTitle =
+                ogTitleReverse[1]
+                  .replace(/\s+/g, " ")
+                  .trim();
+            }
+          }
 
-  if (ogTitleReverse) {
-    realTitle =
-      ogTitleReverse[1]
-        .replace(/\s+/g, " ")
-        .trim();
-  }
-}
+          // 4. Page title
+          if (!realTitle) {
 
+            const titleMatch =
+              detailHtml.match(
+                /<title[^>]*>([\s\S]*?)<\/title>/i
+              );
 
-// 4. Finally try the page title
-if (!realTitle) {
+            if (titleMatch) {
 
-  const titleMatch =
-    detailHtml.match(
-      /<title[^>]*>([\s\S]*?)<\/title>/i
-    );
+              realTitle =
+                titleMatch[1]
+                  .replace(/<[^>]+>/g, "")
+                  .replace(/\s+/g, " ")
+                  .trim();
 
-  if (titleMatch) {
+              realTitle =
+                realTitle
+                  .replace(
+                    /\s*[-|–]\s*Agasobanuye.*$/i,
+                    ""
+                  )
+                  .replace(
+                    /\s*[-|–]\s*Agasobanuye\s*FREE.*$/i,
+                    ""
+                  )
+                  .trim();
+            }
+          }
 
-    realTitle =
-      titleMatch[1]
-        .replace(/<[^>]+>/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
+          // 5. Slug fallback
+          if (!realTitle) {
+            realTitle =
+              movie.title ||
+              "Untitled Movie";
+          }
 
-    realTitle =
-      realTitle
-        .replace(
-          /\s*[-|–]\s*Agasobanuye.*$/i,
-          ""
-        )
-        .replace(
-          /\s*[-|–]\s*Agasobanuye\s*FREE.*$/i,
-          ""
-        )
-        .trim();
-  }
-}
+          // Save title
+          movie.title = realTitle;
 
-
-// 5. Use the slug only if everything above failed
-if (!realTitle) {
-  realTitle = movie.title || "Untitled Movie";
-}
-
-
-// Save the real title
-movie.title = realTitle;
           // ========================================
           // CATEGORY
           // ========================================
@@ -421,15 +439,181 @@ movie.title = realTitle;
               /(?:Genre|Category)[^<]{0,50}<\/[^>]+>\s*<[^>]+>([^<]+)/i
             );
 
+          let movieCategory =
+            "Agasobanuye";
+
           if (categoryMatch) {
-            movie.category =
-              categoryMatch[1].trim();
+
+            movieCategory =
+              categoryMatch[1]
+                .replace(/\s+/g, " ")
+                .trim();
           }
 
+          // ========================================
+          // DURATION
+          // ========================================
+
+          let duration = "";
+
+          const durationMatch =
+            detailHtml.match(
+              /(?:Duration|Runtime)[^<]{0,80}(?:<[^>]+>){0,3}\s*([^<]{2,30})/i
+            );
+
+          if (durationMatch) {
+
+            duration =
+              durationMatch[1]
+                .replace(/\s+/g, " ")
+                .trim();
+          }
+
+          // ==========================================
+          // GET REAL ABYSSPLAYER EMBED URL
+          // ==========================================
+
+          let playerUrl = "";
+
+          try {
+
+            const server2Response =
+              await fetch(
+                movie.server2Url,
+                {
+                  headers: {
+                    "User-Agent":
+                      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
+                    "Accept":
+                      "text/html,application/xhtml+xml,*/*;q=0.8",
+
+                    "Accept-Language":
+                      "en-US,en;q=0.9"
+                  }
+                }
+              );
+
+            if (server2Response.ok) {
+
+              const server2Html =
+                await server2Response.text();
+
+              // ======================================
+              // 1. NORMAL IFRAME
+              // ======================================
+
+              const iframeMatches =
+                server2Html.matchAll(
+                  /<iframe\b[^>]*\bsrc\s*=\s*["']([^"']+)["']/gi
+                );
+
+              for (
+                const iframeMatch
+                of iframeMatches
+              ) {
+
+                try {
+
+                  const iframeUrl =
+                    new URL(
+                      iframeMatch[1],
+                      movie.server2Url
+                    ).href;
+
+                  const iframeHost =
+                    new URL(
+                      iframeUrl
+                    ).hostname
+                      .toLowerCase();
+
+                  if (
+                    iframeHost ===
+                      "abyssplayer.com" ||
+                    iframeHost.endsWith(
+                      ".abyssplayer.com"
+                    )
+                  ) {
+
+                    playerUrl =
+                      iframeUrl;
+
+                    break;
+                  }
+
+                } catch {}
+              }
+
+              // ======================================
+              // 2. SEARCH RAW HTML
+              // ======================================
+
+              if (!playerUrl) {
+
+                const abyssMatch =
+                  server2Html.match(
+                    /https?:\/\/(?:www\.)?abyssplayer\.com\/[A-Za-z0-9_-]+/i
+                  );
+
+                if (abyssMatch) {
+                  playerUrl =
+                    abyssMatch[0];
+                }
+              }
+
+              // ======================================
+              // 3. SEARCH ESCAPED URL
+              // ======================================
+
+              if (!playerUrl) {
+
+                const escapedMatch =
+                  server2Html.match(
+                    /https?:\\\/\\\/(?:www\.)?abyssplayer\.com\\\/[A-Za-z0-9_-]+/i
+                  );
+
+                if (escapedMatch) {
+
+                  playerUrl =
+                    escapedMatch[0]
+                      .replace(
+                        /\\\//g,
+                        "/"
+                      );
+                }
+              }
+            }
+
+          } catch (playerError) {
+
+            console.error(
+              "Player extraction failed:",
+              movie.server2Url,
+              playerError
+            );
+          }
+
+          // ========================================
+          // RETURN COMPLETE MOVIE
+          // ========================================
+
           return {
+
             ...movie,
+
+            title:
+              realTitle,
+
             poster,
-            summary
+
+            summary,
+
+            category:
+              movieCategory,
+
+            duration,
+
+            playerUrl
           };
 
         } catch (error) {
@@ -440,95 +624,37 @@ movie.title = realTitle;
             error
           );
 
-
-          // -----------------------------------------
-// GET REAL ABYSSPLAYER EMBED URL
-// -----------------------------------------
-
-let playerUrl = "";
-
-try {
-    const server2Response = await fetch(
-        movie.server2Url,
-        {
-            headers: {
-                "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
-                "Accept":
-                    "text/html,application/xhtml+xml,*/*;q=0.8"
-            }
-        }
-    );
-
-    if (server2Response.ok) {
-
-        const server2Html =
-            await server2Response.text();
-
-        const iframeRegex =
-            /<iframe[^>]+src=["']([^"']+)["']/gi;
-
-        let iframeMatch;
-
-        while (
-            (iframeMatch =
-                iframeRegex.exec(server2Html)) !== null
-        ) {
-
-            try {
-
-                const iframeUrl =
-                    new URL(
-                        iframeMatch[1],
-                        movie.server2Url
-                    ).href;
-
-                const iframeHost =
-                    new URL(iframeUrl).hostname;
-
-                if (
-                    iframeHost === "abyssplayer.com" ||
-                    iframeHost.endsWith(".abyssplayer.com")
-                ) {
-                    playerUrl = iframeUrl;
-                    break;
-                }
-
-            } catch {}
-        }
-    }
-
-} catch (error) {
-
-    console.error(
-        "Player extraction failed:",
-        movie.sourceUrl,
-        error
-    );
-}
-
           return movie;
         }
       })
     );
 
+    // ==========================================
+    // RESPONSE
+    // ==========================================
+
     return json({
+
       success: true,
 
-      source: "Agasobanuye FREE",
+      source:
+        "Agasobanuye FREE",
 
       page,
 
       limit,
 
-      category: category || null,
+      category:
+        category || null,
 
-      count: detailedMovies.length,
+      count:
+        detailedMovies.length,
 
       hasNext:
         detailedMovies.length >= limit,
 
-      movies: detailedMovies
+      movies:
+        detailedMovies
     });
 
   } catch (error) {
@@ -551,10 +677,13 @@ try {
 
 
 // ==========================================
-// JSON
+// JSON RESPONSE
 // ==========================================
 
-function json(data, status = 200) {
+function json(
+  data,
+  status = 200
+) {
 
   return new Response(
     JSON.stringify(data),
