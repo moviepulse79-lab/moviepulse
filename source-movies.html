@@ -1185,7 +1185,6 @@ const videoContainer =
 const closePlayerBtn =
     document.getElementById("closePlayer");
 
-
 // ==========================================
 // AGASOBANUYE MOVIES
 // ==========================================
@@ -1196,94 +1195,171 @@ let currentPage = 1;
 
 const moviesPerPage = 12;
 
+let loadingMovies = false;
+
+let hasNextMovies = true;
+
 let showingWatchlist = false;
 
 
-const agasobanuyeMoviesData = [
+// ==========================================
+// LOAD MOVIES FROM NETLIFY FUNCTION
+// ==========================================
 
- const agasobanuyeMoviesData = [
+async function loadMovies(page = 1) {
 
-    {
-        id: "dc-perfect",
-
-        title: "DC",
-
-        poster:
-            "https://image.tmdb.org/t/p/w500/wCHiaeJQGPTj85cqhN7Y5KVegd0.jpg",
-
-        summary:
-            "Rebel Devadas joins forces with Chandra in a dangerous world where passion and peril collide.",
-
-        category: "Drama",
-
-        duration: "2h 52m",
-
-        watchUrl:
-            "https://abyssplayer.com/UBbaewpku",
-
-        sourceUrl:
-            "https://agasobanuyefree.com/movies/dc-by-perfect/watch/server/2"
+    if (loadingMovies) {
+        return;
     }
 
-];
+    if (page > 1 && !hasNextMovies) {
+        return;
+    }
+
+    loadingMovies = true;
+
+    if (loadMoreBtn) {
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.textContent = "Loading...";
+    }
+
+    try {
+
+        const response = await fetch(
+            `/.netlify/functions/agasobanuye-movies?page=${page}&limit=${moviesPerPage}`,
+            {
+                headers: {
+                    "Accept": "application/json"
+                }
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                `Movie API returned ${response.status}`
+            );
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(
+                data.error || "Failed to load movies"
+            );
+        }
+
+        const movies = Array.isArray(data.movies)
+            ? data.movies
+            : [];
 
 
-// ==========================================
-// LOAD MOVIES
-// ==========================================
+        /*
+          Prevent duplicate movies when loading
+          additional pages.
+        */
 
-function loadMovies(page = 1){
+        const existingIds =
+            new Set(
+                agasobanuyeMovies.map(
+                    movie => String(movie.id)
+                )
+            );
 
-    const start =
-        (page - 1) * moviesPerPage;
 
-    const end =
-        start + moviesPerPage;
+        const newMovies =
+            movies.filter(
+                movie =>
+                    !existingIds.has(
+                        String(movie.id)
+                    )
+            );
 
 
-    const movies =
-        agasobanuyeMoviesData.slice(
-            start,
-            end
+        if (page === 1) {
+            agasobanuyeMovies = newMovies;
+        } else {
+            agasobanuyeMovies.push(
+                ...newMovies
+            );
+        }
+
+
+        currentPage = page;
+
+        hasNextMovies =
+            data.hasNext === true;
+
+
+        renderMovies(
+            getCurrentlyDisplayedMovies()
         );
 
 
-    if(page === 1){
-
-        agasobanuyeMovies = [];
-
-    }
+        updateFeaturedMovie();
 
 
-    agasobanuyeMovies.push(
-        ...movies
-    );
+        /*
+          Show/hide Load More button.
+        */
+
+        if (loadMoreBtn) {
+
+            loadMoreBtn.style.display =
+                hasNextMovies
+                    ? "block"
+                    : "none";
+
+        }
 
 
-    currentPage = page;
+    } catch (error) {
+
+        console.error(
+            "Failed to load Agasobanuye movies:",
+            error
+        );
 
 
-    renderMovies(
-        getCurrentlyDisplayedMovies()
-    );
+        if (page === 1) {
+
+            agasobanuyeMovies = [];
+
+            renderMovies([]);
+
+        }
 
 
-    updateFeaturedMovie();
+        if (loadMoreBtn) {
+
+            loadMoreBtn.style.display =
+                "block";
+
+            loadMoreBtn.textContent =
+                "Try Again";
+
+        }
 
 
-    if(loadMoreBtn){
+    } finally {
 
-        loadMoreBtn.style.display =
-            end < agasobanuyeMoviesData.length
-                ? "block"
-                : "none";
+        loadingMovies = false;
+
+        if (loadMoreBtn) {
+
+            loadMoreBtn.disabled = false;
+
+            if (hasNextMovies) {
+
+                loadMoreBtn.textContent =
+                    "Load More";
+
+            }
+
+        }
 
     }
 
 }
-
-
-// ==========================================
 // RENDER MOVIES
 // ==========================================
 
@@ -1446,109 +1522,59 @@ function renderMovies(movies){
 // ==========================================
 // OPEN MOVIE
 // ==========================================
-function openMovie(id){
 
-    const movie = agasobanuyeMovies.find(
-        movie => String(movie.id) === String(id)
-    );
+function openMovie(id) {
 
-    if(!movie){
+    const movie =
+        agasobanuyeMovies.find(
+            movie =>
+                String(movie.id) ===
+                String(id)
+        );
+
+
+    if (!movie) {
 
         alert("Movie not found.");
 
         return;
+
     }
 
-    playerTitle.textContent = movie.title;
+
+    playerTitle.textContent =
+        movie.title;
+
+
+    const playerUrl =
+        movie.server2Url ||
+        movie.watchUrl;
+
 
     videoContainer.innerHTML = `
 
-        <div style="
-            width:100%;
-            height:100%;
-            min-height:500px;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            justify-content:center;
-            text-align:center;
-            padding:30px;
-            background:#000;
-        ">
-
-            <i
-                class="fa-solid fa-circle-play"
-                style="
-                    font-size:70px;
-                    color:#e50914;
-                    margin-bottom:20px;
-                "
-            ></i>
-
-            <h2 style="
-                margin-bottom:12px;
-            ">
-                ${escapeHtml(movie.title)}
-            </h2>
-
-            <p style="
-                color:#aaa;
-                max-width:500px;
-                margin-bottom:25px;
-                line-height:1.7;
-            ">
-
-                This movie is hosted by an external
-                streaming source. Open the secure
-                movie player to watch.
-
-            </p>
-
-            <a
-                href="${escapeHtml(movie.watchUrl)}"
-                target="_blank"
-                rel="noopener noreferrer"
-                style="
-                    display:inline-flex;
-                    align-items:center;
-                    gap:10px;
-                    background:#e50914;
-                    color:#fff;
-                    padding:15px 28px;
-                    border-radius:8px;
-                    font-weight:700;
-                    text-decoration:none;
-                    margin-bottom:12px;
-                "
-            >
-
-                <i class="fa-solid fa-play"></i>
-
-                Open Movie Securely
-
-            </a>
-
-            <a
-                href="${escapeHtml(movie.sourceUrl)}"
-                target="_blank"
-                rel="noopener noreferrer"
-                style="
-                    color:#aaa;
-                    font-size:13px;
-                "
-            >
-
-                Try Original Source
-
-            </a>
-
-        </div>
+        <iframe
+            src="${escapeHtml(playerUrl)}"
+            title="${escapeHtml(movie.title)}"
+            width="100%"
+            height="100%"
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
 
     `;
 
-    playerModal.classList.add("active");
 
-    document.body.style.overflow = "hidden";
+    playerModal.classList.add(
+        "active"
+    );
+
+
+    document.body.style.overflow =
+        "hidden";
 
 }
 
