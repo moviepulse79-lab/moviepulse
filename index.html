@@ -1724,6 +1724,193 @@ padding:20px;
     }
 
 }
+  /* =========================================
+   AGASOBANUYE RECENTLY ADDED
+========================================= */
+
+.agasobanuye-section {
+    padding: 60px 6%;
+    background: #050505;
+}
+
+.agasobanuye-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.agasobanuye-title {
+    font-size: 32px;
+    color: #fff;
+    position: relative;
+    padding-left: 15px;
+}
+
+.agasobanuye-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 5px;
+    height: 85%;
+    background: #e50914;
+    border-radius: 10px;
+}
+
+.agasobanuye-subtitle {
+    color: #aaa;
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.agasobanuye-movies {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(150px, 1fr));
+    gap: 18px;
+}
+
+.agasobanuye-card {
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: .3s ease;
+    min-width: 0;
+}
+
+.agasobanuye-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(229, 9, 20, .35);
+}
+
+.agasobanuye-poster {
+    position: relative;
+    overflow: hidden;
+}
+
+.agasobanuye-poster img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: .4s ease;
+}
+
+.agasobanuye-card:hover img {
+    transform: scale(1.08);
+}
+
+.agasobanuye-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #e50914;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    z-index: 2;
+}
+
+.agasobanuye-info {
+    padding: 14px;
+}
+
+.agasobanuye-info h3 {
+    color: #fff;
+    font-size: 15px;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.agasobanuye-info p {
+    color: #aaa;
+    font-size: 12px;
+    margin-bottom: 12px;
+}
+
+.agasobanuye-watch {
+    display: block;
+    width: 100%;
+    background: #e50914;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.agasobanuye-watch:hover {
+    background: #ff1f1f;
+    transform: scale(1.03);
+}
+
+.view-all-agasobanuye {
+    display: block;
+    width: fit-content;
+    margin: 35px auto 0;
+    background: transparent;
+    border: 1px solid #e50914;
+    color: #fff;
+    padding: 13px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.view-all-agasobanuye:hover {
+    background: #e50914;
+    transform: translateY(-3px);
+}
+
+
+/* MOBILE */
+
+@media(max-width: 900px) {
+
+    .agasobanuye-movies {
+        display: flex;
+        overflow-x: auto;
+        gap: 15px;
+        padding-bottom: 12px;
+        scroll-behavior: smooth;
+    }
+
+    .agasobanuye-card {
+        flex: 0 0 160px;
+    }
+
+    .agasobanuye-poster img {
+        height: 235px;
+    }
+
+    .agasobanuye-movies::-webkit-scrollbar {
+        height: 7px;
+    }
+
+    .agasobanuye-movies::-webkit-scrollbar-track {
+        background: #111;
+    }
+
+    .agasobanuye-movies::-webkit-scrollbar-thumb {
+        background: #e50914;
+        border-radius: 20px;
+    }
+
+    .agasobanuye-header {
+        display: block;
+    }
+
+    .agasobanuye-title {
+        font-size: 26px;
+    }
+
+}
 </style>
 </head>
 
