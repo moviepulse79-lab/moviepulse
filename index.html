@@ -1911,6 +1911,201 @@ padding:20px;
     }
 
 }
+  /* =========================================
+   AGASOBANUYE HOME SECTION
+========================================= */
+
+.agasobanuye-section{
+    padding:60px 6%;
+    background:#050505;
+}
+
+.agasobanuye-header{
+    margin-bottom:30px;
+}
+
+.agasobanuye-title{
+    color:#fff;
+    font-size:32px;
+    border-left:5px solid #e50914;
+    padding-left:15px;
+    margin-bottom:8px;
+}
+
+.agasobanuye-subtitle{
+    color:#aaa;
+    font-size:14px;
+}
+
+.agasobanuye-movies{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:18px;
+}
+
+.agasobanuye-card{
+    background:#111;
+    border:1px solid #222;
+    border-radius:12px;
+    overflow:hidden;
+    transition:.3s ease;
+}
+
+.agasobanuye-card:hover{
+    transform:translateY(-7px);
+    border-color:#e50914;
+    box-shadow:0 15px 35px rgba(229,9,20,.25);
+}
+
+.agasobanuye-poster{
+    position:relative;
+    height:250px;
+    overflow:hidden;
+    background:#181818;
+}
+
+.agasobanuye-poster img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:.4s ease;
+}
+
+.agasobanuye-card:hover .agasobanuye-poster img{
+    transform:scale(1.07);
+}
+
+.agasobanuye-new{
+    position:absolute;
+    top:10px;
+    left:10px;
+    z-index:2;
+
+    background:#e50914;
+    color:#fff;
+
+    padding:5px 10px;
+    border-radius:20px;
+
+    font-size:10px;
+    font-weight:700;
+}
+
+.agasobanuye-info{
+    padding:13px;
+}
+
+.agasobanuye-info h3{
+    color:#fff;
+    font-size:14px;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+
+    margin-bottom:8px;
+}
+
+.agasobanuye-meta{
+    color:#999;
+    font-size:11px;
+    margin-bottom:12px;
+}
+
+.agasobanuye-watch{
+    display:block;
+
+    width:100%;
+
+    background:#e50914;
+    color:#fff;
+
+    text-align:center;
+
+    padding:10px;
+
+    border-radius:7px;
+
+    font-size:12px;
+    font-weight:600;
+
+    transition:.3s;
+}
+
+.agasobanuye-watch:hover{
+    background:#ff1f1f;
+}
+
+.view-all-agasobanuye{
+    display:block;
+
+    width:max-content;
+
+    margin:35px auto 0;
+
+    padding:13px 25px;
+
+    border:1px solid #e50914;
+
+    border-radius:30px;
+
+    color:#fff;
+
+    font-size:14px;
+    font-weight:600;
+
+    transition:.3s;
+}
+
+.view-all-agasobanuye:hover{
+    background:#e50914;
+    transform:translateY(-3px);
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:900px){
+
+    .agasobanuye-section{
+        padding:50px 15px;
+    }
+
+    .agasobanuye-title{
+        font-size:27px;
+    }
+
+    .agasobanuye-movies{
+        display:flex;
+        overflow-x:auto;
+        gap:15px;
+
+        padding-bottom:12px;
+
+        scroll-snap-type:x mandatory;
+    }
+
+    .agasobanuye-card{
+        flex:0 0 160px;
+        scroll-snap-align:start;
+    }
+
+    .agasobanuye-poster{
+        height:230px;
+    }
+
+    .agasobanuye-movies::-webkit-scrollbar{
+        height:6px;
+    }
+
+    .agasobanuye-movies::-webkit-scrollbar-thumb{
+        background:#e50914;
+        border-radius:10px;
+    }
+
+}
 </style>
 </head>
 
@@ -2689,6 +2884,50 @@ Discover upcoming movies that are about to hit cinemas and streaming platforms.
 
 </section>
 
+     <!-- =====================================
+     AGASOBANUYE RECENTLY ADDED
+===================================== -->
+
+<section class="agasobanuye-section">
+
+    <div class="agasobanuye-header">
+
+        <div>
+
+            <h2 class="agasobanuye-title">
+                Agasobanuye Recently Added
+            </h2>
+
+            <p class="agasobanuye-subtitle">
+                Fresh Agasobanuye movies available to watch on MoviePulse.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="agasobanuye-movies"
+        id="agasobanuyeHomeMovies"
+    >
+
+        <!-- Movies load automatically -->
+
+    </div>
+
+
+    <a
+        href="source-movies.html"
+        class="view-all-agasobanuye"
+    >
+
+        View All Agasobanuye Movies →
+
+    </a>
+
+
+</section>
      <script async="async" data-cfasync="false" src="https://pl31230089.profitableratecpmnetwork.com/424ed3bcc00adf563f3a60c1b4234796/invoke.js"></script>
 <div id="container-424ed3bcc00adf563f3a60c1b4234796"></div>
 
@@ -2889,6 +3128,230 @@ window.addEventListener("appinstalled", () => {
     }
 
 });
+
+  /* ==========================================
+   AGASOBANUYE RECENTLY ADDED
+========================================== */
+
+async function loadAgasobanuyeHomeMovies(){
+
+    const container =
+        document.getElementById(
+            "agasobanuyeHomeMovies"
+        );
+
+
+    if(!container){
+        return;
+    }
+
+
+    try{
+
+        const response =
+            await fetch(
+                "/.netlify/functions/agasobanuye-movies?page=1&limit=6",
+                {
+                    headers:{
+                        "Accept":"application/json"
+                    }
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Failed to load movies"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if(!data.success){
+
+            throw new Error(
+                data.error ||
+                "Movie API error"
+            );
+
+        }
+
+
+        const movies =
+            Array.isArray(data.movies)
+                ? data.movies.slice(0,6)
+                : [];
+
+
+        if(!movies.length){
+
+            container.innerHTML = `
+                <p style="
+                    color:#777;
+                    grid-column:1/-1;
+                ">
+                    No Agasobanuye movies available yet.
+                </p>
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            movies.map(
+                movie => `
+
+                    <article
+                        class="agasobanuye-card"
+                    >
+
+                        <a
+                            href="source-movies.html?movie=${encodeURIComponent(movie.id)}"
+                            class="agasobanuye-poster"
+                        >
+
+                            <span class="agasobanuye-new">
+                                NEW
+                            </span>
+
+
+                            ${
+                                movie.poster
+                                    ? `
+                                        <img
+                                            src="${escapeAgasobanuyeHtml(movie.poster)}"
+                                            alt="${escapeAgasobanuyeHtml(movie.title)}"
+                                            loading="lazy"
+                                        >
+                                      `
+                                    : `
+                                        <div style="
+                                            height:100%;
+                                            display:flex;
+                                            align-items:center;
+                                            justify-content:center;
+                                            color:#777;
+                                        ">
+                                            🎬
+                                        </div>
+                                      `
+                            }
+
+                        </a>
+
+
+                        <div
+                            class="agasobanuye-info"
+                        >
+
+                            <h3>
+                                ${escapeAgasobanuyeHtml(movie.title)}
+                            </h3>
+
+
+                            <div
+                                class="agasobanuye-meta"
+                            >
+
+                                ${
+                                    escapeAgasobanuyeHtml(
+                                        movie.category ||
+                                        "Agasobanuye"
+                                    )
+                                }
+
+                                •
+
+                                ${
+                                    escapeAgasobanuyeHtml(
+                                        movie.duration ||
+                                        "Movie"
+                                    )
+                                }
+
+                            </div>
+
+
+                            <a
+                                href="source-movies.html?movie=${encodeURIComponent(movie.id)}"
+                                class="agasobanuye-watch"
+                            >
+
+                                ▶ Watch Now
+
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                `
+            ).join("");
+
+
+    }
+    catch(error){
+
+        console.error(
+            "Agasobanuye homepage error:",
+            error
+        );
+
+
+        container.innerHTML = `
+            <p style="
+                color:#777;
+                grid-column:1/-1;
+            ">
+                Unable to load movies right now.
+            </p>
+        `;
+
+    }
+
+}
+
+
+
+/* ==========================================
+   ESCAPE HTML
+========================================== */
+
+function escapeAgasobanuyeHtml(value){
+
+    return String(
+        value || ""
+    )
+
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+
+/* ==========================================
+   START
+========================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        loadAgasobanuyeHomeMovies();
+
+    }
+);
 
 </script>
 
