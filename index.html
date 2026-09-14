@@ -4073,122 +4073,379 @@ document.addEventListener(
 </script>
 
 
+<!-- MOVIE DATA -->
 <script src="movies.js"></script>
 
+<!-- MOVIEPULSE HERO SLIDER -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    if (!window.movies || !window.movies.length) {
-        console.error("Movie data not found.");
+    /* ================================
+       CHECK MOVIE DATA
+    ================================= */
+    if (
+        !window.movies ||
+        !Array.isArray(window.movies) ||
+        window.movies.length === 0
+    ) {
+        console.error("MoviePulse: movies.js did not load or contains no movies.");
         return;
     }
 
+
+    /* ================================
+       HERO ELEMENTS
+    ================================= */
     const hero = document.getElementById("movieHero");
-    const background = hero.querySelector(".hero-background");
-    const title = document.getElementById("heroMovieTitle");
-    const meta = document.getElementById("heroMovieMeta");
-    const summary = document.getElementById("heroMovieSummary");
-    const watchBtn = document.getElementById("heroWatchBtn");
-    const moreBtn = document.getElementById("heroMoreBtn");
-    const prevBtn = document.getElementById("heroPrev");
 
-    let currentIndex = 0;
-
-    function showMovie(index) {
-
-        const movie = window.movies[index];
-
-        if (!movie) return;
-
-        /* Background image */
-        background.style.backgroundImage =
-            `url("${movie.poster}")`;
-
-        /* Movie title */
-        title.textContent = movie.title || "Untitled Movie";
-
-        /* Meta information */
-        meta.innerHTML = `
-            ${movie.rating ? `<span>⭐ ${movie.rating}/10</span>` : ""}
-            ${movie.genre ? `<span>${movie.genre}</span>` : ""}
-            ${movie.date ? `<span>${movie.date}</span>` : ""}
-        `;
-
-        /* Summary */
-        summary.textContent =
-            movie.summary || "Discover this movie on MoviePulse.";
-
-        /* Trailer button */
-        watchBtn.onclick = function () {
-
-            if (movie.trailer) {
-                window.location.href =
-                    `trailer.html?id=${movie.id}`;
-            } else {
-                window.location.href =
-                    `trailer.html?id=${movie.id}`;
-            }
-
-        };
-
-        /* More Info button */
-        moreBtn.onclick = function () {
-
-            window.location.href =
-                `trailer.html?id=${movie.id}`;
-
-        };
+    if (!hero) {
+        console.error("MoviePulse: #movieHero not found.");
+        return;
     }
 
-    /* Previous */
-    prevBtn.addEventListener("click", function () {
+    const background =
+        hero.querySelector(".hero-background");
 
-        currentIndex--;
+    const title =
+        document.getElementById("heroMovieTitle");
 
-        if (currentIndex < 0) {
-            currentIndex = window.movies.length - 1;
-        }
+    const meta =
+        document.getElementById("heroMovieMeta");
 
-        showMovie(currentIndex);
+    const summary =
+        document.getElementById("heroMovieSummary");
+
+    const watchButton =
+        document.getElementById("heroWatchBtn");
+
+    const moreButton =
+        document.getElementById("heroMoreBtn");
+
+    const previousButton =
+        document.getElementById("heroPrev");
+
+    const nextButton =
+        document.getElementById("heroNext");
+
+
+    /* ================================
+       ONLY USE MOVIES WITH IMAGES
+    ================================= */
+    const heroMovies = window.movies.filter(function (movie) {
+
+        return (
+            movie &&
+            (
+                movie.backdrop ||
+                movie.poster
+            )
+        );
 
     });
 
-    /* Next button if you have one */
-    const nextBtn = document.getElementById("heroNext");
 
-    if (nextBtn) {
+    if (heroMovies.length === 0) {
 
-        nextBtn.addEventListener("click", function () {
+        console.error(
+            "MoviePulse: No movies with poster or backdrop images found."
+        );
 
-            currentIndex++;
+        return;
+    }
 
-            if (currentIndex >= window.movies.length) {
-                currentIndex = 0;
+
+    /* ================================
+       SLIDER STATE
+    ================================= */
+    let currentIndex = 0;
+
+    let heroTimer = null;
+
+
+    /* ================================
+       SHOW MOVIE
+    ================================= */
+    function showMovie(index) {
+
+        if (index < 0) {
+            index = heroMovies.length - 1;
+        }
+
+        if (index >= heroMovies.length) {
+            index = 0;
+        }
+
+        currentIndex = index;
+
+
+        const movie =
+            heroMovies[currentIndex];
+
+
+        if (!movie) {
+            return;
+        }
+
+
+        /* ================================
+           BACKGROUND IMAGE
+        ================================= */
+
+        const image =
+            movie.backdrop ||
+            movie.poster;
+
+
+        if (background && image) {
+
+            background.style.backgroundImage =
+                'url("' + image + '")';
+
+        }
+
+
+        /* ================================
+           TITLE
+        ================================= */
+
+        if (title) {
+
+            title.textContent =
+                movie.title ||
+                "MoviePulse";
+
+        }
+
+
+        /* ================================
+           META
+        ================================= */
+
+        if (meta) {
+
+            let metaHTML = "";
+
+
+            if (movie.rating) {
+
+                metaHTML +=
+                    '<span>⭐ ' +
+                    movie.rating +
+                    '/10</span>';
+
             }
 
-            showMovie(currentIndex);
 
-        });
+            if (movie.genre) {
+
+                metaHTML +=
+                    '<span>' +
+                    movie.genre +
+                    '</span>';
+
+            }
+
+
+            if (movie.date) {
+
+                metaHTML +=
+                    '<span>' +
+                    movie.date +
+                    '</span>';
+
+            }
+
+
+            meta.innerHTML =
+                metaHTML;
+
+        }
+
+
+        /* ================================
+           SUMMARY
+        ================================= */
+
+        if (summary) {
+
+            summary.textContent =
+                movie.summary ||
+                "Discover this movie on MoviePulse.";
+
+        }
+
+
+        /* ================================
+           WATCH TRAILER
+        ================================= */
+
+        if (watchButton) {
+
+            watchButton.onclick = function () {
+
+                if (!movie.id) {
+                    return;
+                }
+
+                window.location.href =
+                    "trailer.html?id=" +
+                    encodeURIComponent(movie.id);
+
+            };
+
+        }
+
+
+        /* ================================
+           MORE INFO
+        ================================= */
+
+        if (moreButton) {
+
+            moreButton.onclick = function () {
+
+                if (!movie.id) {
+                    return;
+                }
+
+                window.location.href =
+                    "trailer.html?id=" +
+                    encodeURIComponent(movie.id);
+
+            };
+
+        }
+
+
+        /* ================================
+           SMALL HERO ANIMATION
+        ================================= */
+
+        if (background) {
+
+            background.classList.remove(
+                "hero-image-active"
+            );
+
+
+            void background.offsetWidth;
+
+
+            background.classList.add(
+                "hero-image-active"
+            );
+
+        }
 
     }
 
-    /* Automatically change movie */
-    setInterval(function () {
 
-        currentIndex++;
+    /* ================================
+       NEXT MOVIE
+    ================================= */
+    function nextMovie() {
 
-        if (currentIndex >= window.movies.length) {
-            currentIndex = 0;
-        }
+        showMovie(
+            currentIndex + 1
+        );
 
-        showMovie(currentIndex);
+        restartTimer();
 
-    }, 7000);
+    }
 
-    /* Load first movie immediately */
-    showMovie(currentIndex);
+
+    /* ================================
+       PREVIOUS MOVIE
+    ================================= */
+    function previousMovie() {
+
+        showMovie(
+            currentIndex - 1
+        );
+
+        restartTimer();
+
+    }
+
+
+    /* ================================
+       BUTTON EVENTS
+    ================================= */
+
+    if (previousButton) {
+
+        previousButton.addEventListener(
+            "click",
+            previousMovie
+        );
+
+    }
+
+
+    if (nextButton) {
+
+        nextButton.addEventListener(
+            "click",
+            nextMovie
+        );
+
+    }
+
+
+    /* ================================
+       AUTOMATIC SLIDER
+    ================================= */
+    function startTimer() {
+
+        clearInterval(heroTimer);
+
+
+        heroTimer =
+            setInterval(
+                function () {
+
+                    showMovie(
+                        currentIndex + 1
+                    );
+
+                },
+                7000
+            );
+
+    }
+
+
+    /* ================================
+       RESTART TIMER
+    ================================= */
+    function restartTimer() {
+
+        clearInterval(heroTimer);
+
+        startTimer();
+
+    }
+
+
+    /* ================================
+       START HERO
+    ================================= */
+
+    showMovie(0);
+
+    startTimer();
+
+
+    console.log(
+        "MoviePulse hero loaded:",
+        heroMovies.length,
+        "movies"
+    );
 
 });
+</script>
+
+
 </script>
      
 <script src="/search.js"></script>
