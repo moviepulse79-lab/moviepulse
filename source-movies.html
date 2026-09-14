@@ -2885,15 +2885,47 @@ function escapeHtml(value){
     );
 
 }
+/* ==========================================
+   OPEN MOVIE FROM URL
+========================================== */
 
+function openMovieFromUrl(){
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const movieId =
+        params.get("movie");
+
+    if(!movieId){
+        return;
+    }
+
+    setTimeout(
+        () => {
+
+            openMovie(movieId);
+
+        },
+        500
+    );
+
+}
 
 /* ==========================================
    START
 ========================================== */
-
 updateWatchlistCount();
 
-loadMovies(1);
+loadMovies(1).then(
+    () => {
+
+        openMovieFromUrl();
+
+    }
+);
 
 </script>
 
