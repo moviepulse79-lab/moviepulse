@@ -2394,7 +2394,7 @@ padding:20px;
     </div>
 
 </div>
-
+    </nav>
 </header>
 <section class="hero" id="movieHero">
 
@@ -3678,456 +3678,411 @@ document.addEventListener(
 <script src="movies.js"></script>
 
 
-<!-- ==========================================
-     MOVIEPULSE HERO SLIDER
-========================================== -->
-
 <script>
+document.addEventListener("DOMContentLoaded", function () {
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+    if (!window.movies || !Array.isArray(window.movies)) {
+        console.error(
+            "MoviePulse: movies.js did not load or window.movies is missing."
+        );
+        return;
+    }
+
+    const hero = document.getElementById("movieHero");
+
+    if (!hero) {
+        console.error("MoviePulse: #movieHero was not found.");
+        return;
+    }
+
+    const background =
+        hero.querySelector(".hero-background");
+
+    const title =
+        document.getElementById("heroMovieTitle");
+
+    const meta =
+        document.getElementById("heroMovieMeta");
+
+    const summary =
+        document.getElementById("heroMovieSummary");
+
+    const watchBtn =
+        document.getElementById("heroWatchBtn");
+
+    const moreBtn =
+        document.getElementById("heroMoreBtn");
+
+    const prevBtn =
+        document.getElementById("heroPrev");
+
+    const nextBtn =
+        document.getElementById("heroNext");
+
+    const dotsContainer =
+        document.getElementById("heroDots");
 
 
-        /* ======================================
-           CHECK MOVIE DATA
-        ====================================== */
+    /*
+     * Use movies that have either
+     * a backdrop or poster.
+     */
+    const heroMovies = window.movies.filter(function (movie) {
 
-        if (
-            !window.movies ||
-            !Array.isArray(window.movies) ||
-            window.movies.length === 0
-        ) {
+        return movie &&
+            (movie.backdrop || movie.poster);
 
-            console.error(
-                "MoviePulse: movies.js did not load or contains no movies."
+    });
+
+
+    if (!heroMovies.length) {
+
+        console.error(
+            "MoviePulse: No movies with poster or backdrop images found."
+        );
+
+        return;
+    }
+
+
+    let currentIndex = 0;
+    let autoSlide;
+
+
+    /*
+     * CREATE DOTS
+     */
+    if (dotsContainer) {
+
+        dotsContainer.innerHTML = "";
+
+        heroMovies.forEach(function (movie, index) {
+
+            const dot =
+                document.createElement("button");
+
+            dot.className = "hero-dot";
+
+            dot.type = "button";
+
+            dot.setAttribute(
+                "aria-label",
+                "Show " + (movie.title || "movie")
             );
 
-            return;
+
+            dot.addEventListener(
+                "click",
+                function () {
+
+                    showMovie(index);
+
+                    restartAutoSlide();
+
+                }
+            );
+
+
+            dotsContainer.appendChild(dot);
+
+        });
+
+    }
+
+
+    /*
+     * SHOW MOVIE
+     */
+    function showMovie(index) {
+
+        if (index < 0) {
+
+            index =
+                heroMovies.length - 1;
 
         }
 
 
-        /* ======================================
-           HERO
-        ====================================== */
+        if (index >= heroMovies.length) {
 
-        const hero =
-            document.getElementById(
-                "movieHero"
-            );
-
-
-        if (!hero) {
-
-            console.error(
-                "MoviePulse: #movieHero not found."
-            );
-
-            return;
+            index = 0;
 
         }
 
 
-        /* ======================================
-           HERO ELEMENTS
-        ====================================== */
-
-        const background =
-            hero.querySelector(
-                ".hero-background"
-            );
-
-        const title =
-            document.getElementById(
-                "heroMovieTitle"
-            );
-
-        const meta =
-            document.getElementById(
-                "heroMovieMeta"
-            );
-
-        const summary =
-            document.getElementById(
-                "heroMovieSummary"
-            );
-
-        const watchButton =
-            document.getElementById(
-                "heroWatchBtn"
-            );
-
-        const moreButton =
-            document.getElementById(
-                "heroMoreBtn"
-            );
-
-        const previousButton =
-            document.getElementById(
-                "heroPrev"
-            );
-
-        const nextButton =
-            document.getElementById(
-                "heroNext"
-            );
+        currentIndex = index;
 
 
-        /* ======================================
-           FILTER MOVIES
-        ====================================== */
+        const movie =
+            heroMovies[currentIndex];
 
-        const heroMovies =
-            window.movies.filter(
-                function (movie) {
 
-                    return (
-                        movie &&
-                        (
-                            movie.backdrop ||
-                            movie.poster
-                        )
+        const image =
+            movie.backdrop || movie.poster;
+
+
+        /*
+         * BACKGROUND
+         */
+        if (background && image) {
+
+            background.style.backgroundImage =
+                'url("' + image + '")';
+
+        }
+
+
+        /*
+         * TITLE
+         */
+        if (title) {
+
+            title.textContent =
+                movie.title || "MoviePulse";
+
+        }
+
+
+        /*
+         * META
+         */
+        if (meta) {
+
+            meta.innerHTML = "";
+
+
+            if (movie.rating) {
+
+                const rating =
+                    document.createElement("span");
+
+                rating.textContent =
+                    "⭐ " + movie.rating + "/10";
+
+                meta.appendChild(rating);
+
+            }
+
+
+            if (movie.genre) {
+
+                const genre =
+                    document.createElement("span");
+
+                genre.textContent =
+                    movie.genre;
+
+                meta.appendChild(genre);
+
+            }
+
+
+            if (movie.date) {
+
+                const date =
+                    document.createElement("span");
+
+                date.textContent =
+                    movie.date;
+
+                meta.appendChild(date);
+
+            }
+
+        }
+
+
+        /*
+         * SUMMARY
+         */
+        if (summary) {
+
+            summary.textContent =
+                movie.summary ||
+                "Discover this movie on MoviePulse.";
+
+        }
+
+
+        /*
+         * WATCH TRAILER
+         */
+        if (watchBtn) {
+
+            watchBtn.onclick = function () {
+
+                if (!movie.id) return;
+
+                window.location.href =
+                    "trailer.html?id=" +
+                    encodeURIComponent(movie.id);
+
+            };
+
+        }
+
+
+        /*
+         * MORE INFO
+         */
+        if (moreBtn) {
+
+            moreBtn.onclick = function () {
+
+                if (!movie.id) return;
+
+                window.location.href =
+                    "trailer.html?id=" +
+                    encodeURIComponent(movie.id);
+
+            };
+
+        }
+
+
+        /*
+         * ACTIVE DOT
+         */
+        if (dotsContainer) {
+
+            const dots =
+                dotsContainer.querySelectorAll(
+                    ".hero-dot"
+                );
+
+
+            dots.forEach(
+                function (dot, dotIndex) {
+
+                    dot.classList.toggle(
+                        "active",
+                        dotIndex === currentIndex
                     );
 
                 }
             );
 
+        }
 
-        if (!heroMovies.length) {
 
-            console.error(
-                "MoviePulse: No movies with images found."
+        /*
+         * HERO ANIMATION
+         */
+        if (background) {
+
+            background.classList.remove(
+                "hero-image-active"
             );
 
-            return;
+            void background.offsetWidth;
 
-        }
-
-
-        /* ======================================
-           SLIDER STATE
-        ====================================== */
-
-        let currentIndex = 0;
-
-        let heroTimer = null;
-
-
-        /* ======================================
-           SHOW MOVIE
-        ====================================== */
-
-        function showMovie(index) {
-
-
-            if (index < 0) {
-
-                index =
-                    heroMovies.length - 1;
-
-            }
-
-
-            if (
-                index >=
-                heroMovies.length
-            ) {
-
-                index = 0;
-
-            }
-
-
-            currentIndex = index;
-
-
-            const movie =
-                heroMovies[currentIndex];
-
-
-            /* ==============================
-               BACKGROUND
-            ============================== */
-
-            const image =
-                movie.backdrop ||
-                movie.poster;
-
-
-            if (
-                background &&
-                image
-            ) {
-
-                background.style.backgroundImage =
-                    'url("' +
-                    image +
-                    '")';
-
-            }
-
-
-            /* ==============================
-               TITLE
-            ============================== */
-
-            if (title) {
-
-                title.textContent =
-                    movie.title ||
-                    "MoviePulse";
-
-            }
-
-
-            /* ==============================
-               META
-            ============================== */
-
-            if (meta) {
-
-                let metaHTML = "";
-
-
-                if (movie.rating) {
-
-                    metaHTML += `
-                        <span>
-                            ⭐ ${movie.rating}/10
-                        </span>
-                    `;
-
-                }
-
-
-                if (movie.genre) {
-
-                    metaHTML += `
-                        <span>
-                            ${movie.genre}
-                        </span>
-                    `;
-
-                }
-
-
-                if (movie.date) {
-
-                    metaHTML += `
-                        <span>
-                            ${movie.date}
-                        </span>
-                    `;
-
-                }
-
-
-                meta.innerHTML =
-                    metaHTML;
-
-            }
-
-
-            /* ==============================
-               SUMMARY
-            ============================== */
-
-            if (summary) {
-
-                summary.textContent =
-                    movie.summary ||
-                    "Discover this movie on MoviePulse.";
-
-            }
-
-
-            /* ==============================
-               WATCH TRAILER
-            ============================== */
-
-            if (watchButton) {
-
-                watchButton.onclick =
-                    function () {
-
-                        if (!movie.id) {
-                            return;
-                        }
-
-                        window.location.href =
-                            "trailer.html?id=" +
-                            encodeURIComponent(
-                                movie.id
-                            );
-
-                    };
-
-            }
-
-
-            /* ==============================
-               MORE INFO
-            ============================== */
-
-            if (moreButton) {
-
-                moreButton.onclick =
-                    function () {
-
-                        if (!movie.id) {
-                            return;
-                        }
-
-                        window.location.href =
-                            "trailer.html?id=" +
-                            encodeURIComponent(
-                                movie.id
-                            );
-
-                    };
-
-            }
-
-
-            /* ==============================
-               HERO ANIMATION
-            ============================== */
-
-            if (background) {
-
-                background.classList.remove(
-                    "hero-image-active"
-                );
-
-
-                void background.offsetWidth;
-
-
-                background.classList.add(
-                    "hero-image-active"
-                );
-
-            }
-
-        }
-
-
-        /* ======================================
-           NEXT MOVIE
-        ====================================== */
-
-        function nextMovie() {
-
-            showMovie(
-                currentIndex + 1
-            );
-
-            restartTimer();
-
-        }
-
-
-        /* ======================================
-           PREVIOUS MOVIE
-        ====================================== */
-
-        function previousMovie() {
-
-            showMovie(
-                currentIndex - 1
-            );
-
-            restartTimer();
-
-        }
-
-
-        /* ======================================
-           BUTTONS
-        ====================================== */
-
-        if (previousButton) {
-
-            previousButton.addEventListener(
-                "click",
-                previousMovie
+            background.classList.add(
+                "hero-image-active"
             );
 
         }
 
-
-        if (nextButton) {
-
-            nextButton.addEventListener(
-                "click",
-                nextMovie
-            );
-
-        }
+    }
 
 
-        /* ======================================
-           AUTO SLIDE
-        ====================================== */
+    /*
+     * NEXT
+     */
+    function nextMovie() {
 
-        function startTimer() {
+        showMovie(
+            currentIndex + 1
+        );
 
-            clearInterval(
-                heroTimer
-            );
+        restartAutoSlide();
 
-
-            heroTimer =
-                setInterval(
-                    function () {
-
-                        showMovie(
-                            currentIndex + 1
-                        );
-
-                    },
-                    7000
-                );
-
-        }
+    }
 
 
-        /* ======================================
-           RESTART TIMER
-        ====================================== */
+    /*
+     * PREVIOUS
+     */
+    function previousMovie() {
 
-        function restartTimer() {
+        showMovie(
+            currentIndex - 1
+        );
 
-            clearInterval(
-                heroTimer
-            );
+        restartAutoSlide();
 
-            startTimer();
-
-        }
-
-
-        /* ======================================
-           START
-        ====================================== */
-
-        showMovie(0);
-
-        startTimer();
+    }
 
 
-        console.log(
-            "MoviePulse hero loaded:",
-            heroMovies.length,
-            "movies"
+    if (nextBtn) {
+
+        nextBtn.addEventListener(
+            "click",
+            nextMovie
         );
 
     }
-);
 
+
+    if (prevBtn) {
+
+        prevBtn.addEventListener(
+            "click",
+            previousMovie
+        );
+
+    }
+
+
+    /*
+     * AUTO SLIDE
+     */
+    function startAutoSlide() {
+
+        clearInterval(autoSlide);
+
+        autoSlide =
+            setInterval(
+                function () {
+
+                    showMovie(
+                        currentIndex + 1
+                    );
+
+                },
+                7000
+            );
+
+    }
+
+
+    /*
+     * RESTART AUTO SLIDE
+     */
+    function restartAutoSlide() {
+
+        clearInterval(autoSlide);
+
+        startAutoSlide();
+
+    }
+
+
+    /*
+     * START
+     */
+    showMovie(0);
+
+    startAutoSlide();
+
+
+    console.log(
+        "MoviePulse hero loaded:",
+        heroMovies.length,
+        "movies"
+    );
+
+});
 </script>
-
 
 <!-- ==========================================
      SEARCH
