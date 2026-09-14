@@ -3278,52 +3278,38 @@ Discover upcoming movies that are about to hit cinemas and streaming platforms.
 
 </div>
 
+<!-- ==========================================
+     GENERAL MOVIEPULSE FUNCTIONS
+========================================== -->
+
 <script>
 
 window.addEventListener("load", function () {
 
-    setTimeout(() => {
-        const loader = document.getElementById("loader");
+    setTimeout(function () {
+
+        const loader =
+            document.getElementById("loader");
 
         if (loader) {
             loader.style.display = "none";
         }
+
     }, 2000);
 
 });
 
 
-/* ================================
-   HERO SLIDER
-================================ */
-
-let slides = document.querySelectorAll(".hero-slide");
-let i = 0;
-
-if (slides.length > 0) {
-
-    setInterval(() => {
-
-        slides[i].classList.remove("active");
-
-        i = (i + 1) % slides.length;
-
-        slides[i].classList.add("active");
-
-    }, 5000);
-
-}
-
-
-/* ================================
+/* ==========================================
    MOVIE HORIZONTAL SLIDERS
-================================ */
+========================================== */
 
-const sliders = document.querySelectorAll(".movie-slider");
+const sliders =
+    document.querySelectorAll(".movie-slider");
 
-sliders.forEach(slider => {
+sliders.forEach(function (slider) {
 
-    slider.addEventListener("wheel", (event) => {
+    slider.addEventListener("wheel", function (event) {
 
         event.preventDefault();
 
@@ -3334,11 +3320,15 @@ sliders.forEach(slider => {
 });
 
 
-/* ================================
+/* ==========================================
    MOBILE MENU
-================================ */
-const menuBtn = document.querySelector(".menu-btn");
-const nav = document.querySelector("header.nav nav");
+========================================== */
+
+const menuBtn =
+    document.querySelector(".menu-btn");
+
+const nav =
+    document.querySelector("header.nav nav");
 
 if (menuBtn && nav) {
 
@@ -3353,43 +3343,95 @@ if (menuBtn && nav) {
 </script>
 
 
-<script>
+<!-- ==========================================
+     PWA INSTALL
+========================================== -->
 
-/* ================================
-   PWA INSTALL
-================================ */
+<script>
 
 let deferredPrompt = null;
 
-const installBanner = document.getElementById("installBanner");
-const installBtn = document.getElementById("installBtn");
-const closeInstall = document.getElementById("closeInstall");
+const installBanner =
+    document.getElementById("installBanner");
+
+const installBtn =
+    document.getElementById("installBtn");
+
+const closeInstall =
+    document.getElementById("closeInstall");
 
 
-window.addEventListener("beforeinstallprompt", (event) => {
+window.addEventListener(
+    "beforeinstallprompt",
+    function (event) {
 
-    event.preventDefault();
+        event.preventDefault();
 
-    deferredPrompt = event;
+        deferredPrompt = event;
 
-    if (installBanner) {
-        installBanner.classList.add("show");
+        if (installBanner) {
+            installBanner.classList.add("show");
+        }
+
     }
-
-});
+);
 
 
 if (installBtn) {
 
-    installBtn.addEventListener("click", async () => {
+    installBtn.addEventListener(
+        "click",
+        async function () {
 
-        if (!deferredPrompt) return;
+            if (!deferredPrompt) {
+                return;
+            }
 
-        deferredPrompt.prompt();
+            deferredPrompt.prompt();
 
-        const { outcome } = await deferredPrompt.userChoice;
+            const result =
+                await deferredPrompt.userChoice;
 
-        console.log("Install result:", outcome);
+            console.log(
+                "Install result:",
+                result.outcome
+            );
+
+            deferredPrompt = null;
+
+            if (installBanner) {
+                installBanner.classList.remove("show");
+            }
+
+        }
+    );
+
+}
+
+
+if (closeInstall) {
+
+    closeInstall.addEventListener(
+        "click",
+        function () {
+
+            if (installBanner) {
+                installBanner.classList.remove("show");
+            }
+
+        }
+    );
+
+}
+
+
+window.addEventListener(
+    "appinstalled",
+    function () {
+
+        console.log(
+            "MoviePulse installed!"
+        );
 
         deferredPrompt = null;
 
@@ -3397,41 +3439,19 @@ if (installBtn) {
             installBanner.classList.remove("show");
         }
 
-    });
-
-}
-
-
-if (closeInstall) {
-
-    closeInstall.addEventListener("click", () => {
-
-        if (installBanner) {
-            installBanner.classList.remove("show");
-        }
-
-    });
-
-}
-
-
-window.addEventListener("appinstalled", () => {
-
-    console.log("MoviePulse installed!");
-
-    deferredPrompt = null;
-
-    if (installBanner) {
-        installBanner.classList.remove("show");
     }
+);
 
-});
+</script>
 
-  /* ==========================================
-   AGASOBANUYE RECENTLY ADDED
-========================================== */
 
-async function loadAgasobanuyeHomeMovies(){
+<!-- ==========================================
+     AGASOBANUYE RECENTLY ADDED
+========================================== -->
+
+<script>
+
+async function loadAgasobanuyeHomeMovies() {
 
     const container =
         document.getElementById(
@@ -3439,25 +3459,26 @@ async function loadAgasobanuyeHomeMovies(){
         );
 
 
-    if(!container){
+    if (!container) {
         return;
     }
 
 
-    try{
+    try {
 
         const response =
             await fetch(
                 "/.netlify/functions/agasobanuye-movies?page=1&limit=6",
                 {
-                    headers:{
-                        "Accept":"application/json"
+                    headers: {
+                        "Accept":
+                            "application/json"
                     }
                 }
             );
 
 
-        if(!response.ok){
+        if (!response.ok) {
 
             throw new Error(
                 "Failed to load movies"
@@ -3470,7 +3491,7 @@ async function loadAgasobanuyeHomeMovies(){
             await response.json();
 
 
-        if(!data.success){
+        if (!data.success) {
 
             throw new Error(
                 data.error ||
@@ -3482,11 +3503,11 @@ async function loadAgasobanuyeHomeMovies(){
 
         const movies =
             Array.isArray(data.movies)
-                ? data.movies.slice(0,6)
+                ? data.movies.slice(0, 6)
                 : [];
 
 
-        if(!movies.length){
+        if (!movies.length) {
 
             container.innerHTML = `
                 <p style="
@@ -3503,8 +3524,9 @@ async function loadAgasobanuyeHomeMovies(){
 
 
         container.innerHTML =
-            movies.map(
-                movie => `
+            movies.map(function (movie) {
+
+                return `
 
                     <article
                         class="agasobanuye-card"
@@ -3515,7 +3537,9 @@ async function loadAgasobanuyeHomeMovies(){
                             class="agasobanuye-poster"
                         >
 
-                            <span class="agasobanuye-new">
+                            <span
+                                class="agasobanuye-new"
+                            >
                                 NEW
                             </span>
 
@@ -3550,7 +3574,9 @@ async function loadAgasobanuyeHomeMovies(){
                         >
 
                             <h3>
-                                ${escapeAgasobanuyeHtml(movie.title)}
+                                ${escapeAgasobanuyeHtml(
+                                    movie.title
+                                )}
                             </h3>
 
 
@@ -3558,21 +3584,17 @@ async function loadAgasobanuyeHomeMovies(){
                                 class="agasobanuye-meta"
                             >
 
-                                ${
-                                    escapeAgasobanuyeHtml(
-                                        movie.category ||
-                                        "Agasobanuye"
-                                    )
-                                }
+                                ${escapeAgasobanuyeHtml(
+                                    movie.category ||
+                                    "Agasobanuye"
+                                )}
 
                                 •
 
-                                ${
-                                    escapeAgasobanuyeHtml(
-                                        movie.duration ||
-                                        "Movie"
-                                    )
-                                }
+                                ${escapeAgasobanuyeHtml(
+                                    movie.duration ||
+                                    "Movie"
+                                )}
 
                             </div>
 
@@ -3581,21 +3603,21 @@ async function loadAgasobanuyeHomeMovies(){
                                 href="source-movies.html?movie=${encodeURIComponent(movie.id)}"
                                 class="agasobanuye-watch"
                             >
-
                                 ▶ Watch Now
-
                             </a>
 
                         </div>
 
                     </article>
 
-                `
-            ).join("");
+                `;
 
+            }).join("");
 
     }
-    catch(error){
+
+
+    catch (error) {
 
         console.error(
             "Agasobanuye homepage error:",
@@ -3617,34 +3639,25 @@ async function loadAgasobanuyeHomeMovies(){
 }
 
 
-
 /* ==========================================
    ESCAPE HTML
 ========================================== */
 
-function escapeAgasobanuyeHtml(value){
+function escapeAgasobanuyeHtml(value) {
 
-    return String(
-        value || ""
-    )
-
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
 
-
-/* ==========================================
-   START
-========================================== */
-
 document.addEventListener(
     "DOMContentLoaded",
-    function(){
+    function () {
 
         loadAgasobanuyeHomeMovies();
 
@@ -3652,24 +3665,42 @@ document.addEventListener(
 );
 
 </script>
-     <script>
 
-/* ==========================================
-   MOVIEPULSE HERO SLIDER
-========================================== */
+
+<!-- ==========================================
+     MOVIE DATA
+     
+     IMPORTANT:
+     If movies.js is beside index.html,
+     keep this exactly as shown.
+========================================== -->
+
+<script src="movies.js"></script>
+
+
+<!-- ==========================================
+     MOVIEPULSE HERO SLIDER
+========================================== -->
+
+<script>
 
 document.addEventListener(
     "DOMContentLoaded",
-    function(){
+    function () {
 
-        if(
-            typeof movies === "undefined" ||
-            !Array.isArray(movies) ||
-            !movies.length
-        ){
 
-            console.warn(
-                "MoviePulse: movies array not found."
+        /* ======================================
+           CHECK MOVIE DATA
+        ====================================== */
+
+        if (
+            !window.movies ||
+            !Array.isArray(window.movies) ||
+            window.movies.length === 0
+        ) {
+
+            console.error(
+                "MoviePulse: movies.js did not load or contains no movies."
             );
 
             return;
@@ -3677,107 +3708,120 @@ document.addEventListener(
         }
 
 
-        const heroBackground =
+        /* ======================================
+           HERO
+        ====================================== */
+
+        const hero =
             document.getElementById(
-                "heroMovieBackground"
-            ) ||
-            document.querySelector(
+                "movieHero"
+            );
+
+
+        if (!hero) {
+
+            console.error(
+                "MoviePulse: #movieHero not found."
+            );
+
+            return;
+
+        }
+
+
+        /* ======================================
+           HERO ELEMENTS
+        ====================================== */
+
+        const background =
+            hero.querySelector(
                 ".hero-background"
             );
 
-        const heroTitle =
+        const title =
             document.getElementById(
                 "heroMovieTitle"
             );
 
-        const heroMeta =
+        const meta =
             document.getElementById(
                 "heroMovieMeta"
             );
 
-        const heroSummary =
+        const summary =
             document.getElementById(
                 "heroMovieSummary"
             );
 
-        const heroWatch =
+        const watchButton =
             document.getElementById(
                 "heroWatchBtn"
             );
 
-        const heroMore =
+        const moreButton =
             document.getElementById(
                 "heroMoreBtn"
             );
 
-        const heroDots =
-            document.getElementById(
-                "heroDots"
-            );
-
-        const previous =
+        const previousButton =
             document.getElementById(
                 "heroPrev"
             );
 
-        const next =
+        const nextButton =
             document.getElementById(
                 "heroNext"
             );
 
 
-        let currentIndex = 0;
-
-        let heroTimer;
-
-
-        /* --------------------------------------
-           USE MOVIES FROM YOUR EXISTING DATABASE
-        -------------------------------------- */
+        /* ======================================
+           FILTER MOVIES
+        ====================================== */
 
         const heroMovies =
-            movies
-                .filter(movie =>
-                    movie.poster ||
-                    movie.backdrop
-                )
-                .slice(0, 12);
+            window.movies.filter(
+                function (movie) {
+
+                    return (
+                        movie &&
+                        (
+                            movie.backdrop ||
+                            movie.poster
+                        )
+                    );
+
+                }
+            );
 
 
-        if(!heroMovies.length){
+        if (!heroMovies.length) {
+
+            console.error(
+                "MoviePulse: No movies with images found."
+            );
+
             return;
+
         }
 
 
-        /* --------------------------------------
-           RENDER DOTS
-        -------------------------------------- */
+        /* ======================================
+           SLIDER STATE
+        ====================================== */
 
-        heroDots.innerHTML =
-            heroMovies.map(
-                (_, index) => `
-                    <button
-                        class="hero-dot ${
-                            index === 0
-                                ? "active"
-                                : ""
-                        }"
-                        data-index="${index}"
-                        aria-label="Movie ${index + 1}"
-                    ></button>
-                `
-            ).join("");
+        let currentIndex = 0;
+
+        let heroTimer = null;
 
 
-        /* --------------------------------------
+        /* ======================================
            SHOW MOVIE
-        -------------------------------------- */
+        ====================================== */
 
-        function showHeroMovie(index){
+        function showMovie(index) {
 
-            if(
-                index < 0
-            ){
+
+            if (index < 0) {
 
                 index =
                     heroMovies.length - 1;
@@ -3785,165 +3829,197 @@ document.addEventListener(
             }
 
 
-            if(
+            if (
                 index >=
                 heroMovies.length
-            ){
+            ) {
 
                 index = 0;
 
             }
 
 
-            currentIndex =
-                index;
+            currentIndex = index;
 
 
             const movie =
-                heroMovies[
-                    currentIndex
-                ];
+                heroMovies[currentIndex];
 
 
-            /* BACKGROUND */
+            /* ==============================
+               BACKGROUND
+            ============================== */
 
-            const background =
+            const image =
                 movie.backdrop ||
                 movie.poster;
 
 
-            if(background){
+            if (
+                background &&
+                image
+            ) {
 
-                heroBackground.style.backgroundImage =
-                    `url("${background}")`;
+                background.style.backgroundImage =
+                    'url("' +
+                    image +
+                    '")';
 
             }
 
 
-            /* TITLE */
+            /* ==============================
+               TITLE
+            ============================== */
 
-            heroTitle.textContent =
-                movie.title ||
-                "MoviePulse";
+            if (title) {
+
+                title.textContent =
+                    movie.title ||
+                    "MoviePulse";
+
+            }
 
 
-            /* META */
+            /* ==============================
+               META
+            ============================== */
 
-            heroMeta.innerHTML = `
+            if (meta) {
 
-                ${
-                    movie.rating
-                        ? `
-                            <span>
-                                ⭐ ${movie.rating}
-                            </span>
-                          `
-                        : ""
+                let metaHTML = "";
+
+
+                if (movie.rating) {
+
+                    metaHTML += `
+                        <span>
+                            ⭐ ${movie.rating}/10
+                        </span>
+                    `;
+
                 }
 
-                ${
-                    movie.genre
-                        ? `
-                            <span>
-                                ${movie.genre}
-                            </span>
-                          `
-                        : ""
+
+                if (movie.genre) {
+
+                    metaHTML += `
+                        <span>
+                            ${movie.genre}
+                        </span>
+                    `;
+
                 }
 
-                ${
-                    movie.date
-                        ? `
-                            <span>
-                                ${movie.date}
-                            </span>
-                          `
-                        : ""
+
+                if (movie.date) {
+
+                    metaHTML += `
+                        <span>
+                            ${movie.date}
+                        </span>
+                    `;
+
                 }
 
-            `;
+
+                meta.innerHTML =
+                    metaHTML;
+
+            }
 
 
-            /* SUMMARY */
+            /* ==============================
+               SUMMARY
+            ============================== */
 
-            heroSummary.textContent =
-                movie.summary ||
-                "Discover this movie on MoviePulse.";
+            if (summary) {
+
+                summary.textContent =
+                    movie.summary ||
+                    "Discover this movie on MoviePulse.";
+
+            }
 
 
-            /* WATCH BUTTON */
+            /* ==============================
+               WATCH TRAILER
+            ============================== */
 
-            heroWatch.onclick =
-                function(){
+            if (watchButton) {
 
-                    if(movie.id){
+                watchButton.onclick =
+                    function () {
+
+                        if (!movie.id) {
+                            return;
+                        }
 
                         window.location.href =
-                            `trailer.html?id=${movie.id}`;
+                            "trailer.html?id=" +
+                            encodeURIComponent(
+                                movie.id
+                            );
 
-                    }
+                    };
 
-                };
+            }
 
 
-            /* MORE INFO */
+            /* ==============================
+               MORE INFO
+            ============================== */
 
-            heroMore.onclick =
-                function(){
+            if (moreButton) {
 
-                    if(movie.id){
+                moreButton.onclick =
+                    function () {
+
+                        if (!movie.id) {
+                            return;
+                        }
 
                         window.location.href =
-                            `trailer.html?id=${movie.id}`;
+                            "trailer.html?id=" +
+                            encodeURIComponent(
+                                movie.id
+                            );
 
-                    }
+                    };
 
-                };
+            }
 
 
-            /* ACTIVE DOT */
+            /* ==============================
+               HERO ANIMATION
+            ============================== */
 
-            document
-                .querySelectorAll(
-                    ".hero-dot"
-                )
-                .forEach(
-                    (dot, dotIndex) => {
+            if (background) {
 
-                        dot.classList.toggle(
-                            "active",
-                            dotIndex === currentIndex
-                        );
-
-                    }
+                background.classList.remove(
+                    "hero-image-active"
                 );
 
 
-            /* SUBTLE ZOOM */
+                void background.offsetWidth;
 
-            heroBackground.style.transform =
-                "scale(1.08)";
 
-            setTimeout(
-                function(){
+                background.classList.add(
+                    "hero-image-active"
+                );
 
-                    heroBackground.style.transform =
-                        "scale(1.02)";
-
-                },
-                100
-            );
+            }
 
         }
 
 
-        /* --------------------------------------
-           NEXT
-        -------------------------------------- */
+        /* ======================================
+           NEXT MOVIE
+        ====================================== */
 
-        function nextHero(){
+        function nextMovie() {
 
-            showHeroMovie(
+            showMovie(
                 currentIndex + 1
             );
 
@@ -3952,13 +4028,13 @@ document.addEventListener(
         }
 
 
-        /* --------------------------------------
-           PREVIOUS
-        -------------------------------------- */
+        /* ======================================
+           PREVIOUS MOVIE
+        ====================================== */
 
-        function previousHero(){
+        function previousMovie() {
 
-            showHeroMovie(
+            showMovie(
                 currentIndex - 1
             );
 
@@ -3967,17 +4043,46 @@ document.addEventListener(
         }
 
 
-        /* --------------------------------------
-           AUTO SLIDE
-        -------------------------------------- */
+        /* ======================================
+           BUTTONS
+        ====================================== */
 
-        function startTimer(){
+        if (previousButton) {
+
+            previousButton.addEventListener(
+                "click",
+                previousMovie
+            );
+
+        }
+
+
+        if (nextButton) {
+
+            nextButton.addEventListener(
+                "click",
+                nextMovie
+            );
+
+        }
+
+
+        /* ======================================
+           AUTO SLIDE
+        ====================================== */
+
+        function startTimer() {
+
+            clearInterval(
+                heroTimer
+            );
+
 
             heroTimer =
                 setInterval(
-                    function(){
+                    function () {
 
-                        showHeroMovie(
+                        showMovie(
                             currentIndex + 1
                         );
 
@@ -3988,7 +4093,11 @@ document.addEventListener(
         }
 
 
-        function restartTimer(){
+        /* ======================================
+           RESTART TIMER
+        ====================================== */
+
+        function restartTimer() {
 
             clearInterval(
                 heroTimer
@@ -3999,73 +4108,20 @@ document.addEventListener(
         }
 
 
-        /* --------------------------------------
-           BUTTONS
-        -------------------------------------- */
+        /* ======================================
+           START
+        ====================================== */
 
-        if(next){
-
-            next.addEventListener(
-                "click",
-                nextHero
-            );
-
-        }
-
-
-        if(previous){
-
-            previous.addEventListener(
-                "click",
-                previousHero
-            );
-
-        }
-
-
-        /* --------------------------------------
-           DOTS
-        -------------------------------------- */
-
-        heroDots.addEventListener(
-            "click",
-            function(event){
-
-                const dot =
-                    event.target.closest(
-                        ".hero-dot"
-                    );
-
-
-                if(!dot){
-                    return;
-                }
-
-
-                const index =
-                    Number(
-                        dot.dataset.index
-                    );
-
-
-                showHeroMovie(
-                    index
-                );
-
-
-                restartTimer();
-
-            }
-        );
-
-
-        /* --------------------------------------
-           INITIAL MOVIE
-        -------------------------------------- */
-
-        showHeroMovie(0);
+        showMovie(0);
 
         startTimer();
+
+
+        console.log(
+            "MoviePulse hero loaded:",
+            heroMovies.length,
+            "movies"
+        );
 
     }
 );
@@ -4073,391 +4129,22 @@ document.addEventListener(
 </script>
 
 
-<!-- MOVIE DATA -->
-<script src="movies.js"></script>
+<!-- ==========================================
+     SEARCH
+========================================== -->
 
-<!-- MOVIEPULSE HERO SLIDER -->
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    /* ================================
-       CHECK MOVIE DATA
-    ================================= */
-    if (
-        !window.movies ||
-        !Array.isArray(window.movies) ||
-        window.movies.length === 0
-    ) {
-        console.error("MoviePulse: movies.js did not load or contains no movies.");
-        return;
-    }
-
-
-    /* ================================
-       HERO ELEMENTS
-    ================================= */
-    const hero = document.getElementById("movieHero");
-
-    if (!hero) {
-        console.error("MoviePulse: #movieHero not found.");
-        return;
-    }
-
-    const background =
-        hero.querySelector(".hero-background");
-
-    const title =
-        document.getElementById("heroMovieTitle");
-
-    const meta =
-        document.getElementById("heroMovieMeta");
-
-    const summary =
-        document.getElementById("heroMovieSummary");
-
-    const watchButton =
-        document.getElementById("heroWatchBtn");
-
-    const moreButton =
-        document.getElementById("heroMoreBtn");
-
-    const previousButton =
-        document.getElementById("heroPrev");
-
-    const nextButton =
-        document.getElementById("heroNext");
-
-
-    /* ================================
-       ONLY USE MOVIES WITH IMAGES
-    ================================= */
-    const heroMovies = window.movies.filter(function (movie) {
-
-        return (
-            movie &&
-            (
-                movie.backdrop ||
-                movie.poster
-            )
-        );
-
-    });
-
-
-    if (heroMovies.length === 0) {
-
-        console.error(
-            "MoviePulse: No movies with poster or backdrop images found."
-        );
-
-        return;
-    }
-
-
-    /* ================================
-       SLIDER STATE
-    ================================= */
-    let currentIndex = 0;
-
-    let heroTimer = null;
-
-
-    /* ================================
-       SHOW MOVIE
-    ================================= */
-    function showMovie(index) {
-
-        if (index < 0) {
-            index = heroMovies.length - 1;
-        }
-
-        if (index >= heroMovies.length) {
-            index = 0;
-        }
-
-        currentIndex = index;
-
-
-        const movie =
-            heroMovies[currentIndex];
-
-
-        if (!movie) {
-            return;
-        }
-
-
-        /* ================================
-           BACKGROUND IMAGE
-        ================================= */
-
-        const image =
-            movie.backdrop ||
-            movie.poster;
-
-
-        if (background && image) {
-
-            background.style.backgroundImage =
-                'url("' + image + '")';
-
-        }
-
-
-        /* ================================
-           TITLE
-        ================================= */
-
-        if (title) {
-
-            title.textContent =
-                movie.title ||
-                "MoviePulse";
-
-        }
-
-
-        /* ================================
-           META
-        ================================= */
-
-        if (meta) {
-
-            let metaHTML = "";
-
-
-            if (movie.rating) {
-
-                metaHTML +=
-                    '<span>⭐ ' +
-                    movie.rating +
-                    '/10</span>';
-
-            }
-
-
-            if (movie.genre) {
-
-                metaHTML +=
-                    '<span>' +
-                    movie.genre +
-                    '</span>';
-
-            }
-
-
-            if (movie.date) {
-
-                metaHTML +=
-                    '<span>' +
-                    movie.date +
-                    '</span>';
-
-            }
-
-
-            meta.innerHTML =
-                metaHTML;
-
-        }
-
-
-        /* ================================
-           SUMMARY
-        ================================= */
-
-        if (summary) {
-
-            summary.textContent =
-                movie.summary ||
-                "Discover this movie on MoviePulse.";
-
-        }
-
-
-        /* ================================
-           WATCH TRAILER
-        ================================= */
-
-        if (watchButton) {
-
-            watchButton.onclick = function () {
-
-                if (!movie.id) {
-                    return;
-                }
-
-                window.location.href =
-                    "trailer.html?id=" +
-                    encodeURIComponent(movie.id);
-
-            };
-
-        }
-
-
-        /* ================================
-           MORE INFO
-        ================================= */
-
-        if (moreButton) {
-
-            moreButton.onclick = function () {
-
-                if (!movie.id) {
-                    return;
-                }
-
-                window.location.href =
-                    "trailer.html?id=" +
-                    encodeURIComponent(movie.id);
-
-            };
-
-        }
-
-
-        /* ================================
-           SMALL HERO ANIMATION
-        ================================= */
-
-        if (background) {
-
-            background.classList.remove(
-                "hero-image-active"
-            );
-
-
-            void background.offsetWidth;
-
-
-            background.classList.add(
-                "hero-image-active"
-            );
-
-        }
-
-    }
-
-
-    /* ================================
-       NEXT MOVIE
-    ================================= */
-    function nextMovie() {
-
-        showMovie(
-            currentIndex + 1
-        );
-
-        restartTimer();
-
-    }
-
-
-    /* ================================
-       PREVIOUS MOVIE
-    ================================= */
-    function previousMovie() {
-
-        showMovie(
-            currentIndex - 1
-        );
-
-        restartTimer();
-
-    }
-
-
-    /* ================================
-       BUTTON EVENTS
-    ================================= */
-
-    if (previousButton) {
-
-        previousButton.addEventListener(
-            "click",
-            previousMovie
-        );
-
-    }
-
-
-    if (nextButton) {
-
-        nextButton.addEventListener(
-            "click",
-            nextMovie
-        );
-
-    }
-
-
-    /* ================================
-       AUTOMATIC SLIDER
-    ================================= */
-    function startTimer() {
-
-        clearInterval(heroTimer);
-
-
-        heroTimer =
-            setInterval(
-                function () {
-
-                    showMovie(
-                        currentIndex + 1
-                    );
-
-                },
-                7000
-            );
-
-    }
-
-
-    /* ================================
-       RESTART TIMER
-    ================================= */
-    function restartTimer() {
-
-        clearInterval(heroTimer);
-
-        startTimer();
-
-    }
-
-
-    /* ================================
-       START HERO
-    ================================= */
-
-    showMovie(0);
-
-    startTimer();
-
-
-    console.log(
-        "MoviePulse hero loaded:",
-        heroMovies.length,
-        "movies"
-    );
-
-});
-</script>
-
-
-</script>
-     
 <script src="/search.js"></script>
 
 
+<!-- ==========================================
+     SUPABASE
+     LOAD ONLY ONCE
+========================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="supabase.js"></script>
-     
-     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
+
 <script src="auth-state.js"></script>
-</body>
-</html>
+
 
