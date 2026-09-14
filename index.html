@@ -2593,7 +2593,7 @@ padding:20px;
 
 </section>
 
-  <script>
+<script>
 document.addEventListener("DOMContentLoaded", function () {
 
     const background = document.querySelector(".hero-background");
@@ -2601,28 +2601,35 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!background) return;
 
     const heroBackgrounds = [
-     "https://image.tmdb.org/t/p/original/lrXHXd0sFoKInEygRxu6aNiA9Xu.jpg"
-      "https://image.tmdb.org/t/p/original/smkQhIZGaGRxau6DoZ0vaTht7py.jpg"
-    "https://image.tmdb.org/t/p/original/3JDKBHWTSUSl2zVbQQOib9kQhRK.jpg"
-   "https://image.tmdb.org/t/p/original/sYsaVy047cfGTLMfcRihee3ShnM.jpg"
-  "https://image.tmdb.org/t/p/original/dk9tY5BrxDn6ns29IKDIbA5DjTn.jpg"
-  "https://image.tmdb.org/t/p/original/46gzT6bmkrqyhRYtoeycgRwjrfA.jpg"
-  "https://image.tmdb.org/t/p/original/zFE7iFwVEBrjh7gU1VRy8Zo4QQi.jpg"
-  
+
+        "https://image.tmdb.org/t/p/original/lrXHXd0sFoKInEygRxu6aNiA9Xu.jpg",
+
+        "https://image.tmdb.org/t/p/original/smkQhIZGaGRxau6DoZ0vaTht7py.jpg",
+
+        "https://image.tmdb.org/t/p/original/3JDKBHWTSUSl2zVbQQOib9kQhRK.jpg",
+
+        "https://image.tmdb.org/t/p/original/sYsaVy047cfGTLMfcRihee3ShnM.jpg",
+
+        "https://image.tmdb.org/t/p/original/dk9tY5BrxDn6ns29IKDIbA5DjTn.jpg",
+
+        "https://image.tmdb.org/t/p/original/46gzT6bmkrqyhRYtoeycgRwjrfA.jpg",
+
+        "https://image.tmdb.org/t/p/original/zFE7iFwVEBrjh7gU1VRy8Zo4QQi.jpg"
+
     ];
 
     let current = 0;
 
-    function changeBackground() {
+    /* Show first background */
+    background.style.backgroundImage =
+        'url("' + heroBackgrounds[0] + '")';
+
+    /* Slide every 6 seconds */
+    setInterval(function () {
 
         background.style.opacity = "0";
 
         setTimeout(function () {
-
-            background.style.backgroundImage =
-                'url("' + heroBackgrounds[current] + '")';
-
-            background.style.opacity = "1";
 
             current++;
 
@@ -2630,17 +2637,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 current = 0;
             }
 
-        }, 400);
-    }
+            background.style.backgroundImage =
+                'url("' + heroBackgrounds[current] + '")';
 
-    /* First background */
+            background.style.opacity = "1";
 
-    background.style.backgroundImage =
-        'url("' + heroBackgrounds[0] + '")';
+        }, 800);
 
-    /* Change every 6 seconds */
-
-    setInterval(changeBackground, 6000);
+    }, 6000);
 
 });
 </script>
