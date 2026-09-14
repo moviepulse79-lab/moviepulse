@@ -2547,43 +2547,32 @@ function isInWatchlist(id){
 
 }
 
-
 function toggleWatchlist(id){
 
-    const list =
-        getWatchlist();
+    const list = getWatchlist();
 
-
-    const index =
-        list.findIndex(
-            item =>
-                String(item) ===
-                String(id)
-        );
-
+    const index = list.findIndex(
+        item => String(item) === String(id)
+    );
 
     if(index === -1){
 
         list.push(id);
 
-    }
-    else{
+    } else {
 
-        list.splice(
-            index,
-            1
-        );
+        list.splice(index, 1);
 
     }
-
 
     saveWatchlist(list);
 
-
-    renderMovies(
-        getCurrentlyDisplayedMovies()
-    );
-
+    /* Update the cards if the functions exist */
+    if(typeof renderMovies === "function"){
+        renderMovies(
+            getCurrentlyDisplayedMovies()
+        );
+    }
 
     updateWatchlistCount();
 
