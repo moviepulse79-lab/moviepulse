@@ -4074,6 +4074,123 @@ document.addEventListener(
 
 
 <script src="js/movies.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    if (!window.movies || !window.movies.length) {
+        console.error("Movie data not found.");
+        return;
+    }
+
+    const hero = document.getElementById("movieHero");
+    const background = hero.querySelector(".hero-background");
+    const title = document.getElementById("heroMovieTitle");
+    const meta = document.getElementById("heroMovieMeta");
+    const summary = document.getElementById("heroMovieSummary");
+    const watchBtn = document.getElementById("heroWatchBtn");
+    const moreBtn = document.getElementById("heroMoreBtn");
+    const prevBtn = document.getElementById("heroPrev");
+
+    let currentIndex = 0;
+
+    function showMovie(index) {
+
+        const movie = window.movies[index];
+
+        if (!movie) return;
+
+        /* Background image */
+        background.style.backgroundImage =
+            `url("${movie.poster}")`;
+
+        /* Movie title */
+        title.textContent = movie.title || "Untitled Movie";
+
+        /* Meta information */
+        meta.innerHTML = `
+            ${movie.rating ? `<span>⭐ ${movie.rating}/10</span>` : ""}
+            ${movie.genre ? `<span>${movie.genre}</span>` : ""}
+            ${movie.date ? `<span>${movie.date}</span>` : ""}
+        `;
+
+        /* Summary */
+        summary.textContent =
+            movie.summary || "Discover this movie on MoviePulse.";
+
+        /* Trailer button */
+        watchBtn.onclick = function () {
+
+            if (movie.trailer) {
+                window.location.href =
+                    `trailer.html?id=${movie.id}`;
+            } else {
+                window.location.href =
+                    `trailer.html?id=${movie.id}`;
+            }
+
+        };
+
+        /* More Info button */
+        moreBtn.onclick = function () {
+
+            window.location.href =
+                `trailer.html?id=${movie.id}`;
+
+        };
+    }
+
+    /* Previous */
+    prevBtn.addEventListener("click", function () {
+
+        currentIndex--;
+
+        if (currentIndex < 0) {
+            currentIndex = window.movies.length - 1;
+        }
+
+        showMovie(currentIndex);
+
+    });
+
+    /* Next button if you have one */
+    const nextBtn = document.getElementById("heroNext");
+
+    if (nextBtn) {
+
+        nextBtn.addEventListener("click", function () {
+
+            currentIndex++;
+
+            if (currentIndex >= window.movies.length) {
+                currentIndex = 0;
+            }
+
+            showMovie(currentIndex);
+
+        });
+
+    }
+
+    /* Automatically change movie */
+    setInterval(function () {
+
+        currentIndex++;
+
+        if (currentIndex >= window.movies.length) {
+            currentIndex = 0;
+        }
+
+        showMovie(currentIndex);
+
+    }, 7000);
+
+    /* Load first movie immediately */
+    showMovie(currentIndex);
+
+});
+</script>
+     
 <script src="js/search.js"></script>
 
 
