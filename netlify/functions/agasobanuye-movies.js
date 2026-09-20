@@ -225,24 +225,14 @@ export default async (req) => {
                 sourceUrl:
                     cleanUrl,
 
-                /*
-                IMPORTANT:
-                FREE uses the movie /watch page.
-                */
-
                 watchUrl:
                     `${cleanUrl}/watch`,
 
                 server1Url:
-                    `${cleanUrl}/watch/server/1`,
+                    "",
 
                 server2Url:
-                    `${cleanUrl}/watch/server/2`,
-
-                /*
-                DOWNLOAD URL WILL BE FOUND
-                FROM THE PUBLIC WATCH PAGE.
-                */
+                    "",
 
                 downloadUrl:
                     "",
@@ -393,10 +383,6 @@ export default async (req) => {
                     parsed.pathname.toLowerCase();
 
 
-                /*
-                Direct media download.
-                */
-
                 if (
                     pathname.includes("/download/") &&
                     /\.(mp4|m4v|webm|mov)(?:$|\?)/i.test(
@@ -407,10 +393,6 @@ export default async (req) => {
                 }
 
 
-                /*
-                download.php
-                */
-
                 if (
                     pathname.includes(
                         "/download.php"
@@ -419,10 +401,6 @@ export default async (req) => {
                     return parsed.href;
                 }
 
-
-                /*
-                ?download=
-                */
 
                 if (
                     parsed.searchParams.has(
@@ -446,21 +424,6 @@ export default async (req) => {
         ============================================================
         DOWNLOAD EXTRACTION
         ============================================================
-
-        FLOW:
-
-        MOVIE PAGE
-             ↓
-        WATCH PAGE
-             ↓
-        DOWNLOAD BUTTON
-             ↓
-        MEDIA URL
-
-        IMPORTANT:
-        We DO NOT fetch the media URL.
-        We only return it.
-        ============================================================
         */
 
         function extractDownloadUrl(
@@ -472,12 +435,6 @@ export default async (req) => {
                 return "";
             }
 
-
-            /*
-            --------------------------------------------------------
-            1. DOWNLOAD ANCHORS
-            --------------------------------------------------------
-            */
 
             const anchorRegex =
                 /<a\b[^>]*\bhref=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
@@ -523,10 +480,6 @@ export default async (req) => {
                 }
 
 
-                /*
-                Direct MP4 link.
-                */
-
                 if (
                     /\.(mp4|m4v|webm|mov)(?:\?|$)/i.test(
                         candidate
@@ -535,10 +488,6 @@ export default async (req) => {
                     return candidate;
                 }
 
-
-                /*
-                Download button/link.
-                */
 
                 if (
                     text.includes("download")
@@ -558,9 +507,7 @@ export default async (req) => {
 
 
             /*
-            --------------------------------------------------------
-            2. DIRECT MEDIA URL IN HTML
-            --------------------------------------------------------
+            DIRECT MEDIA URL
             */
 
             const directRegex =
@@ -594,9 +541,7 @@ export default async (req) => {
 
 
             /*
-            --------------------------------------------------------
-            3. /download/ URL
-            --------------------------------------------------------
+            /download/
             */
 
             const downloadRegex =
@@ -633,9 +578,7 @@ export default async (req) => {
 
 
             /*
-            --------------------------------------------------------
-            4. DOWNLOAD.PHP
-            --------------------------------------------------------
+            download.php
             */
 
             const phpRegex =
@@ -672,6 +615,138 @@ export default async (req) => {
 
 
             return "";
+        }
+
+
+        /*
+        ============================================================
+        EXTRACT REAL WATCH / SERVER LINKS
+        ============================================================
+        */
+
+        function extractWatchLinks(
+            html,
+            pageUrl
+        ) {
+
+            const result = {
+
+                watchUrl:
+                    "",
+
+                server1Url:
+                    "",
+
+                server2Url:
+                    ""
+            };
+
+
+            if (!html) {
+                return result;
+            }
+
+
+            const anchorRegex =
+                /<a\b[^>]*\bhref=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+
+
+            let match;
+
+
+            while (
+                (
+                    match =
+                        anchorRegex.exec(html)
+                ) !== null
+            ) {
+
+                const href =
+                    match[1] || "";
+
+
+                const text =
+                    (match[2] || "")
+                        .replace(
+                            /<[^>]+>/g,
+                            " "
+                        )
+                        .replace(
+                            /\s+/g,
+                            " "
+                        )
+                        .trim()
+                        .toLowerCase();
+
+
+                const candidate =
+                    absoluteUrl(
+                        href,
+                        pageUrl
+                    );
+
+
+                if (!candidate) {
+                    continue;
+                }
+
+
+                /*
+                WATCH
+                */
+
+                if (
+                    !result.watchUrl &&
+                    (
+                        text === "watch" ||
+                        text.includes("watch movie") ||
+                        /\/watch(?:\/|$)/i.test(
+                            candidate
+                        )
+                    )
+                ) {
+
+                    result.watchUrl =
+                        candidate;
+                }
+
+
+                /*
+                SERVER 1
+                */
+
+                if (
+                    !result.server1Url &&
+                    (
+                        /server\s*1/i.test(text) ||
+                        /server[-_\s]?1/i.test(candidate)
+                    )
+                ) {
+
+                    result.server1Url =
+                        candidate;
+                }
+
+
+                /*
+                SERVER 2
+                */
+
+                if (
+                    !result.server2Url &&
+                    (
+                        /server\s*2/i.test(text) ||
+                        /server[-_\s]?2/i.test(candidate)
+                    )
+                ) {
+
+                    result.server2Url =
+                        candidate;
+                }
+            }
+
+
+            return result;
         }
 
 
@@ -808,7 +883,7 @@ export default async (req) => {
 
         /*
         ============================================================
-        SERVER 1
+        EXTRACT SERVER 1
         ============================================================
         */
 
@@ -1168,7 +1243,7 @@ export default async (req) => {
 
         /*
         ============================================================
-        SERVER 2
+        EXTRACT SERVER 2
         ============================================================
         */
 
@@ -1192,9 +1267,7 @@ export default async (req) => {
             while (
                 (
                     found =
-                        iframeRegex.exec(
-                            html
-                        )
+                        iframeRegex.exec(html)
                 ) !== null
             ) {
 
@@ -1262,9 +1335,7 @@ export default async (req) => {
                         try {
 
                             /*
-                            ------------------------------------------------
                             DETAIL PAGE
-                            ------------------------------------------------
                             */
 
                             const detailResponse =
@@ -1298,6 +1369,105 @@ export default async (req) => {
 
                             /*
                             ==================================================
+                            WATCH PAGE
+                            ==================================================
+                            */
+
+                            let watchUrl =
+                                movie.watchUrl;
+
+
+                            let server1Url =
+                                "";
+
+                            let server2Url =
+                                "";
+
+
+                            let watchHtml =
+                                "";
+
+
+                            try {
+
+                                const watchResponse =
+                                    await fetch(
+                                        watchUrl,
+                                        {
+                                            headers: {
+                                                "User-Agent":
+                                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
+                                                "Accept":
+                                                    "text/html,application/xhtml+xml,*/*;q=0.8",
+
+                                                "Accept-Language":
+                                                    "en-US,en;q=0.9",
+
+                                                "Referer":
+                                                    movie.sourceUrl
+                                            }
+                                        }
+                                    );
+
+
+                                if (
+                                    watchResponse.ok
+                                ) {
+
+                                    watchHtml =
+                                        await watchResponse.text();
+
+
+                                    /*
+                                    Find the REAL server links
+                                    from the watch page.
+                                    */
+
+                                    const serverLinks =
+                                        extractWatchLinks(
+                                            watchHtml,
+                                            watchUrl
+                                        );
+
+
+                                    if (
+                                        serverLinks.watchUrl
+                                    ) {
+
+                                        watchUrl =
+                                            serverLinks.watchUrl;
+                                    }
+
+
+                                    server1Url =
+                                        serverLinks.server1Url;
+
+                                    server2Url =
+                                        serverLinks.server2Url;
+
+
+                                    /*
+                                    Download link is normally
+                                    exposed on this page.
+                                    */
+
+                                }
+
+                            } catch (
+                                watchError
+                            ) {
+
+                                console.error(
+                                    "Watch page failed:",
+                                    watchUrl,
+                                    watchError
+                                );
+                            }
+
+
+                            /*
+                            ==================================================
                             DOWNLOAD URL
                             ==================================================
                             */
@@ -1307,7 +1477,7 @@ export default async (req) => {
 
 
                             /*
-                            1. Movie detail page
+                            1. Detail page
                             */
 
                             downloadUrl =
@@ -1318,19 +1488,37 @@ export default async (req) => {
 
 
                             /*
-                            2. Public Watch page
+                            2. Watch page
                             */
 
                             if (
                                 !downloadUrl &&
-                                movie.watchUrl
+                                watchHtml
+                            ) {
+
+                                downloadUrl =
+                                    extractDownloadUrl(
+                                        watchHtml,
+                                        watchUrl
+                                    );
+                            }
+
+
+                            /*
+                            3. If watch page did not expose it,
+                            try the real server pages.
+                            */
+
+                            if (
+                                !downloadUrl &&
+                                server1Url
                             ) {
 
                                 try {
 
-                                    const watchResponse =
+                                    const server1DownloadResponse =
                                         await fetch(
-                                            movie.watchUrl,
+                                            server1Url,
                                             {
                                                 headers: {
                                                     "User-Agent":
@@ -1343,51 +1531,107 @@ export default async (req) => {
                                                         "en-US,en;q=0.9",
 
                                                     "Referer":
-                                                        movie.sourceUrl
+                                                        watchUrl
                                                 }
                                             }
                                         );
 
 
                                     if (
-                                        watchResponse.ok
+                                        server1DownloadResponse.ok
                                     ) {
 
-                                        const watchHtml =
-                                            await watchResponse.text();
+                                        const server1DownloadHtml =
+                                            await server1DownloadResponse.text();
 
 
                                         downloadUrl =
                                             extractDownloadUrl(
-                                                watchHtml,
-                                                movie.watchUrl
+                                                server1DownloadHtml,
+                                                server1Url
                                             );
                                     }
 
                                 } catch (
-                                    watchError
+                                    error
                                 ) {
 
                                     console.error(
-                                        "Watch page download extraction failed:",
-                                        movie.watchUrl,
-                                        watchError
+                                        "Server 1 download extraction failed:",
+                                        server1Url,
+                                        error
+                                    );
+                                }
+                            }
+
+
+                            if (
+                                !downloadUrl &&
+                                server2Url
+                            ) {
+
+                                try {
+
+                                    const server2DownloadResponse =
+                                        await fetch(
+                                            server2Url,
+                                            {
+                                                headers: {
+                                                    "User-Agent":
+                                                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
+                                                    "Accept":
+                                                        "text/html,application/xhtml+xml,*/*;q=0.8",
+
+                                                    "Accept-Language":
+                                                        "en-US,en;q=0.9",
+
+                                                    "Referer":
+                                                        watchUrl
+                                                }
+                                            }
+                                        );
+
+
+                                    if (
+                                        server2DownloadResponse.ok
+                                    ) {
+
+                                        const server2DownloadHtml =
+                                            await server2DownloadResponse.text();
+
+
+                                        downloadUrl =
+                                            extractDownloadUrl(
+                                                server2DownloadHtml,
+                                                server2Url
+                                            );
+                                    }
+
+                                } catch (
+                                    error
+                                ) {
+
+                                    console.error(
+                                        "Server 2 download extraction failed:",
+                                        server2Url,
+                                        error
                                     );
                                 }
                             }
 
 
                             /*
-                            NOTE:
-                            We intentionally DO NOT fetch downloadUrl.
-                            The browser will open it directly.
+                            IMPORTANT:
+                            We do NOT fetch the final media URL.
+                            We only expose the public URL.
                             */
 
 
                             /*
-                            ------------------------------------------------
+                            ==================================================
                             POSTER
-                            ------------------------------------------------
+                            ==================================================
                             */
 
                             let poster =
@@ -1519,9 +1763,9 @@ export default async (req) => {
 
 
                             /*
-                            ------------------------------------------------
+                            ==================================================
                             SUMMARY
-                            ------------------------------------------------
+                            ==================================================
                             */
 
                             let summary =
@@ -1547,9 +1791,9 @@ export default async (req) => {
 
 
                             /*
-                            ------------------------------------------------
+                            ==================================================
                             TITLE
-                            ------------------------------------------------
+                            ==================================================
                             */
 
                             let realTitle =
@@ -1650,9 +1894,9 @@ export default async (req) => {
 
 
                             /*
-                            ------------------------------------------------
+                            ==================================================
                             CATEGORY
-                            ------------------------------------------------
+                            ==================================================
                             */
 
                             let movieCategory =
@@ -1678,9 +1922,9 @@ export default async (req) => {
 
 
                             /*
-                            ------------------------------------------------
+                            ==================================================
                             DURATION
-                            ------------------------------------------------
+                            ==================================================
                             */
 
                             let duration =
@@ -1717,72 +1961,73 @@ export default async (req) => {
                                 "";
 
 
-                            try {
+                            if (server1Url) {
 
-                                const server1Response =
-                                    await fetch(
-                                        movie.server1Url,
-                                        {
-                                            headers: {
-                                                "User-Agent":
-                                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+                                try {
 
-                                                "Accept":
-                                                    "text/html,application/xhtml+xml,*/*;q=0.8",
+                                    const server1Response =
+                                        await fetch(
+                                            server1Url,
+                                            {
+                                                headers: {
+                                                    "User-Agent":
+                                                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
 
-                                                "Accept-Language":
-                                                    "en-US,en;q=0.9",
+                                                    "Accept":
+                                                        "text/html,application/xhtml+xml,*/*;q=0.8",
 
-                                                "Referer":
-                                                    movie.watchUrl
+                                                    "Accept-Language":
+                                                        "en-US,en;q=0.9",
+
+                                                    "Referer":
+                                                        watchUrl
+                                                }
                                             }
-                                        }
-                                    );
-
-
-                                if (
-                                    server1Response.ok
-                                ) {
-
-                                    const server1Html =
-                                        await server1Response.text();
-
-
-                                    const server1 =
-                                        extractServer1(
-                                            server1Html,
-                                            movie.server1Url
                                         );
 
 
-                                    server1VideoUrl =
-                                        server1.videoUrl;
+                                    if (
+                                        server1Response.ok
+                                    ) {
+
+                                        const server1Html =
+                                            await server1Response.text();
 
 
-                                    server1PlayerUrl =
-                                        server1.playerUrl;
+                                        const server1 =
+                                            extractServer1(
+                                                server1Html,
+                                                server1Url
+                                            );
 
 
-                                    server1PlayerType =
-                                        server1.playerType;
-                                }
+                                        server1VideoUrl =
+                                            server1.videoUrl;
 
-                            } catch (
-                                server1Error
-                            ) {
 
-                                console.error(
-                                    "Server 1 extraction failed:",
-                                    movie.server1Url,
+                                        server1PlayerUrl =
+                                            server1.playerUrl;
+
+
+                                        server1PlayerType =
+                                            server1.playerType;
+                                    }
+
+                                } catch (
                                     server1Error
-                                );
+                                ) {
+
+                                    console.error(
+                                        "Server 1 extraction failed:",
+                                        server1Url,
+                                        server1Error
+                                    );
+                                }
                             }
 
 
                             /*
-                            ==================================================
                             SERVER 1 VIDEO
-                            ==================================================
                             */
 
                             if (
@@ -1804,6 +2049,12 @@ export default async (req) => {
                                         movieCategory,
 
                                     duration,
+
+                                    watchUrl,
+
+                                    server1Url,
+
+                                    server2Url,
 
                                     downloadUrl,
 
@@ -1827,9 +2078,7 @@ export default async (req) => {
 
 
                             /*
-                            ==================================================
                             SERVER 1 PLAYER
-                            ==================================================
                             */
 
                             if (
@@ -1851,6 +2100,12 @@ export default async (req) => {
                                         movieCategory,
 
                                     duration,
+
+                                    watchUrl,
+
+                                    server1Url,
+
+                                    server2Url,
 
                                     downloadUrl,
 
@@ -1885,60 +2140,61 @@ export default async (req) => {
                                 "";
 
 
-                            try {
+                            if (server2Url) {
 
-                                const server2Response =
-                                    await fetch(
-                                        movie.server2Url,
-                                        {
-                                            headers: {
-                                                "User-Agent":
-                                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+                                try {
 
-                                                "Accept":
-                                                    "text/html,application/xhtml+xml,*/*;q=0.8",
+                                    const server2Response =
+                                        await fetch(
+                                            server2Url,
+                                            {
+                                                headers: {
+                                                    "User-Agent":
+                                                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
 
-                                                "Accept-Language":
-                                                    "en-US,en;q=0.9",
+                                                    "Accept":
+                                                        "text/html,application/xhtml+xml,*/*;q=0.8",
 
-                                                "Referer":
-                                                    movie.watchUrl
+                                                    "Accept-Language":
+                                                        "en-US,en;q=0.9",
+
+                                                    "Referer":
+                                                        watchUrl
+                                                }
                                             }
-                                        }
-                                    );
+                                        );
 
 
-                                if (
-                                    server2Response.ok
+                                    if (
+                                        server2Response.ok
+                                    ) {
+
+                                        const server2Html =
+                                            await server2Response.text();
+
+
+                                        server2PlayerUrl =
+                                            extractServer2(
+                                                server2Html,
+                                                server2Url
+                                            );
+                                    }
+
+                                } catch (
+                                    server2Error
                                 ) {
 
-                                    const server2Html =
-                                        await server2Response.text();
-
-
-                                    server2PlayerUrl =
-                                        extractServer2(
-                                            server2Html,
-                                            movie.server2Url
-                                        );
+                                    console.error(
+                                        "Server 2 extraction failed:",
+                                        server2Url,
+                                        server2Error
+                                    );
                                 }
-
-                            } catch (
-                                server2Error
-                            ) {
-
-                                console.error(
-                                    "Server 2 extraction failed:",
-                                    movie.server2Url,
-                                    server2Error
-                                );
                             }
 
 
                             /*
-                            ==================================================
                             SERVER 2 RESULT
-                            ==================================================
                             */
 
                             if (
@@ -1960,6 +2216,12 @@ export default async (req) => {
                                         movieCategory,
 
                                     duration,
+
+                                    watchUrl,
+
+                                    server1Url,
+
+                                    server2Url,
 
                                     downloadUrl,
 
@@ -2004,6 +2266,12 @@ export default async (req) => {
                                     movieCategory,
 
                                 duration,
+
+                                watchUrl,
+
+                                server1Url,
+
+                                server2Url,
 
                                 downloadUrl,
 
