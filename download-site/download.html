@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Download Agasobanuye movie."
+    >
+
+    <meta
+        name="theme-color"
+        content="#090909"
+    >
+
+    <title>Download Movie | Agasobanuye Downloads</title>
+
+    <link
+        rel="icon"
+        href="https://moviepulse247.netlify.app/favicon.png"
+        type="image/png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="site-header">
+
+    <div class="nav-container">
+
+        <a
+            href="index.html"
+            class="logo"
+        >
+            <span class="logo-red">AGASOBANUYE</span>
+            <span class="logo-white">DOWNLOADS</span>
+        </a>
+
+
+        <nav class="desktop-nav">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="https://moviepulse247.netlify.app/">
+                MoviePulse
+            </a>
+
+        </nav>
+
+
+        <button
+            class="menu-button"
+            id="menuButton"
+            type="button"
+            aria-label="Open menu"
+        >
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+    </div>
+
+
+    <div
+        class="mobile-menu"
+        id="mobileMenu"
+    >
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="https://moviepulse247.netlify.app/">
+            MoviePulse
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<main class="download-page">
+
+
+<section class="download-container">
+
+
+    <a
+        href="index.html"
+        class="back-link"
+    >
+        <i class="fa-solid fa-arrow-left"></i>
+        Back to Movies
+    </a>
+
+
+
+    <div
+        class="download-card"
+        id="downloadCard"
+    >
+
+
+        <div
+            class="download-loading"
+            id="downloadLoading"
+        >
+
+            <div class="spinner"></div>
+
+            <p>
+                Preparing your download...
+            </p>
+
+        </div>
+
+
+
+        <div
+            class="download-error"
+            id="downloadError"
+            hidden
+        >
+
+            <i class="fa-solid fa-circle-exclamation"></i>
+
+            <h2>
+                Movie Not Found
+            </h2>
+
+            <p id="downloadErrorMessage">
+                We couldn't find this movie.
+            </p>
+
+            <a
+                href="index.html"
+                class="download-secondary-button"
+            >
+                Browse Movies
+            </a>
+
+        </div>
+
+
+
+        <div
+            class="download-content"
+            id="downloadContent"
+            hidden
+        >
+
+
+            <div class="download-poster-wrapper">
+
+                <img
+                    id="downloadPoster"
+                    src=""
+                    alt="Movie poster"
+                >
+
+            </div>
+
+
+
+            <div class="download-info">
+
+                <span
+                    class="download-label"
+                >
+                    READY TO DOWNLOAD
+                </span>
+
+
+                <h1 id="downloadTitle">
+                    Movie
+                </h1>
+
+
+                <div
+                    class="movie-meta"
+                    id="downloadMeta"
+                ></div>
+
+
+                <p
+                    class="download-summary"
+                    id="downloadSummary"
+                ></p>
+
+
+                <div class="download-notice">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    <p>
+                        Your movie file is ready.
+                        Click the button below to download it.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="#"
+                    id="downloadButton"
+                    class="main-download-button"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+
+                    <i class="fa-solid fa-download"></i>
+
+                    <span>
+                        Download Movie
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    id="watchMovieButton"
+                    class="watch-button"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+
+                    <i class="fa-solid fa-play"></i>
+
+                    Watch Movie
+
+                </a>
+
+
+                <p class="download-tip">
+
+                    <i class="fa-solid fa-lightbulb"></i>
+
+                    If the download doesn't start automatically,
+                    the file will open in your browser. Use the
+                    browser's download button to save it.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+<section class="related-section">
+
+    <div class="section-container">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-label">
+                    MORE MOVIES
+                </span>
+
+                <h2>
+                    You May Also Like
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="related-grid"
+            id="relatedGrid"
+        ></div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+
+<footer class="site-footer">
+
+    <div class="footer-bottom">
+
+        <p>
+            © <span id="year"></span> Agasobanuye Downloads.
+            All rights reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<script src="app.js"></script>
+
+</body>
+
+</html>
+
