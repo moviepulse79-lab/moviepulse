@@ -1,4 +1,14 @@
 export default async (req) => {
+    if (req.method === "OPTIONS") {
+    return new Response(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type"
+      }
+    });
+  }
   try {
     const url = new URL(req.url);
 
@@ -1831,7 +1841,6 @@ export default async (req) => {
 JSON RESPONSE HELPER
 ============================================================
 */
-
 function json(
   data,
   status = 200
@@ -1846,8 +1855,19 @@ function json(
           "application/json; charset=utf-8",
 
         "Cache-Control":
-          "public, max-age=300"
+          "public, max-age=300",
+
+        "Access-Control-Allow-Origin":
+          "*",
+
+        "Access-Control-Allow-Methods":
+          "GET, OPTIONS",
+
+        "Access-Control-Allow-Headers":
+          "Content-Type"
       }
     }
   );
 }
+
+
