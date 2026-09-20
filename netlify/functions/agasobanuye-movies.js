@@ -170,6 +170,20 @@ export default async (req) => {
         server2Url:
           `${cleanUrl}/watch/server/2`,
 
+        /*
+        ========================================================
+        NEW DOWNLOAD FIELD
+        ========================================================
+        */
+
+        downloadUrl: "",
+
+        /*
+        ========================================================
+        EXISTING WATCH FIELDS
+        ========================================================
+        */
+
         playerUrl: "",
 
         playerType: "",
@@ -217,6 +231,10 @@ export default async (req) => {
             /&#39;/g,
             "'"
           )
+          .replace(
+            /&#x2F;/gi,
+            "/"
+          )
           .trim();
 
       if (
@@ -230,20 +248,276 @@ export default async (req) => {
       return result;
     }
 
+    /*
+    ============================================================
+    DOWNLOAD URL EXTRACTION
+    ============================================================
+    */
+
     function isDownloadUrl(value) {
       if (!value) {
         return false;
       }
 
-      const lower =
-        value.toLowerCase();
+      const decoded =
+        decodeUrl(value);
 
-      return (
-        lower.includes("/download/") ||
-        lower.includes("download.php") ||
-        lower.includes("download?")
-      );
+      if (!decoded) {
+        return false;
+      }
+
+      try {
+        const parsed =
+          new URL(decoded);
+
+        if (
+          parsed.protocol !==
+            "http:" &&
+          parsed.protocol !==
+            "https:"
+        ) {
+          return false;
+        }
+
+        const pathname =
+          parsed.pathname.toLowerCase();
+
+        /*
+        Accept direct downloadable media files.
+        */
+
+        if (
+          pathname.includes("/download/") &&
+          /\.(mp4|m4v|webm|mov)(?:$)/i.test(
+            pathname
+          )
+        ) {
+          return parsed.href;
+        }
+
+        /*
+        Some download systems use download.php
+        or a download query parameter.
+        */
+
+        if (
+          pathname.endsWith(
+            "/download.php"
+          ) ||
+          pathname.includes(
+            "/download.php"
+          )
+        ) {
+          return parsed.href;
+        }
+
+        if (
+          parsed.searchParams.has(
+            "download"
+          )
+        ) {
+          return parsed.href;
+        }
+
+        return false;
+
+      } catch {
+        return false;
+      }
     }
+
+    /*
+    ============================================================
+    EXTRACT DOWNLOAD LINK FROM MOVIE DETAIL PAGE
+    ============================================================
+    */
+
+    function extractDownloadUrl(
+      html,
+      pageUrl
+    ) {
+      if (!html) {
+        return "";
+      }
+
+      /*
+      ------------------------------------------------------------
+      1. Normal <a href="..."> download links
+      ------------------------------------------------------------
+      */
+
+      const anchorRegex =
+        /<a\b[^>]*\bhref=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+
+      let found;
+
+      while (
+        (
+          found =
+            anchorRegex.exec(html)
+        ) !== null
+      ) {
+        const href =
+          found[1] || "";
+
+        const linkText =
+          (found[2] || "")
+            .replace(
+              /<[^>]+>/g,
+              " "
+            )
+            .replace(
+              /\s+/g,
+              " "
+            )
+            .trim()
+            .toLowerCase();
+
+        const candidate =
+          absoluteUrl(
+            href,
+            pageUrl
+          );
+
+        const valid =
+          isDownloadUrl(
+            candidate
+          );
+
+        if (valid) {
+          return valid;
+        }
+
+        /*
+        If the anchor is clearly a Download button,
+        check the URL even when the extension isn't
+        immediately visible.
+        */
+
+        if (
+          linkText.includes(
+            "download"
+          )
+        ) {
+          try {
+            const parsed =
+              new URL(candidate);
+
+            const pathname =
+              parsed.pathname.toLowerCase();
+
+            if (
+              pathname.includes(
+                "/download"
+              ) ||
+              parsed.searchParams.has(
+                "download"
+              )
+            ) {
+              return parsed.href;
+            }
+
+          } catch {}
+        }
+      }
+
+      /*
+      ------------------------------------------------------------
+      2. Direct media/download URLs anywhere in HTML
+      ------------------------------------------------------------
+      */
+
+      const directDownloadRegex =
+        /https?:\/\/[^"'\\<>\s]+\/download\/[^"'\\<>\s]+/gi;
+
+      const directMatches =
+        html.match(
+          directDownloadRegex
+        ) || [];
+
+      for (
+        const candidate
+        of directMatches
+      ) {
+        const valid =
+          isDownloadUrl(
+            candidate
+          );
+
+        if (valid) {
+          return valid;
+        }
+      }
+
+      /*
+      ------------------------------------------------------------
+      3. Relative /download/... URLs
+      ------------------------------------------------------------
+      */
+
+      const relativeDownloadRegex =
+        /["']([^"']*\/download\/[^"']+)["']/gi;
+
+      while (
+        (
+          found =
+            relativeDownloadRegex.exec(
+              html
+            )
+        ) !== null
+      ) {
+        const candidate =
+          absoluteUrl(
+            found[1],
+            pageUrl
+          );
+
+        const valid =
+          isDownloadUrl(
+            candidate
+          );
+
+        if (valid) {
+          return valid;
+        }
+      }
+
+      /*
+      ------------------------------------------------------------
+      4. download.php URLs
+      ------------------------------------------------------------
+      */
+
+      const downloadPhpRegex =
+        /https?:\/\/[^"'\\<>\s]+download\.php[^"'\\<>\s]*/gi;
+
+      const phpMatches =
+        html.match(
+          downloadPhpRegex
+        ) || [];
+
+      for (
+        const candidate
+        of phpMatches
+      ) {
+        const valid =
+          isDownloadUrl(
+            candidate
+          );
+
+        if (valid) {
+          return valid;
+        }
+      }
+
+      return "";
+    }
+
+    /*
+    ============================================================
+    PUBLIC MEDIA URL
+    ============================================================
+    */
 
     function isPublicMediaUrl(value) {
       if (!value) {
@@ -256,6 +530,12 @@ export default async (req) => {
       if (!decoded) {
         return false;
       }
+
+      /*
+      IMPORTANT:
+      Download URLs are still rejected here because this
+      function is ONLY for WATCH media extraction.
+      */
 
       if (
         isDownloadUrl(decoded)
@@ -280,10 +560,6 @@ export default async (req) => {
           parsed.pathname
             .toLowerCase();
 
-        /*
-        Accept normal media files.
-        */
-
         if (
           /\.(mp4|m3u8|webm|mov)(?:$|\?)/i.test(
             pathname
@@ -298,6 +574,12 @@ export default async (req) => {
         return false;
       }
     }
+
+    /*
+    ============================================================
+    PUBLIC PLAYER URL
+    ============================================================
+    */
 
     function isPublicPlayerUrl(value) {
       if (!value) {
@@ -330,14 +612,6 @@ export default async (req) => {
           return false;
         }
 
-        /*
-        Only accept recognizable public
-        player/embed URLs.
-
-        We do NOT attempt to bypass
-        protected players.
-        */
-
         const hostname =
           parsed.hostname.toLowerCase();
 
@@ -357,6 +631,12 @@ export default async (req) => {
         return false;
       }
     }
+
+    /*
+    ============================================================
+    ABSOLUTE URL
+    ============================================================
+    */
 
     function absoluteUrl(
       value,
@@ -382,7 +662,10 @@ export default async (req) => {
     ============================================================
     */
 
-    function extractServer1(html, pageUrl) {
+    function extractServer1(
+      html,
+      pageUrl
+    ) {
       if (!html) {
         return {
           videoUrl: "",
@@ -854,6 +1137,31 @@ export default async (req) => {
                 await detailResponse.text();
 
               /*
+              ====================================================
+              NEW DOWNLOAD EXTRACTION
+              ====================================================
+              */
+
+              let downloadUrl =
+                "";
+
+              try {
+                downloadUrl =
+                  extractDownloadUrl(
+                    detailHtml,
+                    movie.sourceUrl
+                  );
+              } catch (
+                downloadError
+              ) {
+                console.error(
+                  "Download URL extraction failed:",
+                  movie.sourceUrl,
+                  downloadError
+                );
+              }
+
+              /*
               ----------------------------------------------------
               POSTER
               ----------------------------------------------------
@@ -1209,6 +1517,16 @@ export default async (req) => {
 
                   duration,
 
+                  /*
+                  NEW
+                  */
+
+                  downloadUrl,
+
+                  /*
+                  EXISTING WATCH
+                  */
+
                   playerUrl:
                     server1VideoUrl,
 
@@ -1251,6 +1569,16 @@ export default async (req) => {
                     movieCategory,
 
                   duration,
+
+                  /*
+                  NEW
+                  */
+
+                  downloadUrl,
+
+                  /*
+                  EXISTING WATCH
+                  */
 
                   playerUrl:
                     server1PlayerUrl,
@@ -1350,6 +1678,16 @@ export default async (req) => {
 
                   duration,
 
+                  /*
+                  NEW
+                  */
+
+                  downloadUrl,
+
+                  /*
+                  EXISTING WATCH
+                  */
+
                   playerUrl:
                     server2PlayerUrl,
 
@@ -1389,6 +1727,16 @@ export default async (req) => {
                   movieCategory,
 
                 duration,
+
+                /*
+                NEW
+                */
+
+                downloadUrl,
+
+                /*
+                EXISTING WATCH
+                */
 
                 playerUrl:
                   "",
