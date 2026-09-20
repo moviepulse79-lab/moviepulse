@@ -1,4 +1,135 @@
 export default async (req) => {
+        /*
+    ============================================================
+    DOWNLOAD REQUEST
+    ============================================================
+    */
+
+    const requestUrl = new URL(req.url);
+
+    if (
+        requestUrl.searchParams.get("action") === "download"
+    ) {
+
+        const downloadUrl =
+            requestUrl.searchParams.get("url");
+
+        if (!downloadUrl) {
+            return json(
+                {
+                    success: false,
+                    error: "Missing download URL"
+                },
+                400
+            );
+        }
+
+        try {
+
+            const parsed =
+                new URL(downloadUrl);
+
+            /*
+            Only allow the Agasobanuye media server.
+            */
+
+            if (
+                parsed.hostname !==
+                "media.agasobanuyenow.com"
+            ) {
+                return json(
+                    {
+                        success: false,
+                        error: "Invalid download host"
+                    },
+                    403
+                );
+            }
+
+            const fileResponse =
+                await fetch(
+                    downloadUrl,
+                    {
+                        method: "GET",
+                        headers: {
+                            "User-Agent":
+                                "Mozilla/5.0"
+                        }
+                    }
+                );
+
+            /*
+            If the source itself rejects the request,
+            return the actual status instead of pretending
+            the download worked.
+            */
+
+            if (!fileResponse.ok) {
+
+                return json(
+                    {
+                        success: false,
+                        error:
+                            `Download server returned ${fileResponse.status}`,
+                        status:
+                            fileResponse.status
+                    },
+                    fileResponse.status
+                );
+
+            }
+
+            const contentType =
+                fileResponse.headers.get(
+                    "content-type"
+                ) ||
+                "application/octet-stream";
+
+            const contentLength =
+                fileResponse.headers.get(
+                    "content-length"
+                );
+
+            const headers = {
+                "Content-Type":
+                    contentType,
+
+                "Content-Disposition":
+                    "attachment"
+            };
+
+            if (contentLength) {
+                headers[
+                    "Content-Length"
+                ] = contentLength;
+            }
+
+            return new Response(
+                fileResponse.body,
+                {
+                    status: 200,
+                    headers
+                }
+            );
+
+        } catch (downloadError) {
+
+            console.error(
+                "Download request failed:",
+                downloadError
+            );
+
+            return json(
+                {
+                    success: false,
+                    error:
+                        downloadError.message
+                },
+                500
+            );
+        }
+    }
+    
     if (req.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
