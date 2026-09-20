@@ -459,6 +459,7 @@ nav a.active{
 }
 
 .movie-overlay{
+    .movie-overlay{
     position:absolute;
 
     inset:0;
@@ -467,6 +468,10 @@ nav a.active{
 
     align-items:center;
     justify-content:center;
+
+    gap:10px;
+    flex-wrap:wrap;
+   
 
     background:rgba(0,0,0,.35);
 
@@ -1965,20 +1970,30 @@ function renderMovies(movies){
 
                     ${posterHtml}
 
-                    <div class="movie-overlay">
+                  <div class="movie-overlay">
 
-                       <button
-    class="watch-btn"
-    type="button"
-    onclick="window.open('https://comparativelykindness.com/pzvmva9d?key=22adb1d32dbdd6e0b2940878b8de97a9', '_blank', 'noopener,noreferrer'); openMovie('${escapeHtml(movie.id)}')"
->
-    <i class="fa-solid fa-play"></i>
-    Watch
-</button>
+    <button
+        class="watch-btn"
+        type="button"
+        onclick="window.open('https://comparativelykindness.com/pzvmva9d?key=22adb1d32dbdd6e0b2940878b8de97a9', '_blank', 'noopener,noreferrer'); openMovie('${escapeHtml(movie.id)}')"
+    >
+        <i class="fa-solid fa-play"></i>
+        Watch
+    </button>
 
-                    </div>
+    <a
+        class="watch-btn"
+        href="https://downloadin.netlify.app/download.html?movie=${encodeURIComponent(movie.id)}"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+        <i class="fa-solid fa-download"></i>
+        Download
+    </a>
 
-                </div>
+</div>
+
+
 
 
                 <div class="movie-info">
