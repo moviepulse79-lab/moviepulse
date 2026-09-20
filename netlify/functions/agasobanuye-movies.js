@@ -467,192 +467,190 @@ export default async (req) => {
       }
     }
 
+
+/* ============================================================
+   DOWNLOAD URL EXTRACTION
+   FLOW:
+   MOVIE PAGE
+      ↓
+   WATCH PAGE
+      ↓
+   SERVER PAGE
+      ↓
+   DOWNLOAD LINK
+============================================================ */
+
+function extractDownloadUrl(html, pageUrl) {
+
+    if (!html) {
+        return "";
+    }
+
     /*
-    ============================================================
-    EXTRACT DOWNLOAD LINK FROM MOVIE DETAIL PAGE
-    ============================================================
+    ------------------------------------------------------------
+    1. NORMAL DOWNLOAD LINKS
+    ------------------------------------------------------------
     */
 
-    function extractDownloadUrl(
-      html,
-      pageUrl
-    ) {
-      if (!html) {
-        return "";
-      }
-
-      /*
-      ------------------------------------------------------------
-      1. Normal <a href="..."> download links
-      ------------------------------------------------------------
-      */
-
-      const anchorRegex =
+    const anchorRegex =
         /<a\b[^>]*\bhref=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
 
-      let found;
+    let match;
 
-      while (
-        (
-          found =
-            anchorRegex.exec(html)
-        ) !== null
-      ) {
+    while (
+        (match = anchorRegex.exec(html)) !== null
+    ) {
+
         const href =
-          found[1] || "";
+            match[1] || "";
 
-        const linkText =
-          (found[2] || "")
-            .replace(
-              /<[^>]+>/g,
-              " "
-            )
-            .replace(
-              /\s+/g,
-              " "
-            )
-            .trim()
-            .toLowerCase();
+        const text =
+            (match[2] || "")
+                .replace(/<[^>]+>/g, " ")
+                .replace(/\s+/g, " ")
+                .trim()
+                .toLowerCase();
 
         const candidate =
-          absoluteUrl(
-            href,
-            pageUrl
-          );
+            absoluteUrl(
+                href,
+                pageUrl
+            );
 
-        const valid =
-          isDownloadUrl(
-            candidate
-          );
-
-        if (valid) {
-          return valid;
+        if (!candidate) {
+            continue;
         }
 
         /*
-        If the anchor is clearly a Download button,
-        check the URL even when the extension isn't
-        immediately visible.
+        A direct media file.
         */
 
         if (
-          linkText.includes(
-            "download"
-          )
+            /\.(mp4|m4v|webm|mov)(?:\?|$)/i.test(
+                candidate
+            )
         ) {
-          try {
-            const parsed =
-              new URL(candidate);
-
-            const pathname =
-              parsed.pathname.toLowerCase();
-
-            if (
-              pathname.includes(
-                "/download"
-              ) ||
-              parsed.searchParams.has(
-                "download"
-              )
-            ) {
-              return parsed.href;
-            }
-
-          } catch {}
+            return candidate;
         }
-      }
 
-      /*
-      ------------------------------------------------------------
-      2. Direct media/download URLs anywhere in HTML
-      ------------------------------------------------------------
-      */
+        /*
+        Explicit download URL.
+        */
 
-      const directDownloadRegex =
-        /https?:\/\/[^"'\\<>\s]+\/download\/[^"'\\<>\s]+/gi;
+        if (
+            text.includes("download") ||
+            text.includes("download movie") ||
+            text.includes("download file")
+        ) {
 
-      const directMatches =
-        html.match(
-          directDownloadRegex
-        ) || [];
+            try {
 
-      for (
+                const parsed =
+                    new URL(candidate);
+
+                const pathname =
+                    parsed.pathname.toLowerCase();
+
+                if (
+                    pathname.includes("/download") ||
+                    pathname.includes("download.php") ||
+                    parsed.searchParams.has("download")
+                ) {
+                    return parsed.href;
+                }
+
+            } catch {}
+
+        }
+
+    }
+
+
+    /*
+    ------------------------------------------------------------
+    2. DIRECT DOWNLOAD URLS IN PAGE SOURCE
+    ------------------------------------------------------------
+    */
+
+    const directRegex =
+        /https?:\/\/[^"'\\<>\s]+(?:\.mp4|\.m4v|\.webm|\.mov)(?:\?[^"'\\<>\s]*)?/gi;
+
+    const directMatches =
+        html.match(directRegex) || [];
+
+    for (
         const candidate
         of directMatches
-      ) {
-        const valid =
-          isDownloadUrl(
-            candidate
-          );
+    ) {
 
-        if (valid) {
-          return valid;
+        const decoded =
+            decodeUrl(candidate);
+
+        if (
+            /\.(mp4|m4v|webm|mov)(?:\?|$)/i.test(
+                decoded
+            )
+        ) {
+            return decoded;
         }
-      }
 
-      /*
-      ------------------------------------------------------------
-      3. Relative /download/... URLs
-      ------------------------------------------------------------
-      */
+    }
 
-      const relativeDownloadRegex =
+
+    /*
+    ------------------------------------------------------------
+    3. /download/... URLS
+    ------------------------------------------------------------
+    */
+
+    const downloadRegex =
         /["']([^"']*\/download\/[^"']+)["']/gi;
 
-      while (
-        (
-          found =
-            relativeDownloadRegex.exec(
-              html
-            )
-        ) !== null
-      ) {
+    while (
+        (match = downloadRegex.exec(html)) !== null
+    ) {
+
         const candidate =
-          absoluteUrl(
-            found[1],
-            pageUrl
-          );
+            absoluteUrl(
+                match[1],
+                pageUrl
+            );
 
-        const valid =
-          isDownloadUrl(
-            candidate
-          );
-
-        if (valid) {
-          return valid;
+        if (candidate) {
+            return candidate;
         }
-      }
 
-      /*
-      ------------------------------------------------------------
-      4. download.php URLs
-      ------------------------------------------------------------
-      */
-
-      const downloadPhpRegex =
-        /https?:\/\/[^"'\\<>\s]+download\.php[^"'\\<>\s]*/gi;
-
-      const phpMatches =
-        html.match(
-          downloadPhpRegex
-        ) || [];
-
-      for (
-        const candidate
-        of phpMatches
-      ) {
-        const valid =
-          isDownloadUrl(
-            candidate
-          );
-
-        if (valid) {
-          return valid;
-        }
-      }
-
-      return "";
     }
+
+
+    /*
+    ------------------------------------------------------------
+    4. DOWNLOAD.PHP
+    ------------------------------------------------------------
+    */
+
+    const phpRegex =
+        /["']([^"']*download\.php[^"']*)["']/gi;
+
+    while (
+        (match = phpRegex.exec(html)) !== null
+    ) {
+
+        const candidate =
+            absoluteUrl(
+                match[1],
+                pageUrl
+            );
+
+        if (candidate) {
+            return candidate;
+        }
+
+    }
+
+
+    return "";
+}
 
     /*
     ============================================================
@@ -1283,24 +1281,199 @@ export default async (req) => {
               ====================================================
               */
 
-              let downloadUrl =
-                "";
+           let downloadUrl = "";
 
-              try {
-                downloadUrl =
-                  extractDownloadUrl(
-                    detailHtml,
-                    movie.sourceUrl
-                  );
-              } catch (
-                downloadError
-              ) {
-                console.error(
-                  "Download URL extraction failed:",
-                  movie.sourceUrl,
-                  downloadError
+try {
+
+    /*
+    ========================================================
+    STEP 1: CHECK THE MOVIE DETAIL PAGE
+    ========================================================
+    */
+
+    downloadUrl =
+        extractDownloadUrl(
+            detailHtml,
+            movie.sourceUrl
+        );
+
+
+    /*
+    ========================================================
+    STEP 2: CHECK THE WATCH PAGE
+    ========================================================
+    */
+
+    if (
+        !downloadUrl &&
+        movie.watchUrl
+    ) {
+
+        try {
+
+            const watchResponse =
+                await fetch(
+                    movie.watchUrl,
+                    {
+                        headers: {
+                            "User-Agent":
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
+                            "Accept":
+                                "text/html,application/xhtml+xml,*/*;q=0.8",
+
+                            "Accept-Language":
+                                "en-US,en;q=0.9"
+                        }
+                    }
                 );
-              }
+
+            if (watchResponse.ok) {
+
+                const watchHtml =
+                    await watchResponse.text();
+
+                downloadUrl =
+                    extractDownloadUrl(
+                        watchHtml,
+                        movie.watchUrl
+                    );
+
+            }
+
+        } catch (watchError) {
+
+            console.error(
+                "Watch page download extraction failed:",
+                movie.watchUrl,
+                watchError
+            );
+
+        }
+
+    }
+
+
+    /*
+    ========================================================
+    STEP 3: CHECK SERVER 1
+    ========================================================
+    */
+
+    if (
+        !downloadUrl &&
+        movie.server1Url
+    ) {
+
+        try {
+
+            const server1Response =
+                await fetch(
+                    movie.server1Url,
+                    {
+                        headers: {
+                            "User-Agent":
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
+                            "Accept":
+                                "text/html,application/xhtml+xml,*/*;q=0.8",
+
+                            "Accept-Language":
+                                "en-US,en;q=0.9"
+                        }
+                    }
+                );
+
+            if (server1Response.ok) {
+
+                const server1Html =
+                    await server1Response.text();
+
+                downloadUrl =
+                    extractDownloadUrl(
+                        server1Html,
+                        movie.server1Url
+                    );
+
+            }
+
+        } catch (server1Error) {
+
+            console.error(
+                "Server 1 download extraction failed:",
+                movie.server1Url,
+                server1Error
+            );
+
+        }
+
+    }
+
+
+    /*
+    ========================================================
+    STEP 4: CHECK SERVER 2
+    ========================================================
+    */
+
+    if (
+        !downloadUrl &&
+        movie.server2Url
+    ) {
+
+        try {
+
+            const server2Response =
+                await fetch(
+                    movie.server2Url,
+                    {
+                        headers: {
+                            "User-Agent":
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+
+                            "Accept":
+                                "text/html,application/xhtml+xml,*/*;q=0.8",
+
+                            "Accept-Language":
+                                "en-US,en;q=0.9"
+                        }
+                    }
+                );
+
+            if (server2Response.ok) {
+
+                const server2Html =
+                    await server2Response.text();
+
+                downloadUrl =
+                    extractDownloadUrl(
+                        server2Html,
+                        movie.server2Url
+                    );
+
+            }
+
+        } catch (server2Error) {
+
+            console.error(
+                "Server 2 download extraction failed:",
+                movie.server2Url,
+                server2Error
+            );
+
+        }
+
+    }
+
+} catch (downloadError) {
+
+    console.error(
+        "Download URL extraction failed:",
+        movie.sourceUrl,
+        downloadError
+    );
+
+} 
 
               /*
               ----------------------------------------------------
