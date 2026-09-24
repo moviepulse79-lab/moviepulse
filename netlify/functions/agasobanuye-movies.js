@@ -1620,7 +1620,39 @@ export default async (req) => {
                                 }
                             }
 
+/*
+==================================================
+PROTECT DOWNLOAD URL THROUGH NETLIFY PROXY
+==================================================
+*/
 
+if (downloadUrl) {
+
+    try {
+
+        const parsedDownload =
+            new URL(downloadUrl);
+
+        if (
+            parsedDownload.hostname ===
+            "media.agasobanuyenow.com"
+        ) {
+
+            downloadUrl =
+                `https://moviepulse247.netlify.app/.netlify/functions/agasobanuye-download?url=${encodeURIComponent(
+                    parsedDownload.href
+                )}`;
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Download URL proxy error:",
+            downloadUrl,
+            error
+        );
+    }
+}
                             /*
                             IMPORTANT:
                             We do NOT fetch the final media URL.
