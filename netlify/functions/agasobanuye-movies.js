@@ -1355,7 +1355,7 @@ export default async (req) => {
                                     }
                                 );
 
-
+ 
                             if (
                                 !detailResponse.ok
                             ) {
