@@ -187,28 +187,74 @@ export default async (req) => {
             seen.add(slug);
 
 
-            const title =
-                slug
-                    .replace(
-                        /-by-[^-]+$/i,
-                        ""
-                    )
-                    .replace(
-                        /-/g,
-                        " "
-                    )
-                    .replace(
-                        /\b\w/g,
-                        c => c.toUpperCase()
-                    );
+          /*
+============================================================
+TITLE + TRANSLATOR
+============================================================
+*/
+
+let movieSlug =
+    slug;
+
+let translator =
+    "";
+
+/*
+ * Agasobanuye FREE slugs normally use:
+ *
+ * movie-name-by-translator-name
+ *
+ * Everything after "-by-" is treated as
+ * the translator, including multi-word names.
+ */
+
+const translatorMatch =
+    movieSlug.match(
+        /-by-(.+)$/i
+    );
+
+if (translatorMatch) {
+
+    translator =
+        translatorMatch[1]
+            .replace(
+                /-/g,
+                " "
+            )
+            .replace(
+                /\b\w/g,
+                c => c.toUpperCase()
+            )
+            .trim();
+
+    movieSlug =
+        movieSlug.replace(
+            /-by-(.+)$/i,
+            ""
+        );
+}
+
+const title =
+    movieSlug
+        .replace(
+            /-/g,
+            " "
+        )
+        .replace(
+            /\b\w/g,
+            c => c.toUpperCase()
+        )
+        .trim();
 
 
-            movies.push({
+           movies.push({
 
-                id:
-                    slug,
+    id:
+        slug,
 
-                title,
+    title,
+
+    translator,
 
                 poster:
                     "",
