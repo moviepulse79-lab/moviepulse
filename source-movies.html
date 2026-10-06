@@ -1974,7 +1974,7 @@ function renderMovies(movies){
 
                     ${posterHtml}
 
-                  <div class="movie-overlay">
+        <div class="movie-overlay">
 
     <button
         class="watch-btn"
@@ -1997,35 +1997,35 @@ function renderMovies(movies){
 
 </div>
 
-
-
-
-            <h3>
-    ${escapeHtml(movie.title)}
-</h3>
-
-
-<div
-    style="
-        color:#aaa;
-        font-size:11px;
-        margin-bottom:9px;
-        white-space:nowrap;
-        overflow:hidden;
-        text-overflow:ellipsis;
-    "
->
-
-    ${
-        movie.translator
-            ? `🎙️ Translated by ${escapeHtml(movie.translator)}`
-            : ""
-    }
-
 </div>
 
 
-<div class="movie-meta">
+<div class="movie-info">
+
+    <h3>
+        ${escapeHtml(movie.title)}
+    </h3>
+
+    <div
+        style="
+            color:#aaa;
+            font-size:11px;
+            margin-bottom:9px;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        "
+    >
+        ${
+            movie.translator
+                ? `🎙️ Translated by ${escapeHtml(movie.translator)}`
+                : ""
+        }
+    </div>
+
+    <div class="movie-meta">        
+
+
 
                         <span>
                             ${escapeHtml(
