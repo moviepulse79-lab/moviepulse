@@ -1232,15 +1232,30 @@ nav a.active{
 
     <div class="player-box">
 
+<div class="player-header">
 
-        <div class="player-header">
+    <div style="min-width:0;max-width:75%;">
 
-            <h2 id="playerTitle">
-                Movie
-            </h2>
+        <h2 id="playerTitle">
+            Movie
+        </h2>
+
+        <div
+            id="playerTranslator"
+            style="
+                margin-top:4px;
+                color:#aaa;
+                font-size:11px;
+                white-space:nowrap;
+                overflow:hidden;
+                text-overflow:ellipsis;
+            "
+        ></div>
+
+    </div>
 
 
-            <div class="player-controls">
+    <div class="player-controls">
 
     <button
     class="fullscreen-player"
@@ -1363,6 +1378,8 @@ const playerModal =
 
 const playerTitle =
     document.getElementById("playerTitle");
+    const playerTranslator =
+    document.getElementById("playerTranslator");
 
 const videoContainer =
     document.getElementById("videoContainer");
@@ -1983,14 +2000,32 @@ function renderMovies(movies){
 
 
 
-                <div class="movie-info">
-
-                    <h3>
-                        ${escapeHtml(movie.title)}
-                    </h3>
+            <h3>
+    ${escapeHtml(movie.title)}
+</h3>
 
 
-                    <div class="movie-meta">
+<div
+    style="
+        color:#aaa;
+        font-size:11px;
+        margin-bottom:9px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    "
+>
+
+    ${
+        movie.translator
+            ? `🎙️ Translated by ${escapeHtml(movie.translator)}`
+            : ""
+    }
+
+</div>
+
+
+<div class="movie-meta">
 
                         <span>
                             ${escapeHtml(
@@ -2065,15 +2100,26 @@ function openMovie(id){
         return;
 
     }
-
-
     if(playerTitle){
 
-        playerTitle.textContent =
-            movie.title ||
-            "Movie";
+    playerTitle.textContent =
+        movie.title ||
+        "Movie";
 
-    }
+}
+
+
+if(playerTranslator){
+
+    playerTranslator.textContent =
+        movie.translator
+            ? `🎙️ Translated by ${movie.translator}`
+            : "";
+
+}
+
+
+   
 
 
     if(videoContainer){
